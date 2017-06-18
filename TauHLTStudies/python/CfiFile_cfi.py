@@ -1,0 +1,20 @@
+import FWCore.ParameterSet.Config as cms
+
+tauHLTStudies = cms.EDAnalyzer("TauHLTStudiesAnalyzer",
+    hadronSrc = cms.InputTag("tauGenJetsSelectorAllHadrons"),
+    tauElectronSrc = cms.InputTag("tauGenJetsSelectorElectrons"),
+    tauMuonSrc = cms.InputTag("tauGenJetsSelectorMuons"),
+    puSrc = cms.InputTag("addPileupInfo"),
+    tauSrc = cms.InputTag("hpsPFTauProducer","","RECO"),
+    muonSrc = cms.InputTag("muons","","RECO"),
+    #electronSrc = cms.InputTag("electrons","","RECO"),
+    #jetSrc = cms.InputTag("slimmedJets"),
+    #metSrc = cms.InputTag("slimmedMETs"),
+    pvSrc = cms.InputTag("offlinePrimaryVertices"),
+    #triggerSrc = cms.InputTag("TriggerResults","","MYHLT"),
+    triggerSrc = cms.InputTag("TriggerResults","","HLT"),
+    triggerObjectsSrc = cms.InputTag("selectedPatTrigger"),
+    #stage2TauSrc = cms.InputTag("hltGtStage2Digis","Tau","MYHLT"),
+    stage2TauSrc = cms.InputTag("gtStage2Digis","Tau","RECO"),
+    genSrc = cms.InputTag("genParticles","","HLT"),
+)

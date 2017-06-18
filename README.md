@@ -1,3 +1,24 @@
+# Tau HLT Studies
+Current HLT studies require rerunning the HLT menue on trigger studies samples. The code in THRAnalysis/TauHLTStudies is being set up for this purpose. WORK IN PROGRESS.
+
+See where the instructions produce the vast majority of TauHLTStudies/python/rerunningHLT_cfg.py:
+    https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideGlobalHLT#Running_the_HLT_with_CMSSW_9_2_0
+
+
+This commit has been mentioned as necessary (edit by hand if desired): 
+    https://github.com/cms-sw/cmssw/pull/19211
+    https://github.com/cms-sw/cmssw/pull/19211/commits/b09d26ccc4a41c197255a384398eeee9a41ee897
+```
+git cms-addpkg  DataFormats/PatCandidates
+vi DataFormats/PatCandidates/src/TriggerObjectStandAlone.cc
+```
+
+```
+cd TauHLTStudies
+cmsRun python/rerunningHLT_cfg.py
+```
+
+
 # Tau Tag and Probe
 Get previous HLT_doubleTau35 work
 

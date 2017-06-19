@@ -46,6 +46,7 @@
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
+#include "DataFormats/TauReco/interface/PFTauDiscriminator.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
@@ -89,7 +90,17 @@ class TauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
       edm::EDGetTokenT<std::vector<reco::GenJet>> genElectronicTausToken_;
       edm::EDGetTokenT<std::vector<reco::GenJet>> genMuonicTausToken_;
       edm::EDGetTokenT<std::vector<PileupSummaryInfo>> puToken_;
+
       edm::EDGetTokenT<std::vector<reco::PFTau>> tauToken_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> tauDecayModeToken_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> tauIDVLToken_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> tauIDLToken_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> tauIDMToken_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> tauIDTToken_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> tauIDVTToken_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> tauAntiEToken_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> tauAntiMuToken_;
+
       edm::EDGetTokenT<std::vector<reco::Muon>> muonToken_;
       //edm::EDGetTokenT<std::vector<reco::GsfElectron>> electronToken_;
       //edm::EDGetTokenT<std::vector<reco::Jet>> jetToken_;
@@ -108,6 +119,7 @@ class TauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
       double eventD;
       float run, lumi, nTruePU, nvtx, nvtxCleaned, IsoMu20, IsoMu22, IsoMu24,
         IsoMu27, IsoMu21MediumIsoTau32, TrigPass, mPt, mEta, mPhi,
+        IsoMu24LooseIsoTau35, IsoMu24MediumIsoTau35, IsoMu24TightIsoTau35,
         tPt, tEta, tPhi, tMVAIsoVLoose, tMVAIsoLoose, tMVAIsoMedium, 
         tMVAIsoTight, tMVAIsoVTight, m_vis, transMass, SS,
         leptonDR, mTrigMatch, tTrigMatch, mL1Match, tL1Match,
@@ -132,6 +144,15 @@ TauHLTStudiesAnalyzer::TauHLTStudiesAnalyzer(const edm::ParameterSet& iConfig) :
     puToken_(consumes<std::vector<PileupSummaryInfo>>(iConfig.getParameter<edm::InputTag>("puSrc"))),
 
     tauToken_(consumes<std::vector<reco::PFTau>>(iConfig.getParameter<edm::InputTag>("tauSrc"))),
+    tauDecayModeToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByDecayModeFindingOldDMs"))),
+    tauIDVLToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByVLooseIsolationMVArun2v1DBoldDMwLT"))),
+    tauIDLToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByLooseIsolationMVArun2v1DBoldDMwLT"))),
+    tauIDMToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByMediumIsolationMVArun2v1DBoldDMwLT"))),
+    tauIDTToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByTightIsolationMVArun2v1DBoldDMwLT"))),
+    tauIDVTToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByVTightIsolationMVArun2v1DBoldDMwLT"))),
+    tauAntiEToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByMVA6LooseElectronRejection"))),
+    tauAntiMuToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByTightMuonRejection3"))),
+
     muonToken_(consumes<std::vector<reco::Muon>>(iConfig.getParameter<edm::InputTag>("muonSrc"))),
     //electronToken_(consumes<std::vector<reco::GsfElectron>>(iConfig.getParameter<edm::InputTag>("electronSrc"))),
     //jetToken_(consumes<std::vector<reco::Jet>>(iConfig.getParameter<edm::InputTag>("jetSrc"))),
@@ -160,6 +181,9 @@ TauHLTStudiesAnalyzer::TauHLTStudiesAnalyzer(const edm::ParameterSet& iConfig) :
    tree->Branch("IsoMu24",&IsoMu24,"IsoMu24/F");
    tree->Branch("IsoMu27",&IsoMu27,"IsoMu27/F");
    tree->Branch("IsoMu21MediumIsoTau32",&IsoMu21MediumIsoTau32,"IsoMu21MediumIsoTau32/F");
+   tree->Branch("IsoMu24LooseIsoTau35",&IsoMu24LooseIsoTau35,"IsoMu24LooseIsoTau35/F");
+   tree->Branch("IsoMu24MediumIsoTau35",&IsoMu24MediumIsoTau35,"IsoMu24MediumIsoTau35/F");
+   tree->Branch("IsoMu24TightIsoTau35",&IsoMu24TightIsoTau35,"IsoMu24TightIsoTau35/F");
    tree->Branch("TrigPass",&TrigPass,"TrigPass/F");
    tree->Branch("mPt",&mPt,"mPt/F");
    tree->Branch("mEta",&mEta,"mEta/F");
@@ -239,7 +263,7 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
     for (const reco::Muon &mu : *muons) {
         //if (mu.pt() < 20 || fabs(mu.eta()) > 2.1 || !mu.isMediumMuon()) continue;
-        if (mu.pt() < 20 || fabs(mu.eta()) > 2.1) continue;
+        if (mu.pt() < 20 || fabs(mu.eta()) > 2.1 || ( !mu.isGlobalMuon() || !mu.isTrackerMuon() ) ) continue;
         float mIso = (mu.pfIsolationR04().sumChargedHadronPt
             + TMath::Max(0., mu.pfIsolationR04().sumNeutralHadronEt
             + mu.pfIsolationR04().sumPhotonEt
@@ -275,22 +299,62 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     //cutFlow->Fill(4., 1.);
 
 
-    edm::Handle<std::vector<reco::PFTau>> taus;   
+    edm::Handle<std::vector<reco::PFTau>> taus;
     iEvent.getByToken(tauToken_, taus);
+
+    edm::Handle<reco::PFTauDiscriminator> tauDM;
+    if(!iEvent.getByToken(tauDecayModeToken_, tauDM))
+        std::cout << "Error getting tau discriminator: DecayMode" << std::endl;
+
+    edm::Handle<reco::PFTauDiscriminator> tauIDVL;
+    if(!iEvent.getByToken(tauIDVLToken_, tauIDVL))
+        std::cout << "Error getting tau discriminator: IDVL" << std::endl;
+
+    edm::Handle<reco::PFTauDiscriminator> tauIDL;
+    if(!iEvent.getByToken(tauIDLToken_, tauIDL))
+        std::cout << "Error getting tau discriminator: IDL" << std::endl;
+
+    edm::Handle<reco::PFTauDiscriminator> tauIDM;
+    if(!iEvent.getByToken(tauIDMToken_, tauIDM))
+        std::cout << "Error getting tau discriminator: IDM" << std::endl;
+
+    edm::Handle<reco::PFTauDiscriminator> tauIDT;
+    if(!iEvent.getByToken(tauIDTToken_, tauIDT))
+        std::cout << "Error getting tau discriminator: IDT" << std::endl;
+
+    edm::Handle<reco::PFTauDiscriminator> tauIDVT;
+    if(!iEvent.getByToken(tauIDVTToken_, tauIDVT))
+        std::cout << "Error getting tau discriminator: IDVT" << std::endl;
+
+    edm::Handle<reco::PFTauDiscriminator> tauAntiE;
+    if(!iEvent.getByToken(tauAntiEToken_, tauAntiE))
+        std::cout << "Error getting tau discriminator: AntiE" << std::endl;
+
+    edm::Handle<reco::PFTauDiscriminator> tauAntiMu;
+    if(!iEvent.getByToken(tauAntiMuToken_, tauAntiMu))
+        std::cout << "Error getting tau discriminator: AntiMu" << std::endl;
+
     // Storage for the "best" muon
-    reco::PFTau bestTau;
+    reco::PFTauRef bestTau;
     int passingTaus = 0;
-    for (const reco::PFTau &tau : *taus) {
+    //for (const reco::PFTau &tau : *taus) {
+    for (unsigned int iTau = 0; iTau < taus->size(); ++iTau) {
+        reco::PFTauRef tauCandidate(taus, iTau);
         //if (tau.pt() < 20 || fabs(tau.eta()) > 2.1 || tau.tauID("byVLooseIsolationMVArun2v1DBoldDMwLT") < 0.5
         //    || tau.tauID("decayModeFinding") < 0.5 || tau.tauID("againstElectronLooseMVA6") < 0.5
         //    || tau.tauID("againstMuonTight3") < 0.5) continue;
-        if (tau.pt() < 20 || fabs(tau.eta()) > 2.1) continue;
+        if (tauCandidate->pt() < 20 || fabs(tauCandidate->eta()) > 2.1) continue;
+
+        if ((*tauDM)[tauCandidate] < 0.5) continue; // Require to pass old decay mode finding
+        std::cout << "TauDM: " << (*tauDM)[tauCandidate] << std::endl;
+        if ((*tauIDVL)[tauCandidate] < 0.5) continue; // VLoose as min to keep
+
         // No extra lepton vetoes rely on tau number
         // so, if multiple taus, choose highest pt one.
         // Do trigger matching later
-        if (passingTaus == 0) bestTau = tau;
-        else if (tau.pt() > bestTau.pt())
-            bestTau = tau;
+        if (passingTaus == 0) bestTau = tauCandidate;
+        else if (tauCandidate->pt() > bestTau->pt())
+            bestTau = tauCandidate;
         ++passingTaus;
     }
     // Tau study so...
@@ -317,15 +381,15 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     mPt = bestMuon.pt();
     mEta = bestMuon.eta();
     mPhi = bestMuon.phi();
-    tPt = bestTau.pt();
-    tEta = bestTau.eta();
-    tPhi = bestTau.phi();
-    //tMVAIsoVLoose = bestTau.tauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
-    //tMVAIsoLoose = bestTau.tauID("byLooseIsolationMVArun2v1DBoldDMwLT");
-    //tMVAIsoMedium = bestTau.tauID("byMediumIsolationMVArun2v1DBoldDMwLT");
-    //tMVAIsoTight = bestTau.tauID("byTightIsolationMVArun2v1DBoldDMwLT");
-    //tMVAIsoVTight = bestTau.tauID("byVTightIsolationMVArun2v1DBoldDMwLT");
-    leptonDR = deltaR( bestMuon, bestTau );
+    tPt = bestTau->pt();
+    tEta = bestTau->eta();
+    tPhi = bestTau->phi();
+    tMVAIsoVLoose = (*tauIDVL)[bestTau];
+    tMVAIsoLoose  = (*tauIDL)[bestTau];
+    tMVAIsoMedium = (*tauIDM)[bestTau];
+    tMVAIsoTight  = (*tauIDT)[bestTau];
+    tMVAIsoVTight = (*tauIDVT)[bestTau];
+    leptonDR = deltaR( bestMuon, *bestTau );
 
 
     // Get MET for transverse mass calculation 
@@ -340,13 +404,13 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     l1.SetPtEtaPhiM( bestMuon.pt(), bestMuon.eta(),
         bestMuon.phi(), bestMuon.mass() );
     TLorentzVector l2 = TLorentzVector( 0., 0., 0., 0. );
-    l2.SetPtEtaPhiM( bestTau.pt(), bestTau.eta(),
-        bestTau.phi(), bestTau.mass() );
+    l2.SetPtEtaPhiM( bestTau->pt(), bestTau->eta(),
+        bestTau->phi(), bestTau->mass() );
     m_vis = (l1 + l2).M();
 
 
     // Same sign comparison
-    if (bestMuon.charge() + bestTau.charge() == 0) SS = 0;
+    if (bestMuon.charge() + bestTau->charge() == 0) SS = 0;
     else SS = 1;
 
 
@@ -354,7 +418,6 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     lumi = iEvent.eventAuxiliary().luminosityBlock();
     run = iEvent.eventAuxiliary().run();
 
-    //std::cout << "Run: " <<run<< "  Evt: " <<eventD<< "  Lumi: " <<lumi<<std::endl;
     printf("Run: %.0f    Evt: %.0f   Lumi: %.0f\n", run, eventD, lumi);
     
 
@@ -369,6 +432,9 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     IsoMu24 = 0.;
     IsoMu27 = 0.;
     IsoMu21MediumIsoTau32 = 0.;
+    IsoMu24LooseIsoTau35 = 0.;
+    IsoMu24MediumIsoTau35 = 0.;
+    IsoMu24TightIsoTau35 = 0.;
     TrigPass = 0.;
 
     std::vector<std::string> usedPaths;
@@ -390,6 +456,15 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         }
         if (names.triggerName(i).find("HLT_IsoMu21_eta2p1_MediumIsoPFTau32_Trk1_eta2p1_Reg_v") != std::string::npos) {
             if (triggerResults->accept(i)) IsoMu21MediumIsoTau32 = 1; TrigPass = 1; usedPaths.push_back( names.triggerName(i) );
+        }
+        if (names.triggerName(i).find("HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v") != std::string::npos) {
+            if (triggerResults->accept(i)) IsoMu24LooseIsoTau35 = 1; TrigPass = 1; usedPaths.push_back( names.triggerName(i) );
+        }
+        if (names.triggerName(i).find("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v") != std::string::npos) {
+            if (triggerResults->accept(i)) IsoMu24MediumIsoTau35 = 1; TrigPass = 1; usedPaths.push_back( names.triggerName(i) );
+        }
+        if (names.triggerName(i).find("HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v") != std::string::npos) {
+            if (triggerResults->accept(i)) IsoMu24TightIsoTau35 = 1; TrigPass = 1; usedPaths.push_back( names.triggerName(i) );
         }
     }
 
@@ -438,7 +513,7 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             // actual results for is seeded by
             // L1_DoubleIsoTau28
             if (l1Tau.hwIso()<1 || l1Tau.pt()<27.5) continue; // hardware Iso bit
-            float drTau = deltaR( bestTau, l1Tau );
+            float drTau = deltaR( *bestTau, l1Tau );
             //std::cout << " - " << i << " L1Tau pt: " << l1Tau.pt() 
             //<< " Iso: " << l1Tau.hwIso() << " dr: " << drTau << std::endl;
             if (drTau < 0.5) ++tL1Match;
@@ -468,7 +543,7 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             // Find the closest gen particle...
             for(size_t m = 0; m != genParticles->size(); ++m) {
                 reco::GenParticle genp = genParticles->at(m);
-                float tmpDR = deltaR( bestTau.p4(), genp.p4() );
+                float tmpDR = deltaR( bestTau->p4(), genp.p4() );
                 if ( tmpDR < closestDR ) { closest = genp; closestDR = tmpDR; }
             }
             float genID = abs(closest.pdgId());
@@ -479,19 +554,19 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             float closestDR_MTau = 999;
             if ( genHTaus->size() > 0 ) {
                 for (size_t j = 0; j != genHTaus->size(); ++j) {
-                    float tmpDR = deltaR( bestTau.p4(), genHTaus->at(j).p4() );
+                    float tmpDR = deltaR( bestTau->p4(), genHTaus->at(j).p4() );
                     if (tmpDR < closestDR_HTau) closestDR_HTau = tmpDR;
                 }
             }
             if ( genETaus->size() > 0 ) {
                 for (size_t j = 0; j != genETaus->size(); ++j) {
-                    float tmpDR = deltaR( bestTau.p4(), genETaus->at(j).p4() );
+                    float tmpDR = deltaR( bestTau->p4(), genETaus->at(j).p4() );
                     if (tmpDR < closestDR_ETau) closestDR_ETau = tmpDR;
                 }
             }
             if ( genMTaus->size() > 0 ) {
                 for (size_t j = 0; j != genMTaus->size(); ++j) {
-                    float tmpDR = deltaR( bestTau.p4(), genMTaus->at(j).p4() );
+                    float tmpDR = deltaR( bestTau->p4(), genMTaus->at(j).p4() );
                     if (tmpDR < closestDR_MTau) closestDR_MTau = tmpDR;
                 }
             }

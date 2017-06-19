@@ -7,4 +7,5 @@
 <use name="PhysicsTools/UtilAlgos"/>
 <use name="FWCore/ServiceRegistry"/>
 <use name="SimDataFormats/PileupSummaryInfo"/>
+<use name="DataFormats/TauReco"/>
 <flags EDM_PLUGIN="1"/>

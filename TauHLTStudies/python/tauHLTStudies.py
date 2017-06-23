@@ -44,7 +44,7 @@ def customizeInput( _customInfo ) :
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/C61F0036-302F-E711-91AC-1866DAEB3370.root',
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/C8A77762-2F2F-E711-A824-549F3525C318.root'
             ]
-    _customInfo['maxEvents' ]=  100
+    _customInfo['maxEvents' ]=  2000
 
     return _customInfo
 

@@ -117,13 +117,14 @@ class TauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
       TH1D *nEvents;
       TH1D *cutFlow;
       double eventD;
-      float run, lumi, nTruePU, nvtx, nvtxCleaned, IsoMu20, IsoMu22, IsoMu24,
-        IsoMu27, IsoMu21MediumIsoTau32, TrigPass, mPt, mEta, mPhi,
+      float run, lumi, nTruePU, nvtx, nvtxCleaned, IsoMu20, IsoMu24,
+        IsoMu27, TrigPass, mPt, mEta, mPhi,
         IsoMu24LooseIsoTau35, IsoMu24MediumIsoTau35, IsoMu24TightIsoTau35,
         tPt, tEta, tPhi, tMVAIsoVLoose, tMVAIsoLoose, tMVAIsoMedium, 
         tMVAIsoTight, tMVAIsoVTight, m_vis, transMass, SS,
         leptonDR, mTrigMatch, tTrigMatch, mL1Match, tL1Match,
-        t_gen_match;
+        t_gen_match,tDecayMode;
+      bool foundGenTau, foundGenMuon; 
 };
 
 //
@@ -177,10 +178,8 @@ TauHLTStudiesAnalyzer::TauHLTStudiesAnalyzer(const edm::ParameterSet& iConfig) :
    tree->Branch("nvtx",&nvtx,"nvtx/F");
    tree->Branch("nvtxCleaned",&nvtxCleaned,"nvtxCleaned/F");
    tree->Branch("IsoMu20",&IsoMu20,"IsoMu20/F");
-   tree->Branch("IsoMu22",&IsoMu22,"IsoMu22/F");
    tree->Branch("IsoMu24",&IsoMu24,"IsoMu24/F");
    tree->Branch("IsoMu27",&IsoMu27,"IsoMu27/F");
-   tree->Branch("IsoMu21MediumIsoTau32",&IsoMu21MediumIsoTau32,"IsoMu21MediumIsoTau32/F");
    tree->Branch("IsoMu24LooseIsoTau35",&IsoMu24LooseIsoTau35,"IsoMu24LooseIsoTau35/F");
    tree->Branch("IsoMu24MediumIsoTau35",&IsoMu24MediumIsoTau35,"IsoMu24MediumIsoTau35/F");
    tree->Branch("IsoMu24TightIsoTau35",&IsoMu24TightIsoTau35,"IsoMu24TightIsoTau35/F");
@@ -199,6 +198,7 @@ TauHLTStudiesAnalyzer::TauHLTStudiesAnalyzer(const edm::ParameterSet& iConfig) :
    tree->Branch("tMVAIsoMedium",&tMVAIsoMedium,"tMVAIsoMedium/F");
    tree->Branch("tMVAIsoTight",&tMVAIsoTight,"tMVAIsoTight/F");
    tree->Branch("tMVAIsoVTight",&tMVAIsoVTight,"tMVAIsoVTight/F");
+   tree->Branch("tDecayMode",&tDecayMode,"tDecayMode/F");
    tree->Branch("tTrigMatch",&tTrigMatch,"tTrigMatch/F");
    tree->Branch("tL1Match",&tL1Match,"tL1Match/F");
    tree->Branch("leptonDR",&leptonDR,"leptonDR/F");
@@ -254,6 +254,50 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     cutFlow->Fill(1., 1.); // Good vertex
 
 
+    // Grab our gen taus and other gen particles
+    // Select events with 1 gen Tau and 1 gen Muon
+    edm::Handle<std::vector<reco::GenJet>> genHTaus;   
+    iEvent.getByToken(genHadronicTausToken_, genHTaus);
+    edm::Handle<std::vector<reco::GenJet>> genETaus;   
+    iEvent.getByToken(genElectronicTausToken_, genETaus);
+    edm::Handle<std::vector<reco::GenJet>> genMTaus;   
+    iEvent.getByToken(genMuonicTausToken_, genMTaus);
+    edm::Handle<std::vector<reco::GenParticle>> genParticles; 
+    iEvent.getByToken(genToken_, genParticles);
+    foundGenTau = false;
+    foundGenMuon = false; 
+    int nGenMuon = 0;
+    int nGenTauH = 0;
+    reco::GenJet genTauH;
+    if (genParticles.isValid()) {
+        if ( genParticles->size() > 0 ) {
+            // See how many decent gen Muons we have
+            for(size_t m = 0; m != genParticles->size(); ++m) {
+                reco::GenParticle genp = genParticles->at(m);
+                if (genp.pdgId() != 11 || genp.pt() < 15 || fabs(genp.eta()) > 2.1 || (!genp.statusFlags().isPrompt()))
+                    continue;
+                ++nGenMuon;
+            }
+        }
+        // Now see how many gen Hadronic Taus we have
+        if ( genHTaus->size() > 0 ) {
+            for (size_t j = 0; j != genHTaus->size(); ++j) {
+                if (fabs(genHTaus->at(j).eta()) > 2.1) continue;
+                ++nGenTauH;
+                // Save gen Tau H for comparison with AOD Taus later 
+                // This allwos us to remove isolation requirements later
+                genTauH = genHTaus->at(j);
+            }
+        }
+    }
+    std::cout << "nGenMuons: " << nGenMuon << "   nGenTauH: " << nGenTauH << std::endl;
+    //FIXME if (nGenMuon != 1) return;
+    cutFlow->Fill(2., 1.); // 1 gen muon
+    //FIXME if (nGenTauH != 1) return;
+    cutFlow->Fill(3., 1.); // 1 gen hadronic tau
+
+
+
 
     edm::Handle<std::vector<reco::Muon>> muons; 
     iEvent.getByToken(muonToken_, muons);
@@ -274,11 +318,11 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         bestMuon = mu;
     }
     // Require strictly 1 muon
-    if (passingMuons == 0) return;
-    cutFlow->Fill(2., 1.);
+    //FIXME if (passingMuons == 0) return;
+    cutFlow->Fill(4., 1.);
     // Extra lepton veto (muons)
-    if (passingMuons > 1) return;
-    cutFlow->Fill(3., 1.);
+    //FIXME if (passingMuons > 1) return;
+    cutFlow->Fill(5., 1.);
 
 
     //edm::Handle<std::vector<reco::GsfElectron>> electrons;   
@@ -300,7 +344,8 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
 
     edm::Handle<std::vector<reco::PFTau>> taus;
-    iEvent.getByToken(tauToken_, taus);
+    if(!iEvent.getByToken(tauToken_, taus))
+        std::cout << "Error no reco::PFTau" << std::endl;
 
     edm::Handle<reco::PFTauDiscriminator> tauDM;
     if(!iEvent.getByToken(tauDecayModeToken_, tauDM))
@@ -339,27 +384,30 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     int passingTaus = 0;
     //for (const reco::PFTau &tau : *taus) {
     for (unsigned int iTau = 0; iTau < taus->size(); ++iTau) {
+
         reco::PFTauRef tauCandidate(taus, iTau);
-        //if (tau.pt() < 20 || fabs(tau.eta()) > 2.1 || tau.tauID("byVLooseIsolationMVArun2v1DBoldDMwLT") < 0.5
-        //    || tau.tauID("decayModeFinding") < 0.5 || tau.tauID("againstElectronLooseMVA6") < 0.5
-        //    || tau.tauID("againstMuonTight3") < 0.5) continue;
         if (tauCandidate->pt() < 20 || fabs(tauCandidate->eta()) > 2.1) continue;
-
-        if ((*tauDM)[tauCandidate] < 0.5) continue; // Require to pass old decay mode finding
-        std::cout << "TauDM: " << (*tauDM)[tauCandidate] << std::endl;
-        if ((*tauIDVL)[tauCandidate] < 0.5) continue; // VLoose as min to keep
-
-        // No extra lepton vetoes rely on tau number
-        // so, if multiple taus, choose highest pt one.
-        // Do trigger matching later
-        if (passingTaus == 0) bestTau = tauCandidate;
-        else if (tauCandidate->pt() > bestTau->pt())
-            bestTau = tauCandidate;
         ++passingTaus;
+        // Check if Tau is matched to gen Tau H
+        //if (deltaR(genTauH.p4(), tauCandidate->p4()) > 0.5) continue;
+        // If gen matched, this is the 'bestTau'
+        bestTau = tauCandidate;
+
+    }
+    for (unsigned int iTau = 0; iTau < taus->size(); ++iTau) {
+
+        reco::PFTauRef tauCandidate(taus, iTau);
+        if (tauCandidate->pt() < 20 || fabs(tauCandidate->eta()) > 2.1) continue;
+        //++passingTaus;
+        // Check if Tau is matched to gen Tau H
+        if (deltaR(genTauH.p4(), tauCandidate->p4()) > 0.5) continue;
+        // If gen matched, this is the 'bestTau'
+        bestTau = tauCandidate;
+
     }
     // Tau study so...
     if (passingTaus == 0) return;
-    cutFlow->Fill(5., 1.);
+    cutFlow->Fill(6., 1.);
 
 
     // Check for non-overlapping bjets
@@ -389,8 +437,76 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     tMVAIsoMedium = (*tauIDM)[bestTau];
     tMVAIsoTight  = (*tauIDT)[bestTau];
     tMVAIsoVTight = (*tauIDVT)[bestTau];
+    tDecayMode = (*tauDM)[bestTau];
     leptonDR = deltaR( bestMuon, *bestTau );
 
+
+
+    // Check for overlapping Gen Taus
+    // with reconstructed gen taus of 3 types
+    // and normal gen particles
+    t_gen_match = -1;
+    if (genParticles.isValid()) {
+        // Find the closest gen particle to our candidate
+        if ( genParticles->size() > 0 ) {
+            reco::GenParticle closest = genParticles->at(0);
+            float closestDR = 999;
+            // The first two codes are based off of matching to true electrons/muons
+            // Find the closest gen particle...
+            for(size_t m = 0; m != genParticles->size(); ++m) {
+                reco::GenParticle genp = genParticles->at(m);
+                float tmpDR = deltaR( bestTau->p4(), genp.p4() );
+                if ( tmpDR < closestDR ) { closest = genp; closestDR = tmpDR; }
+            }
+            float genID = abs(closest.pdgId());
+
+            // Loop over all versions of gen taus and find closest one
+            float closestDR_HTau = 999;
+            float closestDR_ETau = 999;
+            float closestDR_MTau = 999;
+            if ( genHTaus->size() > 0 ) {
+                for (size_t j = 0; j != genHTaus->size(); ++j) {
+                    float tmpDR = deltaR( bestTau->p4(), genHTaus->at(j).p4() );
+                    if (tmpDR < closestDR_HTau) closestDR_HTau = tmpDR;
+                }
+            }
+            if ( genETaus->size() > 0 ) {
+                for (size_t j = 0; j != genETaus->size(); ++j) {
+                    float tmpDR = deltaR( bestTau->p4(), genETaus->at(j).p4() );
+                    if (tmpDR < closestDR_ETau) closestDR_ETau = tmpDR;
+                }
+            }
+            if ( genMTaus->size() > 0 ) {
+                for (size_t j = 0; j != genMTaus->size(); ++j) {
+                    float tmpDR = deltaR( bestTau->p4(), genMTaus->at(j).p4() );
+                    if (tmpDR < closestDR_MTau) closestDR_MTau = tmpDR;
+                }
+            }
+
+            // Now return the value based on which object is closer, the closest
+            // single gen particle, or the rebuild gen taus
+            // The first two codes are based off of matching to true electrons/muons
+            float closestGetTau = TMath::Min(closestDR_ETau, closestDR_MTau);
+            if (closestDR_HTau < closestGetTau) closestGetTau = closestDR_HTau;
+
+            // Make sure we don't overwrite a proper value
+            if (closestDR < closestGetTau && genID == 11 && closest.pt() > 8
+                    && closest.statusFlags().isPrompt() && closestDR < 0.2 )
+                        t_gen_match = 1.0;
+            else if (closestDR < closestGetTau && genID == 13 && closest.pt() > 8
+                    && closest.statusFlags().isPrompt() && closestDR < 0.2 )
+                        t_gen_match = 2.0;
+            // Other codes based off of not matching previous 2 options
+            // as closest gen particle, retruns based on closest rebuilt gen tau
+            else if (closestDR_ETau < 0.2 && closestDR_ETau < TMath::Min(closestDR_MTau, 
+                    closestDR_HTau)) t_gen_match = 3.0;
+            else if (closestDR_MTau < 0.2 && closestDR_MTau < TMath::Min(closestDR_ETau, 
+                    closestDR_HTau)) t_gen_match = 4.0;
+            else if (closestDR_HTau < 0.2 && closestDR_HTau < TMath::Min(closestDR_ETau, 
+                    closestDR_MTau)) t_gen_match = 5.0;
+            else t_gen_match = 6.0; // No match, return 6 for "fake tau"
+        }
+    }
 
     // Get MET for transverse mass calculation 
     //edm::Handle<std::vector<reco::MET>> mets;   
@@ -428,10 +544,8 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     //iEvent.getByToken(triggerObjectsToken_, triggerObjects);
 
     IsoMu20 = 0.;
-    IsoMu22 = 0.;
     IsoMu24 = 0.;
     IsoMu27 = 0.;
-    IsoMu21MediumIsoTau32 = 0.;
     IsoMu24LooseIsoTau35 = 0.;
     IsoMu24MediumIsoTau35 = 0.;
     IsoMu24TightIsoTau35 = 0.;
@@ -440,22 +554,17 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     std::vector<std::string> usedPaths;
     const edm::TriggerNames &names = iEvent.triggerNames(*triggerResults);
     // See https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2014#Trigger
+    std::cout << "Trigger Path Length: " << triggerResults->size() << std::endl;
     for (unsigned int i = 0, n = triggerResults->size(); i < n; ++i) {
-        //std::cout << names.triggerName(i) << std::endl;
+        std::cout << " --- " << names.triggerName(i) << std::endl;
         if (names.triggerName(i).find("HLT_IsoMu20_v") != std::string::npos) {
             if (triggerResults->accept(i)) IsoMu20 = 1; TrigPass = 1; usedPaths.push_back( names.triggerName(i) );
-        }
-        if (names.triggerName(i).find("HLT_IsoMu22_v") != std::string::npos) {
-            if (triggerResults->accept(i)) IsoMu22 = 1; TrigPass = 1; usedPaths.push_back( names.triggerName(i) );
         }
         if (names.triggerName(i).find("HLT_IsoMu24_v") != std::string::npos) {
             if (triggerResults->accept(i)) IsoMu24 = 1; TrigPass = 1; usedPaths.push_back( names.triggerName(i) );
         }
         if (names.triggerName(i).find("HLT_IsoMu27_v") != std::string::npos) {
             if (triggerResults->accept(i)) IsoMu27 = 1; TrigPass = 1; usedPaths.push_back( names.triggerName(i) );
-        }
-        if (names.triggerName(i).find("HLT_IsoMu21_eta2p1_MediumIsoPFTau32_Trk1_eta2p1_Reg_v") != std::string::npos) {
-            if (triggerResults->accept(i)) IsoMu21MediumIsoTau32 = 1; TrigPass = 1; usedPaths.push_back( names.triggerName(i) );
         }
         if (names.triggerName(i).find("HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v") != std::string::npos) {
             if (triggerResults->accept(i)) IsoMu24LooseIsoTau35 = 1; TrigPass = 1; usedPaths.push_back( names.triggerName(i) );
@@ -519,82 +628,6 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             if (drTau < 0.5) ++tL1Match;
         }    
     } // end l1Taus
-
-
-
-    // Check for overlapping Gen Taus
-    // with reconstructed gen taus of 3 types
-    // and normal gen particles
-    edm::Handle<std::vector<reco::GenJet>> genHTaus;   
-    iEvent.getByToken(genHadronicTausToken_, genHTaus);
-    edm::Handle<std::vector<reco::GenJet>> genETaus;   
-    iEvent.getByToken(genElectronicTausToken_, genETaus);
-    edm::Handle<std::vector<reco::GenJet>> genMTaus;   
-    iEvent.getByToken(genMuonicTausToken_, genMTaus);
-    edm::Handle<std::vector<reco::GenParticle>> genParticles; 
-    iEvent.getByToken(genToken_, genParticles);
-    t_gen_match = -1;
-    if (genParticles.isValid()) {
-        // Find the closest gen particle to our candidate
-        if ( genParticles->size() > 0 ) {
-            reco::GenParticle closest = genParticles->at(0);
-            float closestDR = 999;
-            // The first two codes are based off of matching to true electrons/muons
-            // Find the closest gen particle...
-            for(size_t m = 0; m != genParticles->size(); ++m) {
-                reco::GenParticle genp = genParticles->at(m);
-                float tmpDR = deltaR( bestTau->p4(), genp.p4() );
-                if ( tmpDR < closestDR ) { closest = genp; closestDR = tmpDR; }
-            }
-            float genID = abs(closest.pdgId());
-
-            // Loop over all versions of gen taus and find closest one
-            float closestDR_HTau = 999;
-            float closestDR_ETau = 999;
-            float closestDR_MTau = 999;
-            if ( genHTaus->size() > 0 ) {
-                for (size_t j = 0; j != genHTaus->size(); ++j) {
-                    float tmpDR = deltaR( bestTau->p4(), genHTaus->at(j).p4() );
-                    if (tmpDR < closestDR_HTau) closestDR_HTau = tmpDR;
-                }
-            }
-            if ( genETaus->size() > 0 ) {
-                for (size_t j = 0; j != genETaus->size(); ++j) {
-                    float tmpDR = deltaR( bestTau->p4(), genETaus->at(j).p4() );
-                    if (tmpDR < closestDR_ETau) closestDR_ETau = tmpDR;
-                }
-            }
-            if ( genMTaus->size() > 0 ) {
-                for (size_t j = 0; j != genMTaus->size(); ++j) {
-                    float tmpDR = deltaR( bestTau->p4(), genMTaus->at(j).p4() );
-                    if (tmpDR < closestDR_MTau) closestDR_MTau = tmpDR;
-                }
-            }
-
-            // Now return the value based on which object is closer, the closest
-            // single gen particle, or the rebuild gen taus
-            // The first two codes are based off of matching to true electrons/muons
-            float closestGetTau = TMath::Min(closestDR_ETau, closestDR_MTau);
-            if (closestDR_HTau < closestGetTau) closestGetTau = closestDR_HTau;
-
-            // Make sure we don't overwrite a proper value
-            if (closestDR < closestGetTau && genID == 11 && closest.pt() > 8
-                    && closest.statusFlags().isPrompt() && closestDR < 0.2 )
-                        t_gen_match = 1.0;
-            else if (closestDR < closestGetTau && genID == 13 && closest.pt() > 8
-                    && closest.statusFlags().isPrompt() && closestDR < 0.2 )
-                        t_gen_match = 2.0;
-            // Other codes based off of not matching previous 2 options
-            // as closest gen particle, retruns based on closest rebuilt gen tau
-            else if (closestDR_ETau < 0.2 && closestDR_ETau < TMath::Min(closestDR_MTau, 
-                    closestDR_HTau)) t_gen_match = 3.0;
-            else if (closestDR_MTau < 0.2 && closestDR_MTau < TMath::Min(closestDR_ETau, 
-                    closestDR_HTau)) t_gen_match = 4.0;
-            else if (closestDR_HTau < 0.2 && closestDR_HTau < TMath::Min(closestDR_ETau, 
-                    closestDR_MTau)) t_gen_match = 5.0;
-            else t_gen_match = 6.0; // No match, return 6 for "fake tau"
-        }
-    }
 
 
 

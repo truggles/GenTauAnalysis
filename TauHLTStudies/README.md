@@ -1,0 +1,105 @@
+# Datasets used
+
+Dataset: /TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/AODSIM
+
+Dataset: /TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/GEN-SIM-RAW
+
+# Error when running on GluGluH125
+
+std::bad_alloc exception
+
+std::bad_alloc exception
+----- Begin Fatal Exception 19-Jun-2017 15:37:29 CEST-----------------------
+An exception of category 'BadAlloc' occurred while
+   [0] Processing  Event run: 1 lumi: 847 event: 695351 stream: 3
+   [1] Running path 'HLTriggerFinalPath'
+   [2] Calling method for module HcalTrigPrimDigiProducer/'simHcalTriggerPrimitiveDigis'
+Exception Message:
+A std::bad_alloc exception was thrown.
+The job has probably exhausted the virtual memory available to the process.
+----- End Fatal Exception -------------------------------------------------
+
+# basic python config files
+
+The rerunning HLT template is used to build the initial python config files see: https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideGlobalHLT#Running_the_HLT_with_CMSSW_9_2_0
+
+Specifically,
+```
+hltGetConfiguration /dev/CMSSW_9_2_0/HLT \
+ --globaltag 92X_upgrade2017_TSG_For90XSamples_V1 \
+ --path HLTriggerFirstPath,HLTriggerFinalPath,HLTAnalyzerEndpath \
+ --input root://eoscms.cern.ch//eos/cms/store/mc/PhaseIFall16DR/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/130000/BE521173-FD10-E711-A3FE-02163E0176C2.root \
+ --mc --process MYHLT --full --offline \
+ --l1-emulator FullMC --l1 L1Menu_Collisions2017_dev_r5_m4_patch_xml \
+ --unprescale --max-events 10 --output none > hlt92X.py
+```
+
+To run the whole HLT chain, you must remove `--path HLTriggerFirstPath,HLTriggerFinalPath,HLTAnalyzerEndpath \`
+
+
+# Cfg alterations
+Comment out pool source
+```
+#process.source = cms.Source( "PoolSource",
+from THRAnalysis.TauHLTStudies.tauHLTStudies import setSourceFiles
+setSourceFiles( process )
+```
+
+Right after the '_customInfo' section:
+```
+from THRAnalysis.TauHLTStudies.tauHLTStudies import customizeInput
+customizeInput( _customInfo )
+```
+
+Append to the end:
+```
+from THRAnalysis.TauHLTStudies.tauHLTStudies import setSourceFiles
+process = setSourceFiles( process )
+
+#from THRAnalysis.TauHLTStudies.tauHLTStudies import buildGenTausAndMore
+#process = buildGenTausAndMore( process )
+
+from THRAnalysis.TauHLTStudies.tauHLTStudies import setOutputFile
+process = setOutputFile( process )
+
+print process.dumpPython()
+```
+
+# Additional Cfg Alterations for missing paths:
+Delete all metions of:
+```
+HLT_PFMETTypeOne120_PFMHT120_IDTight_PFHT60_L1ETMHF_HTT60_v2
+HLT_PixelTracks_Multiplicity60ForPPRef_v3
+HLT_HIUPCL1MuOpen_NotMinimumBiasHF2_ANDForPPRef_v4
+```
+
+# Triggers Studied
+
+These are the paths from SingleMuon HLT paths with tag and probe versions:
+23 June 2017
+
+HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_v2,
+HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1_v2,
+HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1_v2,
+HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1_v2,
+HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1_v2,
+HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1_v2,
+HLT_IsoMu20_v8,
+HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1_v2,
+HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1_v2,
+HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1_v2,
+HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v2,
+HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1_v2,
+HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1_v2,
+HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1_v2,
+HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v2,
+HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_v2,
+HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1_v2,
+HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1_v2,
+HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1_v2,
+HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v2,
+HLT_IsoMu24_eta2p1_v8,
+HLT_IsoMu24_v6,
+HLT_IsoMu27_v9,
+
+HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_v2,HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1_v2,HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1_v2,HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1_v2,HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1_v2,HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1_v2,HLT_IsoMu20_v8,HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1_v2,HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1_v2,HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1_v2,HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v2,HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1_v2,HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1_v2,HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1_v2,HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v2,HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_v2,HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1_v2,HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1_v2,HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1_v2,HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v2,HLT_IsoMu24_eta2p1_v8,HLT_IsoMu24_v6,HLT_IsoMu27_v9,

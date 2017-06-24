@@ -2,6 +2,24 @@
 
 import FWCore.ParameterSet.Config as cms
 
+def getCrabSecondaryFiles( child ) :
+    import json, os
+    base = os.getenv("CMSSW_BASE")
+    jFile = open(base+'/src/THRAnalysis/TauHLTStudies/data/aod_map.json')
+    j = json.load( jFile )
+    parents = j[ child ]
+    jFile.close()
+    p = cms.untracked.vstring( parents )
+    return p
+
+def setCrabSourceFiles( process ) :
+    process.source = cms.Source("PoolSource",
+        fileNames = cms.untracked.vstring(),
+        secondaryFileNames = cms.untracked.vstring()
+    )
+
+    return process
+
 def setSourceFiles( process ) :
 
     process.source = cms.Source("PoolSource",
@@ -27,6 +45,7 @@ def setSourceFiles( process ) :
 
     return process
 
+
 def customizeInput( _customInfo ) :
 
     # This is the input to the reHLT process, so is actuall the "secondary" files from above
@@ -44,7 +63,7 @@ def customizeInput( _customInfo ) :
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/C61F0036-302F-E711-91AC-1866DAEB3370.root',
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/C8A77762-2F2F-E711-A824-549F3525C318.root'
             ]
-    _customInfo['maxEvents' ]=  2000
+    _customInfo['maxEvents' ]=  200
 
     return _customInfo
 
@@ -118,8 +137,12 @@ def buildGenTausAndMore( process ) :
 
 def setOutputFile( process) :
     process.Out = cms.OutputModule( "PoolOutputModule",
-        fileName = cms.untracked.string( "tt_test_secondary2.root" ),
+        fileName = cms.untracked.string( "output.root" ),
         fastCloning = cms.untracked.bool( False ),
+        dataset = cms.untracked.PSet(
+            filterName = cms.untracked.string(''),
+            dataTier = cms.untracked.string('GEN-SIM-RAW-AOD')
+        ),
         outputCommands = cms.untracked.vstring(
                         "drop *",
                         "keep *_TriggerResults_*_MYHLT",
@@ -140,3 +163,5 @@ def setOutputFile( process) :
     process.end = cms.EndPath( process.Out )
 
     return process
+
+

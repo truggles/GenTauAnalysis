@@ -408,6 +408,7 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     // Tau study so...
     if (passingTaus == 0) return;
     cutFlow->Fill(6., 1.);
+    std::cout << "Passing Muons: " << passingMuons << "   Passing Taus: " << passingTaus << std::endl;
 
 
     // Check for non-overlapping bjets
@@ -556,7 +557,7 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     // See https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2014#Trigger
     std::cout << "Trigger Path Length: " << triggerResults->size() << std::endl;
     for (unsigned int i = 0, n = triggerResults->size(); i < n; ++i) {
-        std::cout << " --- " << names.triggerName(i) << std::endl;
+        //std::cout << " --- " << names.triggerName(i) << std::endl;
         if (names.triggerName(i).find("HLT_IsoMu20_v") != std::string::npos) {
             if (triggerResults->accept(i)) IsoMu20 = 1; TrigPass = 1; usedPaths.push_back( names.triggerName(i) );
         }
@@ -615,7 +616,7 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     
     tL1Match = 0;
     if (l1Taus.isValid()) {
-        std::cout << "L1 Extras is valid" << std::endl;
+        //std::cout << "L1 Extras is valid" << std::endl;
         for (size_t i = 0; i < l1Taus->size(0); ++i) {
             const l1t::Tau &l1Tau = l1Taus->at(0,i);
             // skip l1Tau if it's low pt b/c the trigger we want

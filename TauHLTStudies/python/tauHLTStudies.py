@@ -26,6 +26,7 @@ def setSourceFiles( process ) :
         fileNames = cms.untracked.vstring(
             'root://cms-xrd-global.cern.ch///store/mc/PhaseIFall16DR/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/AODSIM/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/130000/021FA4A0-6D11-E711-AD9D-FA163ED9BE5A.root', # Defaul ones child
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/AODSIM/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/0018A939-3D2F-E711-9DA6-549F3525C318.root',
+            #'root://cms-xrd-global.cern.ch///store/mc/PhaseIFall16DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/AODSIM/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/120000/0026E972-9810-E711-B5D5-0CC47A57CB8E.root',
         ),
         secondaryFileNames = cms.untracked.vstring(
             'root://cms-xrd-global.cern.ch///store/mc/PhaseIFall16DR/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/130000/AE8721E0-5F11-E711-BEFF-FA163E35EC22.root',
@@ -33,6 +34,7 @@ def setSourceFiles( process ) :
             'root://cms-xrd-global.cern.ch///store/mc/PhaseIFall16DR/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/130002/4CA177D8-5411-E711-8EFE-FA163E4FCBAC.root',
             'root://cms-xrd-global.cern.ch///store/mc/PhaseIFall16DR/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/130002/76979FAA-6211-E711-9BB7-FA163E30EA14.root',
             'root://cms-xrd-global.cern.ch///store/mc/PhaseIFall16DR/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/130002/AEDFC268-5B11-E711-8A12-02163E013E78.root', 
+
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/1C5A314D-2F2F-E711-BCFF-549F3525DDFC.root', 
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/1E200A0E-2D2F-E711-9D06-782BCB53A3A6.root',
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/24EA3BFD-2C2F-E711-9AF8-001C23C0B673.root',
@@ -40,6 +42,9 @@ def setSourceFiles( process ) :
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/722A19C7-242F-E711-B6C5-1866DAEEB358.root',
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/C61F0036-302F-E711-91AC-1866DAEB3370.root',
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/C8A77762-2F2F-E711-A824-549F3525C318.root', 
+
+            #'root://cms-xrd-global.cern.ch///store/mc/PhaseIFall16MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/FlatPU28to62HcalNZSRAW_PhaseIFall16_90X_upgrade2017_realistic_v6_C1-v1/00000/1E218178-721B-E711-950C-0242AC130002.root',
+            #'root://cms-xrd-global.cern.ch///store/mc/PhaseIFall16MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/FlatPU28to62HcalNZSRAW_PhaseIFall16_90X_upgrade2017_realistic_v6_C1-v1/00000/9688E2B3-5A1B-E711-AFE9-003048FF265A.root',
         )
     )
 
@@ -55,6 +60,7 @@ def customizeInput( _customInfo ) :
             'root://cms-xrd-global.cern.ch///store/mc/PhaseIFall16DR/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/130002/4CA177D8-5411-E711-8EFE-FA163E4FCBAC.root',
             'root://cms-xrd-global.cern.ch///store/mc/PhaseIFall16DR/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/130002/76979FAA-6211-E711-9BB7-FA163E30EA14.root',
             'root://cms-xrd-global.cern.ch///store/mc/PhaseIFall16DR/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/130002/AEDFC268-5B11-E711-8A12-02163E013E78.root' 
+
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/1C5A314D-2F2F-E711-BCFF-549F3525DDFC.root', 
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/1E200A0E-2D2F-E711-9D06-782BCB53A3A6.root',
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/24EA3BFD-2C2F-E711-9AF8-001C23C0B673.root',
@@ -62,8 +68,11 @@ def customizeInput( _customInfo ) :
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/722A19C7-242F-E711-B6C5-1866DAEEB358.root',
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/C61F0036-302F-E711-91AC-1866DAEB3370.root',
             #'root://cms-xrd-global.cern.ch///store/mc/PhaseISpring17DR/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG06_90X_upgrade2017_realistic_v20-v1/60000/C8A77762-2F2F-E711-A824-549F3525C318.root'
+
+            #'root://cms-xrd-global.cern.ch///store/mc/PhaseIFall16MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/FlatPU28to62HcalNZSRAW_PhaseIFall16_90X_upgrade2017_realistic_v6_C1-v1/00000/1E218178-721B-E711-950C-0242AC130002.root',
+            #'root://cms-xrd-global.cern.ch///store/mc/PhaseIFall16MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/FlatPU28to62HcalNZSRAW_PhaseIFall16_90X_upgrade2017_realistic_v6_C1-v1/00000/9688E2B3-5A1B-E711-AFE9-003048FF265A.root',
             ]
-    _customInfo['maxEvents' ]=  200
+    _customInfo['maxEvents' ]=  9999
 
     return _customInfo
 
@@ -137,7 +146,7 @@ def buildGenTausAndMore( process ) :
 
 def setOutputFile( process) :
     process.Out = cms.OutputModule( "PoolOutputModule",
-        fileName = cms.untracked.string( "output.root" ),
+        fileName = cms.untracked.string( "stage1_output_ttbar_9999evts.root" ),
         fastCloning = cms.untracked.bool( False ),
         dataset = cms.untracked.PSet(
             filterName = cms.untracked.string(''),

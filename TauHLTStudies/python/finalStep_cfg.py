@@ -11,13 +11,15 @@ process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1)
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:tt_test_secondary3.root',
+        'file:stage1_output_ttbar_9999evts.root',
+        #'file:tt_test_secondary3.root',
     )
 )
 
 
 from THRAnalysis.TauHLTStudies.tauHLTStudies import buildGenTausAndMore
 process = buildGenTausAndMore( process )
+#process.tauHLTStudies.doTauTau = cms.untracked.bool(True)
 
 #print process.dumpPython()
 

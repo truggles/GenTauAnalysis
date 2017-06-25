@@ -1,8 +1,25 @@
+# Current Running Local
+
+Only ttbar sample is working
+Make sure output file name from first part aligns with input file name for second
+And, set pythontauHLTStudies.py setSourceFiles & customizeInput to use the ttbar files
+
+```
+cmsRun python/rerunningHLT_local_cfg.py
+cmsRun python/finalStep_cfg.py
+```
+
+
 # Datasets used
 
 Dataset: /TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/AODSIM
 
 Dataset: /TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/GEN-SIM-RAW
+
+GluGluHiggsTauTau isn't working
+dataset=/VBFHToTauTau_M125_13TeV_powheg_pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/GEN-SIM-RAW
+
+dataset=/VBFHToTauTau_M125_13TeV_powheg_pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM
 
 # Error when running on GluGluH125
 

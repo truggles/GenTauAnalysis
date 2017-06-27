@@ -109,6 +109,14 @@ class TauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
       edm::EDGetTokenT<reco::PFTauDiscriminator> tauIDMToken_;
       edm::EDGetTokenT<reco::PFTauDiscriminator> tauIDTToken_;
       edm::EDGetTokenT<reco::PFTauDiscriminator> tauIDVTToken_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> tauIDVVTToken_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> tauIsoCmbLToken_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> tauIsoCmbL03Token_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> tauIsoCmbMToken_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> tauIsoCmbM03Token_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> tauIsoCmbTToken_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> tauIsoCmbT03Token_;
+
       edm::EDGetTokenT<reco::PFTauDiscriminator> tauAntiEToken_;
       edm::EDGetTokenT<reco::PFTauDiscriminator> tauAntiMuToken_;
 
@@ -131,12 +139,14 @@ class TauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
       float run, lumi, nTruePU, nvtx, nvtxCleaned,
         mPt, mEta, mPhi,
         tPt, tEta, tPhi, tMVAIsoVLoose, tMVAIsoLoose, tMVAIsoMedium, 
-        tMVAIsoTight, tMVAIsoVTight, m_vis, transMass, SS,
+        tMVAIsoTight, tMVAIsoVTight, tMVAIsoVVTight, m_vis, transMass, SS,
+        tIsoCmbLoose, tIsoCmbLoose03, tIsoCmbMedium, tIsoCmbMedium03, tIsoCmbTight, tIsoCmbTight03,
         leptonDR_t1_t2, leptonDR_m_t1, leptonDR_m_t2,
         mTrigMatch, tTrigMatch, mL1Match, tL1Match,
         t1_gen_match,tDecayMode,
         t2Pt, t2Eta, t2Phi, t2MVAIsoVLoose, t2MVAIsoLoose, t2MVAIsoMedium, 
-        t2MVAIsoTight, t2MVAIsoVTight,t2_gen_match,t2DecayMode,
+        t2MVAIsoTight, t2MVAIsoVTight, t2MVAIsoVVTight, t2_gen_match,t2DecayMode,
+        t2IsoCmbLoose, t2IsoCmbLoose03, t2IsoCmbMedium, t2IsoCmbMedium03, t2IsoCmbTight, t2IsoCmbTight03,
         t2TrigMatch,t2L1Match;
       bool foundGenTau, foundGenMuon; 
       std::map<std::string, int*> triggers;
@@ -207,6 +217,14 @@ TauHLTStudiesAnalyzer::TauHLTStudiesAnalyzer(const edm::ParameterSet& iConfig) :
     tauIDMToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByMediumIsolationMVArun2v1DBoldDMwLT"))),
     tauIDTToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByTightIsolationMVArun2v1DBoldDMwLT"))),
     tauIDVTToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByVTightIsolationMVArun2v1DBoldDMwLT"))),
+    tauIDVVTToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByVVTightIsolationMVArun2v1DBoldDMwLT"))),
+    tauIsoCmbLToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByLooseCombinedIsolationDBSumPtCorr3Hits"))),
+    tauIsoCmbL03Token_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByLooseCombinedIsolationDBSumPtCorr3HitsdR03"))),
+    tauIsoCmbMToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByMediumCombinedIsolationDBSumPtCorr3Hits"))),
+    tauIsoCmbM03Token_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByMediumCombinedIsolationDBSumPtCorr3HitsdR03"))),
+    tauIsoCmbTToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByTightCombinedIsolationDBSumPtCorr3Hits"))),
+    tauIsoCmbT03Token_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByTightCombinedIsolationDBSumPtCorr3HitsdR03"))),
+
     tauAntiEToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByMVA6LooseElectronRejection"))),
     tauAntiMuToken_(consumes<reco::PFTauDiscriminator>(edm::InputTag("hpsPFTauDiscriminationByTightMuonRejection3"))),
 
@@ -284,6 +302,13 @@ TauHLTStudiesAnalyzer::TauHLTStudiesAnalyzer(const edm::ParameterSet& iConfig) :
    tree->Branch("tMVAIsoMedium",&tMVAIsoMedium,"tMVAIsoMedium/F");
    tree->Branch("tMVAIsoTight",&tMVAIsoTight,"tMVAIsoTight/F");
    tree->Branch("tMVAIsoVTight",&tMVAIsoVTight,"tMVAIsoVTight/F");
+   tree->Branch("tMVAIsoVVTight",&tMVAIsoVVTight,"tMVAIsoVVTight/F");
+   tree->Branch("tIsoCmbLoose",&tIsoCmbLoose,"tIsoCmbLoose/F");
+   tree->Branch("tIsoCmbLoose03",&tIsoCmbLoose03,"tIsoCmbLoose03/F");
+   tree->Branch("tIsoCmbMedium",&tIsoCmbMedium,"tIsoCmbMedium/F");
+   tree->Branch("tIsoCmbMedium03",&tIsoCmbMedium03,"tIsoCmbMedium03/F");
+   tree->Branch("tIsoCmbTight",&tIsoCmbTight,"tIsoCmbTight/F");
+   tree->Branch("tIsoCmbTight03",&tIsoCmbTight03,"tIsoCmbTight03/F");
    tree->Branch("tDecayMode",&tDecayMode,"tDecayMode/F");
    tree->Branch("tTrigMatch",&tTrigMatch,"tTrigMatch/F");
    tree->Branch("tL1Match",&tL1Match,"tL1Match/F");
@@ -296,6 +321,13 @@ TauHLTStudiesAnalyzer::TauHLTStudiesAnalyzer(const edm::ParameterSet& iConfig) :
    tree->Branch("t2MVAIsoMedium",&t2MVAIsoMedium,"t2MVAIsoMedium/F");
    tree->Branch("t2MVAIsoTight",&t2MVAIsoTight,"t2MVAIsoTight/F");
    tree->Branch("t2MVAIsoVTight",&t2MVAIsoVTight,"t2MVAIsoVTight/F");
+   tree->Branch("t2MVAIsoVVTight",&t2MVAIsoVVTight,"t2MVAIsoVVTight/F");
+   tree->Branch("t2IsoCmbLoose",&t2IsoCmbLoose,"t2IsoCmbLoose/F");
+   tree->Branch("t2IsoCmbLoose03",&t2IsoCmbLoose03,"t2IsoCmbLoose03/F");
+   tree->Branch("t2IsoCmbMedium",&t2IsoCmbMedium,"t2IsoCmbMedium/F");
+   tree->Branch("t2IsoCmbMedium03",&t2IsoCmbMedium03,"t2IsoCmbMedium03/F");
+   tree->Branch("t2IsoCmbTight",&t2IsoCmbTight,"t2IsoCmbTight/F");
+   tree->Branch("t2IsoCmbTight03",&t2IsoCmbTight03,"t2IsoCmbTight03/F");
    tree->Branch("t2DecayMode",&t2DecayMode,"t2DecayMode/F");
    tree->Branch("t2TrigMatch",&t2TrigMatch,"t2TrigMatch/F");
    tree->Branch("t2L1Match",&t2L1Match,"t2L1Match/F");
@@ -517,6 +549,34 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     if(!iEvent.getByToken(tauIDVTToken_, tauIDVT))
         std::cout << "Error getting tau discriminator: IDVT" << std::endl;
 
+    edm::Handle<reco::PFTauDiscriminator> tauIDVVT;
+    if(!iEvent.getByToken(tauIDVVTToken_, tauIDVVT))
+        std::cout << "Error getting tau discriminator: IDVT" << std::endl;
+
+    edm::Handle<reco::PFTauDiscriminator> tauIsoCmbL;
+    if(!iEvent.getByToken(tauIsoCmbLToken_, tauIsoCmbL))
+        std::cout << "Error getting tau discriminator: IsoCmbL" << std::endl;
+
+    edm::Handle<reco::PFTauDiscriminator> tauIsoCmbL03;
+    if(!iEvent.getByToken(tauIsoCmbL03Token_, tauIsoCmbL03))
+        std::cout << "Error getting tau discriminator: IsoCmbL03" << std::endl;
+
+    edm::Handle<reco::PFTauDiscriminator> tauIsoCmbM;
+    if(!iEvent.getByToken(tauIsoCmbMToken_, tauIsoCmbM))
+        std::cout << "Error getting tau discriminator: IsoCmbM" << std::endl;
+
+    edm::Handle<reco::PFTauDiscriminator> tauIsoCmbM03;
+    if(!iEvent.getByToken(tauIsoCmbM03Token_, tauIsoCmbM03))
+        std::cout << "Error getting tau discriminator: IsoCmbM03" << std::endl;
+
+    edm::Handle<reco::PFTauDiscriminator> tauIsoCmbT;
+    if(!iEvent.getByToken(tauIsoCmbTToken_, tauIsoCmbT))
+        std::cout << "Error getting tau discriminator: IsoCmbT" << std::endl;
+
+    edm::Handle<reco::PFTauDiscriminator> tauIsoCmbT03;
+    if(!iEvent.getByToken(tauIsoCmbT03Token_, tauIsoCmbT03))
+        std::cout << "Error getting tau discriminator: IsoCmbT03" << std::endl;
+
     edm::Handle<reco::PFTauDiscriminator> tauAntiE;
     if(!iEvent.getByToken(tauAntiEToken_, tauAntiE))
         std::cout << "Error getting tau discriminator: AntiE" << std::endl;
@@ -592,6 +652,13 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     tMVAIsoMedium = (*tauIDM)[passingTausV.at(0)];
     tMVAIsoTight  = (*tauIDT)[passingTausV.at(0)];
     tMVAIsoVTight = (*tauIDVT)[passingTausV.at(0)];
+    tMVAIsoVVTight = (*tauIDVVT)[passingTausV.at(0)];
+    tIsoCmbLoose = (*tauIsoCmbL)[passingTausV.at(0)];
+    tIsoCmbLoose03 = (*tauIsoCmbL03)[passingTausV.at(0)];
+    tIsoCmbMedium = (*tauIsoCmbM)[passingTausV.at(0)];
+    tIsoCmbMedium03 = (*tauIsoCmbM03)[passingTausV.at(0)];
+    tIsoCmbTight = (*tauIsoCmbT)[passingTausV.at(0)];
+    tIsoCmbTight03 = (*tauIsoCmbT03)[passingTausV.at(0)];
     tDecayMode = (*tauDM)[passingTausV.at(0)];
     leptonDR_m_t1 = deltaR( bestMuon, *passingTausV.at(0) );
 
@@ -608,6 +675,13 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         t2MVAIsoMedium = (*tauIDM)[passingTausV.at(1)];
         t2MVAIsoTight  = (*tauIDT)[passingTausV.at(1)];
         t2MVAIsoVTight = (*tauIDVT)[passingTausV.at(1)];
+        t2MVAIsoVVTight = (*tauIDVVT)[passingTausV.at(1)];
+        t2IsoCmbLoose = (*tauIsoCmbL)[passingTausV.at(0)];
+        t2IsoCmbLoose03 = (*tauIsoCmbL03)[passingTausV.at(0)];
+        t2IsoCmbMedium = (*tauIsoCmbM)[passingTausV.at(0)];
+        t2IsoCmbMedium03 = (*tauIsoCmbM03)[passingTausV.at(0)];
+        t2IsoCmbTight = (*tauIsoCmbT)[passingTausV.at(0)];
+        t2IsoCmbTight03 = (*tauIsoCmbT03)[passingTausV.at(0)];
         t2DecayMode = (*tauDM)[passingTausV.at(1)];
         leptonDR_m_t2 = deltaR( bestMuon, *passingTausV.at(1) );
         leptonDR_t1_t2 = deltaR( *passingTausV.at(0), *passingTausV.at(1) );
@@ -622,6 +696,13 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             t2MVAIsoMedium = -1;
             t2MVAIsoTight  = -1;
             t2MVAIsoVTight = -1;
+            t2MVAIsoVVTight = -1;
+            t2IsoCmbLoose   = -1;
+            t2IsoCmbLoose03 = -1;
+            t2IsoCmbMedium  = -1;
+            t2IsoCmbMedium03 = -1;
+            t2IsoCmbTight   = -1;
+            t2IsoCmbTight03 = -1;
             t2DecayMode = -1;
             leptonDR_m_t2 = -1;
             leptonDR_t1_t2 = -1;
@@ -636,6 +717,13 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         t2MVAIsoMedium = -1;
         t2MVAIsoTight  = -1;
         t2MVAIsoVTight = -1;
+        t2MVAIsoVVTight = -1;
+        t2IsoCmbLoose   = -1;
+        t2IsoCmbLoose03 = -1;
+        t2IsoCmbMedium  = -1;
+        t2IsoCmbMedium03 = -1;
+        t2IsoCmbTight   = -1;
+        t2IsoCmbTight03 = -1;
         t2DecayMode = -1;
         leptonDR_m_t2 = -1;
         leptonDR_t1_t2 = -1;

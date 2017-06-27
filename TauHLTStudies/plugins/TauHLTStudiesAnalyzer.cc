@@ -94,7 +94,9 @@ class TauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
 
       // ----------member data ---------------------------
       bool isData;
+      bool isRAW;
       bool doTauTau;
+      bool verbose;
       edm::EDGetTokenT<std::vector<reco::GenJet>> genHadronicTausToken_;
       edm::EDGetTokenT<std::vector<reco::GenJet>> genElectronicTausToken_;
       edm::EDGetTokenT<std::vector<reco::GenJet>> genMuonicTausToken_;
@@ -113,7 +115,7 @@ class TauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
       edm::EDGetTokenT<std::vector<reco::Muon>> muonToken_;
       //edm::EDGetTokenT<std::vector<reco::GsfElectron>> electronToken_;
       //edm::EDGetTokenT<std::vector<reco::Jet>> jetToken_;
-      //edm::EDGetTokenT<std::vector<reco::MET>> metToken_;
+      edm::EDGetTokenT<std::vector<reco::PFMET>> metToken_;
       edm::EDGetTokenT<std::vector<reco::Vertex>> vertexToken_;
       edm::EDGetTokenT<edm::TriggerResults> triggerToken_;
       //edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> triggerObjectsToken_;
@@ -190,7 +192,9 @@ typedef std::map<std::string, int>::iterator iter;
 //
 TauHLTStudiesAnalyzer::TauHLTStudiesAnalyzer(const edm::ParameterSet& iConfig) :
     isData(iConfig.getUntrackedParameter<bool>("isData", false)),
+    isRAW(iConfig.getUntrackedParameter<bool>("isRAW", false)),
     doTauTau(iConfig.getUntrackedParameter<bool>("doTauTau", false)),
+    verbose(iConfig.getUntrackedParameter<bool>("verbose", false)),
     genHadronicTausToken_(consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>("hadronSrc"))),
     genElectronicTausToken_(consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>("tauElectronSrc"))),
     genMuonicTausToken_(consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>("tauMuonSrc"))),
@@ -209,7 +213,7 @@ TauHLTStudiesAnalyzer::TauHLTStudiesAnalyzer(const edm::ParameterSet& iConfig) :
     muonToken_(consumes<std::vector<reco::Muon>>(iConfig.getParameter<edm::InputTag>("muonSrc"))),
     //electronToken_(consumes<std::vector<reco::GsfElectron>>(iConfig.getParameter<edm::InputTag>("electronSrc"))),
     //jetToken_(consumes<std::vector<reco::Jet>>(iConfig.getParameter<edm::InputTag>("jetSrc"))),
-    //metToken_(consumes<std::vector<reco::MET>>(iConfig.getParameter<edm::InputTag>("metSrc"))),
+    metToken_(consumes<std::vector<reco::PFMET>>(iConfig.getParameter<edm::InputTag>("metSrc"))),
     vertexToken_(consumes<std::vector<reco::Vertex>>(iConfig.getParameter<edm::InputTag>("pvSrc"))),
     triggerToken_(consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerSrc"))),
     //triggerObjectsToken_(consumes<reco::TriggerObjectStandAloneCollection>(iConfig.getParameter<edm::InputTag>("triggerObjectsSrc"))),
@@ -358,10 +362,18 @@ TauHLTStudiesAnalyzer::~TauHLTStudiesAnalyzer()
 void
 TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-    using namespace edm;
+  using namespace edm;
 
-    // First thing, fill the nEvents
-    nEvents->Fill(0.);
+  // First thing, fill the nEvents
+  nEvents->Fill(0.);
+
+  eventD = iEvent.eventAuxiliary().event();
+  lumi = iEvent.eventAuxiliary().luminosityBlock();
+  run = iEvent.eventAuxiliary().run();
+  if (verbose) printf("Run: %.0f    Evt: %.0f   Lumi: %.0f\n", run, eventD, lumi);
+
+
+  if (!isRAW) {
     cutFlow->Fill(0., 1.);
 
     edm::Handle<std::vector<reco::Vertex>> vertices;   
@@ -421,7 +433,7 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
                 }
             }
         }
-        std::cout << "nGenMuons: " << nGenMuon << "   nGenTauH: " << genTauHV.size() << std::endl;
+        if (verbose) std::cout << "nGenMuons: " << nGenMuon << "   nGenTauH: " << genTauHV.size() << std::endl;
         //FIXME if (nGenMuon != 1) return;
         cutFlow->Fill(2., 1.); // 1 gen muon
         //FIXME if (genTauHV.size() != 1) return;
@@ -450,10 +462,12 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         bestMuon = mu;
     }
     // Require strictly 1 muon
-    //FIXME if (passingMuons == 0) return;
+    if (isData)
+        if (passingMuons == 0) return;
     cutFlow->Fill(4., 1.);
     // Extra lepton veto (muons)
-    //FIXME if (passingMuons > 1) return;
+    if (isData)
+        if (passingMuons > 1) return;
     cutFlow->Fill(5., 1.);
 
 
@@ -537,8 +551,8 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     // Tau study so...
     if (passingTausV.size() == 0) return;
     cutFlow->Fill(6., 1.);
-    std::cout << "Passing Muons: " << passingMuons << "   Passing Taus: " << passingTausV.size() << std::endl;
-    std::cout << " --- From vector   Passing Taus: " << passingTausV.size() << " gen matched taus: " << passingGenMatchedTausV.size() << std::endl;
+    if (verbose) std::cout << "Passing Muons: " << passingMuons << "   Passing Taus: " << passingTausV.size() << std::endl;
+    if (verbose) std::cout << " --- From vector   Passing Taus: " << passingTausV.size() << " gen matched taus: " << passingGenMatchedTausV.size() << std::endl;
 
     // Pt order passing reco::taus
     std::sort(passingTausV.begin(), passingTausV.end(), [](reco::PFTauRef a, reco::PFTauRef b) {
@@ -581,6 +595,10 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     tDecayMode = (*tauDM)[passingTausV.at(0)];
     leptonDR_m_t1 = deltaR( bestMuon, *passingTausV.at(0) );
 
+    // In data these tend to overlap, so just skip these events
+    if (isData)
+        if (leptonDR_m_t1 < 0.5) return;
+
     if (passingTausV.size() > 1) {
         t2Pt = passingTausV.at(1)->pt();
         t2Eta = passingTausV.at(1)->eta();
@@ -593,6 +611,21 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         t2DecayMode = (*tauDM)[passingTausV.at(1)];
         leptonDR_m_t2 = deltaR( bestMuon, *passingTausV.at(1) );
         leptonDR_t1_t2 = deltaR( *passingTausV.at(0), *passingTausV.at(1) );
+
+        // If tau2 is overlapped, fill with -1
+        if (leptonDR_m_t2 < 0.5) {
+            t2Pt = -1;
+            t2Eta = -1;
+            t2Phi = -1;
+            t2MVAIsoVLoose = -1;
+            t2MVAIsoLoose  = -1;
+            t2MVAIsoMedium = -1;
+            t2MVAIsoTight  = -1;
+            t2MVAIsoVTight = -1;
+            t2DecayMode = -1;
+            leptonDR_m_t2 = -1;
+            leptonDR_t1_t2 = -1;
+        }
     }
     else {
         t2Pt = -1;
@@ -627,10 +660,10 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     }
 
     // Get MET for transverse mass calculation 
-    //edm::Handle<std::vector<reco::MET>> mets;   
-    //iEvent.getByToken(metToken_, mets);
-    //const reco::MET &met = mets->front();
-    //transMass = TMath::Sqrt( 2. * bestMuon.pt() * met.pt() * (1. - TMath::Cos( bestMuon.phi() - met.phi())));
+    edm::Handle<std::vector<reco::PFMET>> mets;   
+    iEvent.getByToken(metToken_, mets);
+    const reco::PFMET &met = mets->front();
+    transMass = TMath::Sqrt( 2. * bestMuon.pt() * met.pt() * (1. - TMath::Cos( bestMuon.phi() - met.phi())));
 
 
     if (passingMuons > 0) {
@@ -654,14 +687,6 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     }
 
 
-    eventD = iEvent.eventAuxiliary().event();
-    lumi = iEvent.eventAuxiliary().luminosityBlock();
-    run = iEvent.eventAuxiliary().run();
-
-    printf("Run: %.0f    Evt: %.0f   Lumi: %.0f\n", run, eventD, lumi);
-    
-
-
     edm::Handle<edm::TriggerResults> triggerResults;   
     iEvent.getByToken(triggerToken_, triggerResults);
     //edm::Handle<reco::TriggerObjectStandAloneCollection> triggerObjects;
@@ -682,7 +707,7 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
                 if (names.triggerName(i).find( pair.first ) != std::string::npos) {
                     (*pair.second) += 1;
                     usedPaths.push_back( names.triggerName(i));
-                    std::cout << " --- fired: " << names.triggerName(i) << std::endl;
+                    if (verbose) std::cout << " --- fired: " << names.triggerName(i) << std::endl;
                 }
             }
         }
@@ -817,7 +842,38 @@ TauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 //    }
     
  
-    
+  } // is not RAW
+
+  // Currently Data is in RAW form
+  // all it has is
+  // edm::TriggerResults       "TriggerResults"         ""        "HLT"
+  if (isRAW) { // isRAW (only trigger results abailable)
+    edm::Handle<edm::TriggerResults> triggerResults;   
+    iEvent.getByToken(triggerToken_, triggerResults);
+    //edm::Handle<reco::TriggerObjectStandAloneCollection> triggerObjects;
+    //iEvent.getByToken(triggerObjectsToken_, triggerObjects);
+
+    for (auto& pair : triggers) {
+        (*pair.second) = 0;
+    }
+
+    //std::vector<std::string> usedPaths;
+    const edm::TriggerNames &names = iEvent.triggerNames(*triggerResults);
+    // See https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2014#Trigger
+    //std::cout << "Trigger Path Length: " << triggerResults->size() << std::endl;
+    for (unsigned int i = 0, n = triggerResults->size(); i < n; ++i) {
+        //std::cout << " --- " << names.triggerName(i) << std::endl;
+        if (triggerResults->accept(i)) {
+            for (auto& pair : triggers) {
+                if (names.triggerName(i).find( pair.first ) != std::string::npos) {
+                    (*pair.second) += 1;
+                    //usedPaths.push_back( names.triggerName(i));
+                    if (verbose) std::cout << " --- fired: " << names.triggerName(i) << std::endl;
+                }
+            }
+        }
+    }
+  } // end is RAW
     
 
     //LogInfo("Demo") << "number of gen taus "<<nGenTaus;

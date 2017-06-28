@@ -2,32 +2,55 @@
 mt_triggers = [
    "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1",
    "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1",
-   #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
-   #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
-   #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1",
-   #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1",
-   #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
-   #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
-   #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr",
-   #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1",
-   #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1",
-   #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
-   #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
+   "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
+   "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
+   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1",
+   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1",
+   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
+   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
+   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr",
+   "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1",
+   "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1",
+   "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
+   "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
 ]
 
+mt_trigger_groups = {
+"SingleL1" : [
+   "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1",
+   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1",
+   "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1",
+],
+"TightID_SingleL1" : [
+   "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1",
+   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1",
+   "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1",
+],
+"Reg_CrossL1" : [
+   "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
+   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
+   "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
+],
+"TightID_Reg_CrossL1" : [
+   "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
+   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
+   "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
+],
+}
+
 tt_triggers = [
-   #"HLT_DoubleLooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg",
-   #"HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg",
-   #"HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg",
-   #"HLT_DoubleLooseChargedIsoPFTau40_Trk1_eta2p1_Reg",
+   "HLT_DoubleLooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg",
+   "HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg",
+   "HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg",
+   "HLT_DoubleLooseChargedIsoPFTau40_Trk1_eta2p1_Reg",
    "HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg",
    "HLT_DoubleMediumChargedIsoPFTau35_Trk1_eta2p1_Reg",
-   #"HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg",
-   #"HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg",
-   #"HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg",
-   #"HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg",
-   #"HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg",
-   #"HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg",
+   "HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg",
+   "HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg",
+   "HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg",
+   "HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg",
+   "HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg",
+   "HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg",
 ]
 
 # 
@@ -43,6 +66,8 @@ tt_triggers = [
 
 import ROOT
 ROOT.gROOT.SetBatch(True)
+ROOT.gStyle.SetOptStat(0)
+from array import array
 
 # return x, y postion for filling
 # x = tau1 MVA
@@ -65,13 +90,19 @@ def getTauTau2D( row, iso ) :
 # return a value which fills with the tighest iso WP passed
 def getIsoCodeMVA( row, lep ) :
     # None = 0, VL = 1, L = 2, M = 3, T = 4, VT = 5, VVT = 6
-    if getattr( row, lep+'MVAIsoVLoose' ) == 0 :   return 0
-    if getattr( row, lep+'MVAIsoLoose' ) == 0 :    return 1
-    if getattr( row, lep+'MVAIsoMedium' ) == 0 :   return 2
-    if getattr( row, lep+'MVAIsoTight' ) == 0 :    return 3
-    if getattr( row, lep+'MVAIsoVTight' ) == 0 :   return 4
-    if getattr( row, lep+'MVAIsoVVTight' ) == 0 :  return 5
-    if getattr( row, lep+'MVAIsoVVTight' ) == 1 :      return 6
+    #if getattr( row, lep+'MVAIsoVLoose' ) == 0 :   return 0
+    #if getattr( row, lep+'MVAIsoLoose' ) == 0 :    return 1
+    #if getattr( row, lep+'MVAIsoMedium' ) == 0 :   return 2
+    #if getattr( row, lep+'MVAIsoTight' ) == 0 :    return 3
+    #if getattr( row, lep+'MVAIsoVTight' ) == 0 :   return 4
+    #if getattr( row, lep+'MVAIsoVVTight' ) == 0 :  return 5
+    #if getattr( row, lep+'MVAIsoVVTight' ) == 1 :      return 6
+    if getattr( row, lep+'MVAIsoLoose' ) == 0 :    return 0
+    if getattr( row, lep+'MVAIsoMedium' ) == 0 :   return 1
+    if getattr( row, lep+'MVAIsoTight' ) == 0 :    return 2
+    if getattr( row, lep+'MVAIsoVTight' ) == 0 :   return 3
+    if getattr( row, lep+'MVAIsoVVTight' ) == 0 :  return 4
+    if getattr( row, lep+'MVAIsoVVTight' ) == 1 :      return 5
     else : return 0
 
 
@@ -86,23 +117,58 @@ def getIsoCodeCmbIso( row, lep ) :
     else : return 0
 
 
+def getTrigAndTau2D( row, iso, orderedTriggers ) :
+    assert( iso == 'MVA' or iso == 'CmbIso' ), "Poor isolation choice %s" % iso
+    if iso == 'MVA' :
+        x = getTrigCode( row, orderedTriggers )
+        y = getIsoCodeMVA( row, 't' )
+    elif iso == 'CmbIso' :
+        x = getTrigCode( row, orderedTriggers )
+        y = getIsoCodeCmbIso( row, 't' )
+    return [x, y]
+
+
+# return a value which fills with HLT Trigger related values
+def getTrigCode( row, orderedTriggers ) :
+    # XXX None = 0, 1 = passing trig1, 2 = passing trig2...
+    # 0 = passing trig1, 1 = passing trig2...
+    i = 0
+    for j in range( len(orderedTriggers) ) :
+        if j == len(orderedTriggers)-1 :
+            if getattr( row, orderedTriggers[j] ) == 1 :  return j
+        else : # all the frst triggers, check first and 1 above
+            if getattr( row, orderedTriggers[j] ) == 1 and \
+                getattr( row, orderedTriggers[j+1] ) == 0 :  return j
+        i += 1
+    # print orderedTriggers[-1], getattr( row, orderedTriggers[-1] )
+    #if getattr( row, orderedTriggers[-1] ) == 1 : return i
+    else : return -1
+
+
 def passes_basic_mt_cuts( row ) :
     if getattr( row, 'transMass' ) > 30 : return 0
+    if getattr( row, 'SS' ) == 0 :        return 0
     if getattr( row, 'm_vis' ) < 40 :     return 0
     if getattr( row, 'm_vis' ) > 80 :     return 0
+    if getattr( row, 'mTrigMatch' ) < 0.5 :  return 0
+    if getattr( row, 'tTrigMatch' ) < 0.5 :  return 0
+    if getattr( row, 'tMVAIsoVLoose' ) < 0.5 :  return 0
     if getattr( row, 'HLT_IsoMu24_eta2p1' ) < 0.5 : return 0
     return 1
 
 
 def passes_basic_tt_cuts( row ) :
+    if getattr( row, 'SS' ) == 1 :           return 0
     if getattr( row, 'tPt' ) < 40 :          return 0
-    if getattr( row, 'tTrigMatch' ) < 0.5 :  return 0
     if getattr( row, 't2Pt' ) < 40 :         return 0
-    #if getattr( row, 't2TrigMatch' ) < 0.5 : return 0
+    if getattr( row, 'tTrigMatch' ) < 0.5 :  return 0
+    if getattr( row, 't2TrigMatch' ) < 0.5 : return 0
+    if getattr( row, 'tMVAIsoVLoose' ) < 0.5 :  return 0
+    if getattr( row, 't2MVAIsoVLoose' ) < 0.5 :  return 0
     return 1
 
 
-def loop( c, tree, data_set, h_mvas, h_cmbs, h_mixs ) :
+def loop( c, tree, data_set, h_mvas, h_cmbs, h_mixs, h_trigs ) :
     for row in tree :
         mva_vals = getTauTau2D( row, 'MVA' ) 
         cmb_vals = getTauTau2D( row, 'CmbIso' )
@@ -122,13 +188,22 @@ def loop( c, tree, data_set, h_mvas, h_cmbs, h_mixs ) :
                 # Map to cmb WPs
                 h_cmbs[trig].Fill( cmb_vals[0], cmb_vals[1], 1 ) 
                 h_mixs[trig].Fill( mix_vals[0], mix_vals[1], 1 ) 
+
+        if data_set == 'mt' :
+            for trigGroup, hist in h_trigs.iteritems() :
+                trig_vals = getTrigAndTau2D( row, 'MVA', mt_trigger_groups[ trigGroup ] )
+                hist.Fill( trig_vals[0], trig_vals[1] )
     
         #h_cmb.Fill( cmb_vals[0], cmb_vals[1], 1 )
+    dumpNameAndInt = {}
     for trig, hist in h_mvas.iteritems() :
         c.Clear()
+        dumpNameAndInt[trig] = hist.Integral()
         if hist.Integral() > 0 :
             hist.Scale( 1. / hist.Integral() )
         hist.Draw('COLZ')
+        #hist.GetYaxis().SetLabelOffset( hist.GetYaxis().GetLabelOffset() * 1.5 )
+        ROOT.gPad.SetLogz(1)
         c.SaveAs('/afs/cern.ch/user/t/truggles/www/HLT_Studies/%s_mva_%s.png' % (data_set, trig) )
     for trig, hist in h_cmbs.iteritems() :
         c.Clear()
@@ -142,15 +217,32 @@ def loop( c, tree, data_set, h_mvas, h_cmbs, h_mixs ) :
             hist.Scale( 1. / hist.Integral() )
         hist.Draw('COLZ')
         c.SaveAs('/afs/cern.ch/user/t/truggles/www/HLT_Studies/%s_mix_%s.png' % (data_set, trig) )
+    if data_set == 'mt' :
+        for trigGroup, hist in h_trigs.iteritems() :
+            c.Clear()
+            if hist.Integral() > 0 :
+                hist.Scale( 1. / hist.Integral() )
+            hist.Draw('COLZ')
+            ROOT.gPad.SetLogz(1)
+            c.SaveAs('/afs/cern.ch/user/t/truggles/www/HLT_Studies/%s_trigger_%s.png' % (data_set, trigGroup) )
+            ROOT.gPad.SetLogz(0)
+    for k, v in dumpNameAndInt.iteritems() :
+        print k, v
 
 bin_label_map_mva = {
-    1 : 'None',
-    2 : 'VLoose',
-    3 : 'Loose',
-    4 : 'Medium',
-    5 : 'Tight',
-    6 : 'VTight',
-    7 : 'VVTight',
+    #1 : 'None',
+    #2 : 'VLoose',
+    #3 : 'Loose',
+    #4 : 'Medium',
+    #5 : 'Tight',
+    #6 : 'VTight',
+    #7 : 'VVTight',
+    1 : 'VLoose',
+    2 : 'Loose',
+    3 : 'Medium',
+    4 : 'Tight',
+    5 : 'VTight',
+    6 : 'VVTight',
 }
 
 bin_label_map_cmb = {
@@ -161,7 +253,7 @@ bin_label_map_cmb = {
 }
 
 def make_mva2d_plot( trigger='' ) :
-    h_mva = ROOT.TH2D( 'Tau MVA'+trigger, 'Tau MVA ID/Iso WPs %s;Tau1 MVA WP;Tau2 MVA WP' % trigger, 7,-0.5,6.5,7,-0.5,6.5 )
+    h_mva = ROOT.TH2D( 'Tau MVA'+trigger, 'Tau MVA ID/Iso WPs %s;Tau1 MVA WP;Tau2 MVA WP' % trigger, 6,-0.5,5.5,6,-0.5,5.5 )
     for k, v in bin_label_map_mva.iteritems() :
         h_mva.GetXaxis().SetBinLabel( k, v )
         h_mva.GetYaxis().SetBinLabel( k, v )
@@ -177,7 +269,7 @@ def make_cmb2d_plot( trigger='' ) :
     return h_cmb
 
 def make_mva_vs_cmb2d_plot( trigger='' ) :
-    h_mix = ROOT.TH2D( 'Tau MVA Cmb'+trigger, 'Tau MVA vs Cmb ID/Iso WPs %s;Tau1 MVA WP;Tau1 CutBased WP' % trigger, 7,-0.5,6.5,4,-0.5,3.5 )
+    h_mix = ROOT.TH2D( 'Tau MVA Cmb'+trigger, 'Tau MVA vs Cmb ID/Iso WPs %s;Tau1 MVA WP;Tau1 CutBased WP' % trigger, 6,-0.5,5.5,4,-0.5,3.5 )
     for k, v in bin_label_map_mva.iteritems() :
         h_mix.GetXaxis().SetBinLabel( k, v )
     for k, v in bin_label_map_cmb.iteritems() :
@@ -185,10 +277,27 @@ def make_mva_vs_cmb2d_plot( trigger='' ) :
     h_mix.SetDirectory(0)
     return h_mix
 
+def make_trig_vs_mva2d_plot( triggerName, orderedTriggers ) :
+    h_trig = ROOT.TH2D( 'Trigger MVA'+triggerName, 'Triggers vs MVA: %s;Cross Trigger Passed;Tau1 MVA WP' % orderedTriggers[0].replace('Loose','X'), len(orderedTriggers),-0.5,len(orderedTriggers),6,-0.5,5.5 )
+    #h_trig.GetXaxis().SetBinLabel( 1, 'None' )
+    for i, name in enumerate(orderedTriggers) :
+        #j = i + 2 # Use if you want first bin to be None
+        j = i + 1
+        print j, name
+        fillName = name.replace('HLT_IsoMu24_eta2p1_','')
+        fillName = fillName.replace('ChargedIsoPFTau','')
+        fillName = fillName.replace('_Trk1','')
+        fillName = fillName.replace('_TightID','')
+        fillName = fillName.replace('_eta2p1_Reg_CrossL1','')
+        fillName = fillName.replace('_SingleL1','')
+        h_trig.GetXaxis().SetBinLabel( j, fillName )
+    for k, v in bin_label_map_mva.iteritems() :
+        h_trig.GetYaxis().SetBinLabel( k, v )
+    h_trig.SetDirectory(0)
+    return h_trig
 
 
-
-for channel in ['mt',]:# 'tt'] :
+for channel in ['mt', 'tt'] :
 
     # Channel specific setup
     if channel == 'mt' :
@@ -215,6 +324,7 @@ for channel in ['mt',]:# 'tt'] :
     h_mvas = {}
     h_cmbs = {}
     h_mixs = {}
+    h_trigs = {}
 
 
     for trig in triggers :
@@ -222,14 +332,19 @@ for channel in ['mt',]:# 'tt'] :
         h_mvas[ trig ] = make_mva2d_plot(trig)
         h_cmbs[ trig ] = make_cmb2d_plot(trig)
         h_mixs[ trig ] = make_mva_vs_cmb2d_plot(trig)
+    for group, names in mt_trigger_groups.iteritems() :
+        h_trigs[ group ] = make_trig_vs_mva2d_plot( group, names )
     
     
-    loop( c, tree, channel, h_mvas, h_cmbs, h_mixs )
+    loop( c, tree, channel, h_mvas, h_cmbs, h_mixs, h_trigs )
+
 
     for trig in triggers :
         del h_mvas[ trig ]
         del h_cmbs[ trig ]
         del h_mixs[ trig ]
+    for group, names in mt_trigger_groups.iteritems() :
+        del h_trigs [ group ]
     del c, p
 
 

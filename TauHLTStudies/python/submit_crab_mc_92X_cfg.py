@@ -10,7 +10,7 @@ config.General.transferLogs    = True
 config.JobType.psetName        = 'rerunningHLT_92x_crab_cfg.py'
 config.JobType.pluginName      = 'Analysis'
 # config.JobType.outputFiles     = ['outputFULL.root']
-config.JobType.maxMemoryMB     = 2500
+config.JobType.maxMemoryMB     = 2500 # Riccardo's default was 2500, multiple jobs quit from RAM limitations so I'm increasing it
 config.JobType.priority        = 2
 config.JobType.numCores        = 4
 
@@ -28,7 +28,10 @@ config.Data.outputDatasetTag   = 'rerunningHLT_92x'
 
 config.Site.storageSite        = 'T2_US_Wisconsin'
 # config.Site.blacklist          = ['T1_US_FNAL']
-# config.Site.whitelist          = ['T2_CH_CERN']
+config.Site.whitelist          = [ # Sitest with ttbar sample as of 25 June 2017
+                                'T1_ES_PIC',
+                                'T1_US_FNAL',
+                                ]
 
 config.User.voGroup            = 'uscms'
 
@@ -55,16 +58,15 @@ if __name__ == '__main__':
 
     datasets = OrderedDict()
 
-    #datasets['QCD_Pt_120to170'] = '/QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/GEN-SIM-RAW'
     datasets['TT_TuneCUETP8M2T4'] = '/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/AODSIM'
    
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k, v in datasets.iteritems():
-        config.General.requestName = k
+        config.General.requestName = k+'_v5'
         #config.Data.inputDataset = v
         config.Data.outputPrimaryDataset = v.split('/').pop()
-        config.Data.userInputFiles = open(base+'/src/THRAnalysis/TauHLTStudies/data/'+k+'.txt').readlines()
+        config.Data.userInputFiles = open(base+'/src/THRAnalysis/TauHLTStudies/data/'+k+'_test.txt').readlines()
         #config.Data.useParent = True
         print 'submitting config:'
         print config

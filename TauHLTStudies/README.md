@@ -1,3 +1,17 @@
+# Running on miniAOD data via Crab
+Added DCS lumi-mask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/DCSOnly/json_DCSONLY.txt
+Using runs from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmV2017Analysis case-2 - HV=200 7 July 2017
+
+Make sure that the run list if updated if you want to add any "config.Data.runRange"
+
+```
+cd test
+python submit_crab_data_cfg.py
+```
+
+
+
+
 # Current Running Local
 
 Only ttbar sample is working

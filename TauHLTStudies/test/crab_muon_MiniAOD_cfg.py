@@ -15,10 +15,11 @@ process.source = cms.Source("PoolSource",
 
 process.load("THRAnalysis.TauHLTStudies.miniAOD_CfiFile_cfi")
 process.tauMiniAODHLTStudies.isData = cms.untracked.bool(True)
+process.tauMiniAODHLTStudies.doTauTau = cms.untracked.bool(False)
 
 
 process.TFileService = cms.Service("TFileService",
-        fileName = cms.string("outpu.root")
+        fileName = cms.string('outfile.root')
     )
 
 

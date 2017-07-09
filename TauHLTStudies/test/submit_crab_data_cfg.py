@@ -49,7 +49,7 @@ if __name__ == '__main__':
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k, v in dataMap.iteritems() :
-        config.General.requestName = 'data_%s_july07' % k
+        config.General.requestName = 'data_%s_july09' % k
         config.JobType.psetName        = 'crab_%s_MiniAOD_cfg.py' % k
         config.Data.outputDatasetTag   = config.General.requestName
         config.Data.inputDataset = v

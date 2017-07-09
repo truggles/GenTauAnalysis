@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 mt_triggers = [
    "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1",
@@ -17,24 +18,24 @@ mt_triggers = [
 
 mt_trigger_groups = {
 "SingleL1" : [
-   "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1",
-   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1",
-   "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1",
+    "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1",
+    "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1",
+    "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1",
 ],
 "TightID_SingleL1" : [
-   "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1",
-   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1",
-   "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1",
+    "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1",
+    "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1",
+    "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1",
 ],
 "Reg_CrossL1" : [
-   "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
-   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
-   "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
+    "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
+    "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
+    "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
 ],
 "TightID_Reg_CrossL1" : [
-   "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
-   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
-   "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
+    "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
+    "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
+    "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
 ],
 }
 
@@ -130,16 +131,15 @@ def getTrigAndTau2D( row, iso, orderedTriggers ) :
 
 # return a value which fills with HLT Trigger related values
 def getTrigCode( row, orderedTriggers ) :
-    # XXX None = 0, 1 = passing trig1, 2 = passing trig2...
-    # 0 = passing trig1, 1 = passing trig2...
-    i = 0
+    # None = 0, 1 = passing trig1, 2 = passing trig2...
+    # XXX 0 = passing trig1, 1 = passing trig2...   do j instead of j+1 for return
+    if getattr( row, orderedTriggers[0] ) == 0 :  return 0
     for j in range( len(orderedTriggers) ) :
         if j == len(orderedTriggers)-1 :
-            if getattr( row, orderedTriggers[j] ) == 1 :  return j
+            if getattr( row, orderedTriggers[j] ) == 1 :  return j+1
         else : # all the frst triggers, check first and 1 above
             if getattr( row, orderedTriggers[j] ) == 1 and \
-                getattr( row, orderedTriggers[j+1] ) == 0 :  return j
-        i += 1
+                getattr( row, orderedTriggers[j+1] ) == 0 :  return j+1
     # print orderedTriggers[-1], getattr( row, orderedTriggers[-1] )
     #if getattr( row, orderedTriggers[-1] ) == 1 : return i
     else : return -1
@@ -148,6 +148,7 @@ def getTrigCode( row, orderedTriggers ) :
 def passes_basic_mt_cuts( row ) :
     if getattr( row, 'transMass' ) > 30 : return 0
     if getattr( row, 'SS' ) == 0 :        return 0
+    #if getattr( row, 'SS' ) == 1 :        return 0
     if getattr( row, 'm_vis' ) < 40 :     return 0
     if getattr( row, 'm_vis' ) > 80 :     return 0
     if getattr( row, 'mTrigMatch' ) < 0.5 :  return 0
@@ -196,27 +197,27 @@ def loop( c, tree, data_set, h_mvas, h_cmbs, h_mixs, h_trigs ) :
     
         #h_cmb.Fill( cmb_vals[0], cmb_vals[1], 1 )
     dumpNameAndInt = {}
+    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/july09/'
     for trig, hist in h_mvas.iteritems() :
         c.Clear()
         dumpNameAndInt[trig] = hist.Integral()
         if hist.Integral() > 0 :
             hist.Scale( 1. / hist.Integral() )
         hist.Draw('COLZ')
-        #hist.GetYaxis().SetLabelOffset( hist.GetYaxis().GetLabelOffset() * 1.5 )
         ROOT.gPad.SetLogz(1)
-        c.SaveAs('/afs/cern.ch/user/t/truggles/www/HLT_Studies/%s_mva_%s.png' % (data_set, trig) )
+        c.SaveAs(plotBase+'%s_mva_%s.png' % (data_set, trig) )
     for trig, hist in h_cmbs.iteritems() :
         c.Clear()
         if hist.Integral() > 0 :
             hist.Scale( 1. / hist.Integral() )
         hist.Draw('COLZ')
-        c.SaveAs('/afs/cern.ch/user/t/truggles/www/HLT_Studies/%s_cmb_%s.png' % (data_set, trig) )
+        c.SaveAs(plotBase+'%s_cmb_%s.png' % (data_set, trig) )
     for trig, hist in h_mixs.iteritems() :
         c.Clear()
         if hist.Integral() > 0 :
             hist.Scale( 1. / hist.Integral() )
         hist.Draw('COLZ')
-        c.SaveAs('/afs/cern.ch/user/t/truggles/www/HLT_Studies/%s_mix_%s.png' % (data_set, trig) )
+        c.SaveAs(plotBase+'%s_mix_%s.png' % (data_set, trig) )
     if data_set == 'mt' :
         for trigGroup, hist in h_trigs.iteritems() :
             c.Clear()
@@ -224,8 +225,14 @@ def loop( c, tree, data_set, h_mvas, h_cmbs, h_mixs, h_trigs ) :
                 hist.Scale( 1. / hist.Integral() )
             hist.Draw('COLZ')
             ROOT.gPad.SetLogz(1)
-            c.SaveAs('/afs/cern.ch/user/t/truggles/www/HLT_Studies/%s_trigger_%s.png' % (data_set, trigGroup) )
+            c.SaveAs(plotBase+'%s_trigger_%s.png' % (data_set, trigGroup) )
             ROOT.gPad.SetLogz(0)
+
+            # Save an 'efficiency' version
+            c.Clear()
+            fill_for_efficiency( hist )
+            hist.Draw('COLZ TEXT')
+            c.SaveAs(plotBase+'%s_trigger_eff_%s.png' % (data_set, trigGroup) )
     for k, v in dumpNameAndInt.iteritems() :
         print k, v
 
@@ -278,11 +285,11 @@ def make_mva_vs_cmb2d_plot( trigger='' ) :
     return h_mix
 
 def make_trig_vs_mva2d_plot( triggerName, orderedTriggers ) :
-    h_trig = ROOT.TH2D( 'Trigger MVA'+triggerName, 'Triggers vs MVA: %s;Cross Trigger Passed;Tau1 MVA WP' % orderedTriggers[0].replace('Loose','X'), len(orderedTriggers),-0.5,len(orderedTriggers),6,-0.5,5.5 )
-    #h_trig.GetXaxis().SetBinLabel( 1, 'None' )
+    h_trig = ROOT.TH2D( 'Trigger MVA'+triggerName, 'Triggers vs MVA: %s;Cross Trigger Passed;Tau MVA WP' % orderedTriggers[0].replace('Loose','X'), len(orderedTriggers)+1,-0.5,len(orderedTriggers)+1,6,-0.5,5.5 )
+    h_trig.GetXaxis().SetBinLabel( 1, 'None' )
     for i, name in enumerate(orderedTriggers) :
-        #j = i + 2 # Use if you want first bin to be None
-        j = i + 1
+        j = i + 2 # Use if you want first bin to be None
+        #j = i + 1
         print j, name
         fillName = name.replace('HLT_IsoMu24_eta2p1_','')
         fillName = fillName.replace('ChargedIsoPFTau','')
@@ -293,19 +300,35 @@ def make_trig_vs_mva2d_plot( triggerName, orderedTriggers ) :
         h_trig.GetXaxis().SetBinLabel( j, fillName )
     for k, v in bin_label_map_mva.iteritems() :
         h_trig.GetYaxis().SetBinLabel( k, v )
+    h_trig.GetYaxis().SetTitleOffset( h_trig.GetYaxis().GetTitleOffset() * 2 )
     h_trig.SetDirectory(0)
     return h_trig
 
 
-for channel in ['mt', 'tt'] :
+def fill_for_efficiency( hist ) :
+    nx = hist.GetXaxis().GetNbins()
+    ny = hist.GetYaxis().GetNbins()
+    fillMap = {}
+    for x in range( nx ) :
+        for y in range( ny ) :
+            fillMap[x,y] = hist.Integral( x+1, nx, y+1, ny )
+    for x in range( nx ) :
+        for y in range( ny ) :
+            hist.SetBinContent( x+1, y+1, fillMap[x,y] ) 
+    # Set lower left corner == 1 (100%)
+    lower_left = hist.GetBinContent( 1, 1)
+    hist.Scale( 1. / lower_left )
+
+for channel in ['mt',]:# 'tt'] :
 
     # Channel specific setup
     if channel == 'mt' :
         triggers = mt_triggers
-        f = ROOT.TFile('/data/truggles/hlt_studies_2/miniAOD_muon.root', 'r')
+        f = ROOT.TFile('/data/truggles/hlt_studies_july09_v2/miniAOD_muon.root', 'r')
+        #f = ROOT.TFile('/data/truggles/hlt_studies_2/miniAOD_muon.root', 'r')
     if channel == 'tt' :
         triggers = tt_triggers
-        f = ROOT.TFile('/data/truggles/hlt_studies_2/miniAOD_tau.root', 'r') 
+        f = ROOT.TFile('/data/truggles/hlt_studies_july09/miniAOD_tau.root', 'r') 
     tree = f.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
 
     print f

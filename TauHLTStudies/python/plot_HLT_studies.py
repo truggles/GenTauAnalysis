@@ -146,9 +146,12 @@ def getTrigCode( row, orderedTriggers ) :
 
 
 def passes_basic_mt_cuts( row ) :
+    if getattr( row, 'mPt' ) < 24 : return 0
+    if getattr( row, 'tPt' ) < 20 : return 0
+    #if getattr( row, 'tPt' ) < 45 : return 0
     if getattr( row, 'transMass' ) > 30 : return 0
-    if getattr( row, 'SS' ) == 0 :        return 0
-    #if getattr( row, 'SS' ) == 1 :        return 0
+    #if getattr( row, 'SS' ) == 0 :        return 0 # keep Same-Sign
+    if getattr( row, 'SS' ) == 1 :        return 0 # keep Opposite-Sign
     if getattr( row, 'm_vis' ) < 40 :     return 0
     if getattr( row, 'm_vis' ) > 80 :     return 0
     if getattr( row, 'mTrigMatch' ) < 0.5 :  return 0

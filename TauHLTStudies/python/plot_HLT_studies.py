@@ -148,7 +148,7 @@ def getTrigCode( row, orderedTriggers ) :
 def passes_basic_mt_cuts( row ) :
     if getattr( row, 'mPt' ) < 24 : return 0
     if getattr( row, 'tPt' ) < 20 : return 0
-    #if getattr( row, 'tPt' ) < 45 : return 0
+    #if getattr( row, 'tPt' ) < 40 : return 0
     if getattr( row, 'transMass' ) > 30 : return 0
     #if getattr( row, 'SS' ) == 0 :        return 0 # keep Same-Sign
     if getattr( row, 'SS' ) == 1 :        return 0 # keep Opposite-Sign
@@ -209,6 +209,11 @@ def loop( c, tree, data_set, h_mvas, h_cmbs, h_mixs, h_trigs ) :
         hist.Draw('COLZ')
         ROOT.gPad.SetLogz(1)
         c.SaveAs(plotBase+'%s_mva_%s.png' % (data_set, trig) )
+        # Save an 'efficiency' version
+        c.Clear()
+        fill_for_efficiency( hist )
+        hist.Draw('COLZ TEXT')
+        c.SaveAs(plotBase+'%s_mva_eff_%s.png' % (data_set, trig) )
     for trig, hist in h_cmbs.iteritems() :
         c.Clear()
         if hist.Integral() > 0 :
@@ -267,6 +272,7 @@ def make_mva2d_plot( trigger='' ) :
     for k, v in bin_label_map_mva.iteritems() :
         h_mva.GetXaxis().SetBinLabel( k, v )
         h_mva.GetYaxis().SetBinLabel( k, v )
+    h_mva.GetYaxis().SetTitleOffset( h_mva.GetYaxis().GetTitleOffset() * 2 )
     h_mva.SetDirectory(0)
     return h_mva
 
@@ -275,6 +281,7 @@ def make_cmb2d_plot( trigger='' ) :
     for k, v in bin_label_map_cmb.iteritems() :
         h_cmb.GetXaxis().SetBinLabel( k, v )
         h_cmb.GetYaxis().SetBinLabel( k, v )
+    h_cmb.GetYaxis().SetTitleOffset( h_cmb.GetYaxis().GetTitleOffset() * 2 )
     h_cmb.SetDirectory(0)
     return h_cmb
 
@@ -284,6 +291,7 @@ def make_mva_vs_cmb2d_plot( trigger='' ) :
         h_mix.GetXaxis().SetBinLabel( k, v )
     for k, v in bin_label_map_cmb.iteritems() :
         h_mix.GetYaxis().SetBinLabel( k, v )
+    h_mix.GetYaxis().SetTitleOffset( h_mix.GetYaxis().GetTitleOffset() * 2 )
     h_mix.SetDirectory(0)
     return h_mix
 
@@ -320,9 +328,11 @@ def fill_for_efficiency( hist ) :
             hist.SetBinContent( x+1, y+1, fillMap[x,y] ) 
     # Set lower left corner == 1 (100%)
     lower_left = hist.GetBinContent( 1, 1)
-    hist.Scale( 1. / lower_left )
+    if hist.Integral() > 0 :
+        hist.Scale( 1. / lower_left )
 
-for channel in ['mt',]:# 'tt'] :
+#for channel in ['mt',]:# 'tt',] :
+for channel in ['tt',] :
 
     # Channel specific setup
     if channel == 'mt' :

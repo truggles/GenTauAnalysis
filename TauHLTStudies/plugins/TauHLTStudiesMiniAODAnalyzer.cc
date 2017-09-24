@@ -606,7 +606,7 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
     //tIsoCmbMedium03 = passingTausV.at(0)->tauID("byMediumCombinedIsolationDeltaBetaCorr3HitsdR03");
     tIsoCmbTight = passingTausV.at(0)->tauID("byTightCombinedIsolationDeltaBetaCorr3Hits");
     //tIsoCmbTight03 = passingTausV.at(0)->tauID("byTightCombinedIsolationDeltaBetaCorr3HitsdR03");
-    tDecayMode = passingTausV.at(0)->tauID("decayModeFinding");
+    tDecayMode = passingTausV.at(0)->decayMode();
     if (!doTauTau )
         leptonDR_m_t1 = deltaR( bestMuon, *passingTausV.at(0) );
 
@@ -626,7 +626,7 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
         //t2IsoCmbMedium03 = passingTausV.at(1)->tauID("byMediumCombinedIsolationDeltaBetaCorr3HitsdR03");
         t2IsoCmbTight = passingTausV.at(1)->tauID("byTightCombinedIsolationDeltaBetaCorr3Hits");
         //t2IsoCmbTight03 = passingTausV.at(1)->tauID("byTightCombinedIsolationDeltaBetaCorr3HitsdR03");
-        t2DecayMode = passingTausV.at(1)->tauID("decayModeFinding");
+        t2DecayMode = passingTausV.at(1)->decayMode();
         if (!doTauTau )
             leptonDR_m_t2 = deltaR( bestMuon, *passingTausV.at(1) );
         leptonDR_t1_t2 = deltaR( *passingTausV.at(0), *passingTausV.at(1) );

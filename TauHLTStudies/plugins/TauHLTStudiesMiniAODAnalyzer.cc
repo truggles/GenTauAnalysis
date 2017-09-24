@@ -396,7 +396,7 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
     // This is used later for pile up reweighting
     edm::Handle<std::vector<PileupSummaryInfo>> puInfo;   
     iEvent.getByToken(puToken_, puInfo);
-    nTruePU = -99
+    nTruePU = -99;
     if (puInfo.isValid()) {
         if (puInfo->size() > 0) {
             nTruePU = puInfo->at(1).getTrueNumInteractions();

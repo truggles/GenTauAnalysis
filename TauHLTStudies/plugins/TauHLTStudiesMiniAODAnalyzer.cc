@@ -164,6 +164,9 @@ class TauHLTStudiesMiniAODAnalyzer : public edm::one::EDAnalyzer<edm::one::Share
       int HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1;
       int HLT_IsoMu24_eta2p1;
       int HLT_IsoMu24;
+      int HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1;
+      int HLT_IsoMu27_eta2p1_MediumChargedIsoPFTau20_SingleL1;
+      int HLT_IsoMu27_eta2p1_TightChargedIsoPFTau20_SingleL1;
       int HLT_IsoMu27;
       int HLT_DoubleLooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg;
       int HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg;
@@ -244,6 +247,9 @@ TauHLTStudiesMiniAODAnalyzer::TauHLTStudiesMiniAODAnalyzer(const edm::ParameterS
    triggers["HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1_v"]          = &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1;
    triggers["HLT_IsoMu24_eta2p1_v"]                                                         = &HLT_IsoMu24_eta2p1;
    triggers["HLT_IsoMu24_v"]                                                                = &HLT_IsoMu24;
+   triggers["HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1_v"]                         = &HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1;
+   triggers["HLT_IsoMu27_eta2p1_MediumChargedIsoPFTau20_SingleL1_v"]                        = &HLT_IsoMu27_eta2p1_MediumChargedIsoPFTau20_SingleL1;
+   triggers["HLT_IsoMu27_eta2p1_TightChargedIsoPFTau20_SingleL1_v"]                         = &HLT_IsoMu27_eta2p1_TightChargedIsoPFTau20_SingleL1;
    triggers["HLT_IsoMu27_v"]                                                                = &HLT_IsoMu27;
    triggers["HLT_DoubleLooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v"]                   = &HLT_DoubleLooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg;
    triggers["HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg_v"]                           = &HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg;
@@ -346,6 +352,9 @@ TauHLTStudiesMiniAODAnalyzer::TauHLTStudiesMiniAODAnalyzer(const edm::ParameterS
    tree->Branch("HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1",          &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1,         "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1/I");
    tree->Branch("HLT_IsoMu24_eta2p1",                                                         &HLT_IsoMu24_eta2p1,                                                        "HLT_IsoMu24_eta2p1/I");
    tree->Branch("HLT_IsoMu24",                                                                &HLT_IsoMu24,                                                               "HLT_IsoMu24/I");
+   tree->Branch("HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1",                         &HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1,                        "HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1/I");
+   tree->Branch("HLT_IsoMu27_eta2p1_MediumChargedIsoPFTau20_SingleL1",                        &HLT_IsoMu27_eta2p1_MediumChargedIsoPFTau20_SingleL1,                       "HLT_IsoMu27_eta2p1_MediumChargedIsoPFTau20_SingleL1/I");
+   tree->Branch("HLT_IsoMu27_eta2p1_TightChargedIsoPFTau20_SingleL1",                         &HLT_IsoMu27_eta2p1_TightChargedIsoPFTau20_SingleL1,                        "HLT_IsoMu27_eta2p1_TightChargedIsoPFTau20_SingleL1/I");
    tree->Branch("HLT_IsoMu27",                                                                &HLT_IsoMu27,                                                               "HLT_IsoMu27/I");
    tree->Branch("HLT_DoubleLooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg",                   &HLT_DoubleLooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg,                  "HLT_DoubleLooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg",                           &HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg,                          "HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg/I");

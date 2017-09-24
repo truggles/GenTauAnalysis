@@ -571,8 +571,8 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
     bool btagged = false;
     for (const pat::Jet &j : *jets) {
         if (j.pt() < 20 || fabs(j.eta()) > 2.4 || j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") < 0.8) continue;
-        if (!doTauTau && deltaR(j, bestMuon) > 0.5) continue;
-        if (deltaR(j.p4(), passingTausV.at(0)->p4()) > 0.5) continue;
+        if (!doTauTau && deltaR(j, bestMuon) < 0.5) continue;
+        if (deltaR(j.p4(), passingTausV.at(0)->p4()) < 0.5) continue;
         btagged = true;
     }
     if (btagged) return;

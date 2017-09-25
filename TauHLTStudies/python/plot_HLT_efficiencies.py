@@ -5,10 +5,10 @@ mt_triggers = [
    #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1",
    #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
    #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
-   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1",
+#   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1",
    #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1",
    #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
-#   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
+   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
 #   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr",
    #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1",
    #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1",
@@ -29,7 +29,7 @@ def buildLegend( items, names ) :
     legend.SetMargin(0.3)
     legend.SetBorderSize(0)
     for item, name in zip(items, names) : #range(0, stack.GetStack().GetLast() + 1) :
-        legend.AddEntry( item, name, 'l')
+        legend.AddEntry( item, name, 'lep')
     return legend
 
 def decorate(cmsLumi) :
@@ -110,27 +110,42 @@ def divideTH1( h1, h2 ) :
             print "Bin in Numerator > Bin in Denominator",b1,b2
             print "Setting Numerator == Denominator bin"
             h2.SetBinContent( b, b1 )
+            h2.SetBinError( b, h1.GetBinError( b ) )
     g = ROOT.TGraphAsymmErrors( h1, h2 )
     return g
 
 
 def makeFinalEfficiencyPlot( c, divisions, effPlots, matchList, legendApp='' ) :
+    colors = [ROOT.kBlack, ROOT.kRed, ROOT.kGreen+1, ROOT.kBlue, ROOT.kMagenta]
     legItems = []
     legNames = []
     cnt = 0
+    mg = ROOT.TMultiGraph()
+    xMax = 0.
     for i, division in enumerate(divisions) :
         if division not in matchList : continue
-        print i, cnt, division, effPlots[division].Integral()
-        effPlots[division].SetLineColor( colors[cnt] )
-        if cnt == 0 :
-            effPlots[division].Draw()
-        else :
-            effPlots[division].Draw('SAME')
+        if effPlots[division].Integral() == 0.0 : continue
+        print i, cnt, division, effPlots[division].Integral(), "color:",colors[cnt]
+        #effPlots[division].SetLineColor( colors[cnt] )
+        effPlots[division].SetLineColor( ROOT.kBlack )
+        effPlots[division].SetLineWidth( 1 )
+        effPlots[division].SetMarkerSize( 1 )
+        effPlots[division].SetMarkerStyle( 20+cnt )
+        #effPlots[division].SetMarkerColor( colors[cnt] )
+        effPlots[division].SetMarkerColor( cnt+1 )
+        effPlots[division].GetXaxis().SetLimits( 20., 250. )
+        mg.Add( effPlots[division] )
         legItems.append( effPlots[division] )
         legNames.append( legendApp+division )
         cnt += 1
+    mg.Draw('ap')
+    mg.SetMaximum( 1.3 )
+    mg.SetMinimum( 0. )
+    mg.GetXaxis().SetLimits( 20., 250. )
+    mg.GetXaxis().SetMoreLogLabels()
     leg = buildLegend( legItems, legNames )
     leg.Draw()
+    ROOT.gPad.Update()
     decorate(17.8)
     c.SaveAs(plotBase+c.GetName()+'.png')
     c.SaveAs(plotBase+c.GetName()+'.pdf')
@@ -160,21 +175,31 @@ for channel in ['mt',] :
 
     divisions = OrderedDict()
 
-    divisions['Medium'] = '*(tMVAIsoMedium == 1)'
-    divisions['Tight'] = '*(tMVAIsoTight == 1)'
-    divisions['VTight'] = '*(tMVAIsoVTight == 1)'
     divisions['RunB'] = '*(run >= 297020 && run <= 299329)'
     divisions['RunC'] = '*(run >= 299337 && run <= 302029)'
     divisions['RunD'] = '*(run >= 302030 && run <= 303434)'
-    divisions['nvtx0to20'] = '*(nvtx >= 0 && nvtx <= 20)'
-    divisions['nvtx20to30'] = '*(nvtx >= 20 && nvtx <= 30)'
-    divisions['nvtx30to30'] = '*(nvtx >= 30 && nvtx <= 40)'
-    divisions['nvtx40to60'] = '*(nvtx >= 40 && nvtx <= 60)'
-    divisions['nvtx60to100'] = '*(nvtx >= 60 && nvtx <= 100)'
+    #divisions['Medium'] = '*(tMVAIsoMedium == 1)'
+    #divisions['Tight'] = '*(tMVAIsoTight == 1)'
+    #divisions['VTight'] = '*(tMVAIsoVTight == 1)'
+    #divisions['nvtx0to15'] = '*(nvtx >= 0 && nvtx < 15)'
+    #divisions['nvtx15to25'] = '*(nvtx >= 15 && nvtx < 25)'
+    #divisions['nvtx25to35'] = '*(nvtx >= 25 && nvtx < 35)'
+    #divisions['nvtx35plus'] = '*(nvtx >= 35)'
 
     isolations = ['Medium','Tight','VTight']
     runs = ['RunB','RunC','RunD']
-    nvtxs = ['nvtx0to20','nvtx20to30','nvtx30to40','nvtx40to60','nvtx60to100',]
+    nvtxs = ['nvtx0to15','nvtx15to25','nvtx25to35','nvtx35plus',]
+
+    divisions['nvtx0to25_runD'] = '*(nvtx >= 0 && nvtx < 25)*(run >= 302030 && run <= 303434)'
+    divisions['nvtx25plus_runD'] = '*(nvtx >= 25)*(run >= 302030 && run <= 303434)'
+    nvtxsRunD = ['nvtx0to25_runD','nvtx25plus_runD',]
+
+    if 'Medium' not in divisions.keys() : isolations = []
+    if 'RunB' not in divisions.keys() : runs = []
+    if 'nvtx0to15' not in divisions.keys() : nvtxs = []
+    if 'nvtx0to25_runD' not in divisions.keys() : nvtxsRunD = []
+
+
     #isolations = ['Tight',]
     for trigger in triggers :
         print "\n\nHLT Trigger: ",trigger
@@ -215,35 +240,38 @@ for channel in ['mt',] :
             ### Make Eff Plot
             g = divideTH1( subMap['Pass'], subMap['All'] )    
             c.SetGrid()
-            g.SetMaximum( 1.3 )
-            g.SetMinimum( 0. )
             g.GetXaxis().SetTitle('#tau p_{T} (GeV)')
             g.GetYaxis().SetTitle('L1 + HLT Efficiency')
-            #g.SetTitle(run+' HLT MediumIso35Tau Eff. per Tau')
             g.SetTitle(trigger)
-            #g.SetLineColor( colors[i] )
             g.SetLineWidth(2)
             g.Draw()
-            #c.SaveAs(plotBase+trigger+'_'+division+'.png')
             c.Clear()
             effPlots[division] = g
 
-        #effPlots[division]['AllRuns'].SetMaximum(1.5)
-        #effPlots[division]['AllRuns'].Draw()
-        #finalRuns = ['AllRuns', 'DYJets', 'DYJetsRealTau']
-        #colors = [ROOT.kBlack, ROOT.kGray, ROOT.kBlue, ROOT.kRed, ROOT.kGreen+1, ROOT.kYellow-2]
-        colors = [ROOT.kBlack, ROOT.kRed, ROOT.kGreen+1, ROOT.kYellow-2]
         ROOT.gPad.SetLogx()
 
         # Do MVA ID/Iso comparison
-        print "Tau MVA ID/Iso Comparison"
-        c.SetName(trigger+'_allIsos')
-        makeFinalEfficiencyPlot( c, divisions, effPlots, isolations, 'Tau MVA Iso ' )
+        if isolations != [] :
+            print "Tau MVA ID/Iso Comparison"
+            c.SetName(trigger+'_allIsos')
+            makeFinalEfficiencyPlot( c, divisions, effPlots, isolations, 'Tau MVA Iso ' )
         # Do Run comparison
-        print "Run Comparison"
-        c.SetName(trigger+'_allRuns')
-        makeFinalEfficiencyPlot( c, divisions, effPlots, runs, '2017 ' )
+        if runs != [] :
+            print "Run Comparison"
+            c.SetName(trigger+'_allRuns')
+            makeFinalEfficiencyPlot( c, divisions, effPlots, runs, '2017 ' )
 
+        # Do NVTX comparison
+        if nvtxs != [] :
+            print "NVTX Comparison"
+            c.SetName(trigger+'_nvtx')
+            makeFinalEfficiencyPlot( c, divisions, effPlots, nvtxs, '' )
+
+        # Do NVTX comparison for Run D
+        if nvtxsRunD != [] :
+            print "NVTX Comparison for Run D"
+            c.SetName(trigger+'_nvtxRunD')
+            makeFinalEfficiencyPlot( c, divisions, effPlots, nvtxsRunD, '' )
 
 
 

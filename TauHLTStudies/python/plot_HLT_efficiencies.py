@@ -5,16 +5,19 @@ mt_triggers = [
    #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1",
    #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
    #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
-   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1",
+#   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1",
    #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1",
    #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
-   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
+#   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
    "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr",
    #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1",
    #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1",
    #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
    #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
 ]
+
+doLog = True
+doLog = False
 
 import ROOT
 ROOT.gROOT.SetBatch(True)
@@ -35,7 +38,7 @@ def buildLegend( items, names ) :
 
 def decorate(cmsLumi) :
     logo = ROOT.TText(.2, .85,"CMS Preliminary")
-    logo.SetTextSize(0.03)
+    logo.SetTextSize(0.04)
     logo.DrawTextNDC(.2, .85,"CMS Preliminary")
     
     lumi = ROOT.TText(.7,1.05,"X fb^{-1} (13 TeV)")
@@ -51,16 +54,16 @@ def getBinning( name ) :
             binning.append( i )
         for i in range( 60, 110, 20 ) :
             binning.append( i )
-        binning.append( 150 )
+        #binning.append( 150 )
         binning.append( 250 )
-        binning.append( 400 )
-        binning.append( 1000 )
+        #binning.append( 400 )
+        #binning.append( 1000 )
     elif 'IsoPFTau50' in trigger :
         binning = array('d', [20,22.5,25,27.5,30,32.5,35,37.5,40,\
-            42.5,45,47.5,50,55,60,67.5,80,100,150,250,400,1000])
+            42.5,45,47.5,50,55,60,67.5,80,100,250])#,400,1000])
     else :
         binning = array('d', [20,22.5,25,27.5,30,32.5,35,37.5,40,\
-            42.5,45,47.5,50,55,60,67.5,80,100,150,250,400,1000])
+            42.5,45,47.5,50,55,60,67.5,80,100,250])#,400,1000])
     return binning
 
 
@@ -74,7 +77,7 @@ def getHist( tree, var, cut, name, iso, trigger ) :
 
     tree.Draw( var+' >> '+name, doCut )
     print name, h.Integral()
-    h.GetXaxis().SetTitle('#tau p_{T} (GeV)')
+    h.GetXaxis().SetTitle('Offline #tau p_{T} (GeV)')
     h.GetYaxis().SetTitle('Number of Events')
     h.SetDirectory( 0 )
     return h
@@ -104,7 +107,7 @@ def divideTH1( h1, h2, binning ) :
     for b in range( 1, h1.GetNbinsX()+1 ) :
         b1 =  h1.GetBinContent( b )
         b2 =  h2.GetBinContent( b )
-        print b, b1, b2
+        #print b, b1, b2
         if b1 > b2 :
             print "Bin in Numerator > Bin in Denominator",b1,b2
             print "Setting Numerator == Denominator bin"
@@ -117,7 +120,7 @@ def divideTH1( h1, h2, binning ) :
     #g = ROOT.TGraphAsymmErrors( h1, h2, 'v' ) # Verbose
     h1.Sumw2(False) # treat h1 as unweighted
     h2.Sumw2(False)
-    g2 = ROOT.TGraphAsymmErrors( h1, h2, 'v' ) # created unweighted version
+    g2 = ROOT.TGraphAsymmErrors( h1, h2 ) # created unweighted version
     checkReturnedUncert( g, g2 ) # take only uncertainty for failed points
     return g
 
@@ -125,10 +128,11 @@ def divideTH1( h1, h2, binning ) :
 def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendApp='', doFit=True ) :
     mini = 15.
     maxi = 250.
+    #maxi = 100.
     fitMin = 20.
     #doFit=False
     
-    colors = [ROOT.kBlack, ROOT.kRed, ROOT.kGreen+1, ROOT.kBlue, ROOT.kMagenta]
+    colors = [ROOT.kRed, ROOT.kBlue, ROOT.kGreen+1, ROOT.kOrange]
     legItems = []
     legNames = []
     cnt = 0
@@ -139,35 +143,52 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
     for i, division in enumerate(divisions) :
         if division not in matchList : continue
         if effPlots[division].Integral() == 0.0 : continue
-        print i, cnt, division, effPlots[division].Integral(), "color:",colors[cnt]
+        #print i, cnt, division, effPlots[division].Integral(), "color:",colors[cnt]
         #effPlots[division].SetLineColor( colors[cnt] )
-        effPlots[division].SetLineColor( ROOT.kBlack )
+        #effPlots[division].SetLineColor( ROOT.kBlack )
+        effPlots[division].SetLineColor( colors[cnt] )
         effPlots[division].SetLineWidth( 1 )
         effPlots[division].SetMarkerSize( 1 )
         effPlots[division].SetMarkerStyle( 20+cnt )
-        #effPlots[division].SetMarkerColor( colors[cnt] )
-        effPlots[division].SetMarkerColor( cnt+1 )
-        effPlots[division].GetXaxis().SetLimits( mini, maxi )
+        effPlots[division].SetMarkerColor( colors[cnt] )
+        #effPlots[division].SetMarkerColor( cnt+1 )
+        if doLog :
+            effPlots[division].GetXaxis().SetLimits( mini, maxi )
+        else :
+            effPlots[division].GetXaxis().SetLimits( 0., maxi )
         if doFit :
-            f1 = ROOT.TF1( 'f1', 'ROOT::Math::crystalball_cdf(x, [0], [1], [2], [3])*[4]', fitMin, maxi )
+            #f1 = ROOT.TF1( 'f1', 'ROOT::Math::crystalball_cdf(x, [0], [1], [2], [3])*[4]', fitMin, maxi )
+            f1 = ROOT.TF1( 'f1', '[5] - ROOT::Math::crystalball_cdf(-x, [0], [1], [2], [3])*[4]', fitMin, maxi )
+            #f1 = ROOT.TF1( 'f1', '1 - ROOT::Math::crystalball_cdf(-x, [0], [1], [2], [3])*[4]', fitMin, maxi )
             f1.SetParName( 0, "alpha" )
             f1.SetParName( 1, "n" )
             f1.SetParName( 2, "simga" )
             f1.SetParName( 3, "x0" )
             f1.SetParName( 4, "scale" )
-            f1.SetParameter( 0, 5. )
-            f1.SetParameter( 1, 3. )
-            f1.SetParameter( 2, 10. )
-            f1.SetParameter( 3, 40. )
+            f1.SetParName( 5, "y-rise" )
+            #f1.SetParameter( 0, 1. ) # Good fit for Tau50 RunC & RunD
+            #f1.SetParameter( 1, 5. )
+            #f1.SetParameter( 2, 7. )
+            #f1.SetParameter( 3, -50. )
+            #f1.SetParameter( 4, 1. )
+            #f1.SetParameter( 5, 1. )
+            f1.SetParameter( 0, 1. )
+            f1.SetParameter( 1, 5. )
+            f1.SetParameter( 2, 7. )
+            f1.SetParameter( 3, -50. )
             f1.SetParameter( 4, 1. )
+            f1.SetParameter( 5, 1. )
             effPlots[division].Fit('f1', 'SR' )
-            f2 = ROOT.TF1( 'f'+division, 'ROOT::Math::crystalball_cdf(x, [0], [1], [2], [3])*[4]', fitMin, maxi )
+            f2 = ROOT.TF1( 'f'+division, '[5] - ROOT::Math::crystalball_cdf(-x, [0], [1], [2], [3])*[4]', fitMin, maxi )
+            #f2 = ROOT.TF1( 'f'+division, '1 - ROOT::Math::crystalball_cdf(-x, [0], [1], [2], [3])*[4]', fitMin, maxi )
             f2.SetParameter( 0, f1.GetParameter(0) )
             f2.SetParameter( 1, f1.GetParameter(1) )
             f2.SetParameter( 2, f1.GetParameter(2) )
             f2.SetParameter( 3, f1.GetParameter(3) )
             f2.SetParameter( 4, f1.GetParameter(4) )
-            f2.SetLineColor( cnt+1 )
+            f2.SetParameter( 5, f1.GetParameter(5) )
+            #f2.SetLineColor( cnt+1 )
+            f2.SetLineColor( colors[cnt] )
             fits.append( f2 )
         mg.Add( effPlots[division] )
         legItems.append( effPlots[division] )
@@ -176,10 +197,13 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
     mg.Draw('ap')
     mg.SetMaximum( 1.3 )
     mg.SetMinimum( 0. )
-    mg.GetXaxis().SetTitle('#tau p_{T} (GeV)')
+    mg.GetXaxis().SetTitle('Offline #tau p_{T} (GeV)')
     mg.GetXaxis().SetTitleOffset( mg.GetXaxis().GetTitleOffset()*1.3 )
     mg.GetYaxis().SetTitle('L1 + HLT Efficiency')
-    mg.GetXaxis().SetLimits( 20., 250. )
+    if doLog :
+        mg.GetXaxis().SetLimits( 20., maxi )
+    else :
+        mg.GetXaxis().SetLimits( 0., maxi )
     mg.GetXaxis().SetMoreLogLabels()
 
     if doFit :
@@ -197,7 +221,8 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
 
 for channel in ['mt',] :
 
-    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/sept25_fixFill/'
+    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/sept26_100to250_noLog_fit/'
+    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/sept26_100to250_noLog_fit2/'
 
     triggers = mt_triggers
     f = ROOT.TFile('/data/truggles/tau_trigger_eff_MuTauSkim_20170925v1.root', 'r')
@@ -216,30 +241,34 @@ for channel in ['mt',] :
     
     
 
-    divisions = OrderedDict()
+    Divisions = OrderedDict()
 
-    divisions['RunB'] = '*(run >= 297020 && run <= 299329)'
-    divisions['RunC'] = '*(run >= 299337 && run <= 302029)'
-    divisions['RunD'] = '*(run >= 302030 && run <= 303434)'
-    divisions['Medium'] = '*(tMVAIsoMedium == 1)'
-    divisions['Tight'] = '*(tMVAIsoTight == 1)'
-    divisions['VTight'] = '*(tMVAIsoVTight == 1)'
-    divisions['nvtx0to15'] = '*(nvtx >= 0 && nvtx < 15)'
-    divisions['nvtx15to25'] = '*(nvtx >= 15 && nvtx < 25)'
-    divisions['nvtx25to35'] = '*(nvtx >= 25 && nvtx < 35)'
-    divisions['nvtx35plus'] = '*(nvtx >= 35)'
-    divisions['nvtx0to25_runD'] = '*(nvtx >= 0 && nvtx < 25)*(run >= 302030 && run <= 303434)'
-    divisions['nvtx25plus_runD'] = '*(nvtx >= 25)*(run >= 302030 && run <= 303434)'
+    Divisions['All 2017 Data - nvtx'] = 'run > 0'
+    #Divisions['All 2017 Data'] = 'run > 0'
+    #Divisions['RunB'] = 'run >= 297020 && run <= 299329'
+    #Divisions['RunC'] = 'run >= 299337 && run <= 302029'
+    #Divisions['RunD'] = 'run >= 302030 && run <= 303434'
+    #Divisions['Medium'] = 'tMVAIsoMedium == 1 && tMVAIsoTight != 1'
+    #Divisions['Tight'] = 'tMVAIsoTight == 1 && tMVAIsoVTight != 1'
+    #Divisions['VTight'] = 'tMVAIsoVTight == 1'
+    #Divisions['nvtx0to15'] = 'nvtx >= 0 && nvtx < 15'
+    #Divisions['nvtx15to25'] = 'nvtx >= 15 && nvtx < 25'
+    #Divisions['nvtx25to35'] = 'nvtx >= 25 && nvtx < 35'
+    #Divisions['nvtx35plus'] = 'nvtx >= 35'
+    #Divisions['2017 RunD 0 <= nvtx <= 25'] = 'nvtx >= 0 && nvtx < 25 && run >= 302030 && run <= 303434'
+    #Divisions['2017 RunD nvtx > 25'] = 'nvtx >= 25 && run >= 302030 && run <= 303434'
 
     isolations = ['Medium','Tight','VTight']
     runs = ['RunB','RunC','RunD']
     nvtxs = ['nvtx0to15','nvtx15to25','nvtx25to35','nvtx35plus',]
-    nvtxsRunD = ['nvtx0to25_runD','nvtx25plus_runD',]
+    nvtxsRunD = ['2017 RunD 0 <= nvtx <= 25','2017 RunD nvtx > 25',]
+    all2017 = ['All 2017 Data',]
 
-    if 'Medium' not in divisions.keys() : isolations = []
-    if 'RunB' not in divisions.keys() : runs = []
-    if 'nvtx0to15' not in divisions.keys() : nvtxs = []
-    if 'nvtx0to25_runD' not in divisions.keys() : nvtxsRunD = []
+    if 'Medium' not in Divisions.keys() : isolations = []
+    if 'RunB' not in Divisions.keys() : runs = []
+    if 'nvtx0to15' not in Divisions.keys() : nvtxs = []
+    if '2017 RunD 0 <= nvtx <= 25' not in Divisions.keys() : nvtxsRunD = []
+    if 'All 2017 Data' not in Divisions.keys() : all2017 = []
 
 
     #isolations = ['Tight',]
@@ -248,23 +277,31 @@ for channel in ['mt',] :
         print "\n\nHLT Trigger: ",trigger
         effPlots = {}
         #for iso in isolations :
-        for division in divisions :
+        for division in Divisions :
             print division
             effPlots[division] = {}
 
-            onePr = ''
             baselineCut = 'mPt > 27 && tMVAIsoMedium == 1 && HLT_IsoMu27 == 1 && m_vis > 40 && m_vis < 80 && transMass < 30'
-            baselineCut += divisions[division]
+
+            # If 1pt, it wasn't in Run B
+            if "Trk30_eta2p1_1pr" in trigger and 'All 2017 Data' in division :
+                # lower is bottom of RunC, top is top of RunD
+                baselineCut += ' && run >= 299337 && run <= 303434'
+            else :
+                baselineCut += ' && '+Divisions[division]
+
+            # For 1pr HLT Paths
             if "Trk30_eta2p1_1pr" in trigger :
-                 onePr = ' && tDecayMode < 2'
+                 baselineCut += ' && tDecayMode < 2'
+
             cuts = {
                 'SSPass': baselineCut+' && SS == 1 \
-                    && tTrigMatch>0.5 && %s > 0.5 %s' % (trigger, onePr),
+                    && tTrigMatch>0.5 && %s > 0.5' % trigger,
                 'OSPass': baselineCut+' && SS == 0 \
-                    && tTrigMatch>0.5 && %s > 0.5 %s' % (trigger, onePr),
-                'SSAll': baselineCut+' && SS == 1 %s' % (onePr),
-                'OSAll': baselineCut+' && SS == 0 %s' % (onePr)
-                }
+                    && tTrigMatch>0.5 && %s > 0.5' % trigger,
+                'SSAll': baselineCut+' && SS == 1',
+                'OSAll': baselineCut+' && SS == 0'
+            }
 
 
             hists = {}
@@ -292,33 +329,37 @@ for channel in ['mt',] :
             c.Clear()
             effPlots[division] = g
 
-        ROOT.gPad.SetLogx()
+        if doLog :
+            ROOT.gPad.SetLogx()
 
         # Do MVA ID/Iso comparison
         if isolations != [] :
             print "Tau MVA ID/Iso Comparison"
             c.SetName(trigger+'_allIsos')
-            makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, isolations, 'Tau MVA Iso ' )
+            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, isolations, 'Tau MVA Iso ' )
         # Do Run comparison
         if runs != [] :
             print "Run Comparison"
             c.SetName(trigger+'_allRuns')
-            makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, runs, '2017 ' )
+            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, runs, '2017 ' )
 
         # Do NVTX comparison
         if nvtxs != [] :
             print "NVTX Comparison"
             c.SetName(trigger+'_nvtx')
-            makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, nvtxs, '' )
+            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, nvtxs, '' )
 
         # Do NVTX comparison for Run D
         if nvtxsRunD != [] :
             print "NVTX Comparison for Run D"
             c.SetName(trigger+'_nvtxRunD')
-            makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, nvtxsRunD, '' )
+            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, nvtxsRunD, '' )
 
-
-
+        # Do NVTX comparison for Run D
+        if all2017 != [] :
+            print "All 2017 Data"
+            c.SetName(trigger+'_combined')
+            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, all2017, '' )
 
 
 

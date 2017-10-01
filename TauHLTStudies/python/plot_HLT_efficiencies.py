@@ -5,10 +5,10 @@ mt_triggers = [
    #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1",
    #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
    #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
-#   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1",
+   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1",
    #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1",
    #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
-#   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
+   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
    "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr",
    #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1",
    #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1",
@@ -18,6 +18,7 @@ mt_triggers = [
 
 doLog = True
 doLog = False
+doNvtxComb = True
 
 import ROOT
 ROOT.gROOT.SetBatch(True)
@@ -45,30 +46,35 @@ def decorate(cmsLumi) :
     lumi.SetTextSize(0.03)
     lumi.DrawTextNDC(.67,.91,"%.1f / fb (13 TeV)" % cmsLumi )
 
-def getBinning( name ) :
-    if 'IsoPFTau20' in trigger or 'IsoPFTau35' in trigger :
+def getBinning( name, division ) :
+    #if 'IsoPFTau20' in trigger or 'IsoPFTau35' in trigger :
+    #    binning = array('d', [])
+    #    for i in range( 20, 45, 2 ) :
+    #        binning.append( i )
+    #    for i in range( 45, 60, 5 ) :
+    #        binning.append( i )
+    #    for i in range( 60, 110, 20 ) :
+    #        binning.append( i )
+    #    #binning.append( 150 )
+    #    binning.append( 250 )
+    #    #binning.append( 400 )
+    #    #binning.append( 1000 )
+    #elif 'IsoPFTau50' in trigger :
+    #    binning = array('d', [20,22.5,25,27.5,30,32.5,35,37.5,40,\
+    #        42.5,45,47.5,50,55,60,67.5,80,100,250])#,400,1000])
+    
+    if ' - nvtx' in division :
         binning = array('d', [])
-        for i in range( 20, 45, 2 ) :
+        for i in range( 0, 110, 10 ) :
             binning.append( i )
-        for i in range( 45, 60, 5 ) :
-            binning.append( i )
-        for i in range( 60, 110, 20 ) :
-            binning.append( i )
-        #binning.append( 150 )
-        binning.append( 250 )
-        #binning.append( 400 )
-        #binning.append( 1000 )
-    elif 'IsoPFTau50' in trigger :
-        binning = array('d', [20,22.5,25,27.5,30,32.5,35,37.5,40,\
-            42.5,45,47.5,50,55,60,67.5,80,100,250])#,400,1000])
     else :
         binning = array('d', [20,22.5,25,27.5,30,32.5,35,37.5,40,\
             42.5,45,47.5,50,55,60,67.5,80,100,250])#,400,1000])
     return binning
 
 
-def getHist( tree, var, cut, name, iso, trigger ) :
-    binning = getBinning( trigger )
+def getHist( tree, var, cut, name, division, trigger ) :
+    binning = getBinning( trigger, division )
     #h = ROOT.TH1F( name, name, 20, 0, 100)
     h = ROOT.TH1F( name, name+trigger, len(binning)-1, binning)
     #h.Sumw2()
@@ -76,7 +82,7 @@ def getHist( tree, var, cut, name, iso, trigger ) :
     doCut += cut
 
     tree.Draw( var+' >> '+name, doCut )
-    print name, h.Integral()
+    print name, h.Integral(), binning
     h.GetXaxis().SetTitle('Offline #tau p_{T} (GeV)')
     h.GetYaxis().SetTitle('Number of Events')
     h.SetDirectory( 0 )
@@ -131,6 +137,11 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
     #maxi = 100.
     fitMin = 20.
     #doFit=False
+    
+    # turn off doFit if plot by nvtx
+    if ' - nvtx' in matchList[0] :
+        doFit = False
+        maxi = 60
     
     colors = [ROOT.kRed, ROOT.kBlue, ROOT.kGreen+1, ROOT.kOrange]
     legItems = []
@@ -197,7 +208,10 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
     mg.Draw('ap')
     mg.SetMaximum( 1.3 )
     mg.SetMinimum( 0. )
-    mg.GetXaxis().SetTitle('Offline #tau p_{T} (GeV)')
+    if ' - nvtx' in matchList[0] :
+        mg.GetXaxis().SetTitle('Num. Reconstructed Vertixes')
+    else :
+        mg.GetXaxis().SetTitle('Offline #tau p_{T} (GeV)')
     mg.GetXaxis().SetTitleOffset( mg.GetXaxis().GetTitleOffset()*1.3 )
     mg.GetYaxis().SetTitle('L1 + HLT Efficiency')
     if doLog :
@@ -263,21 +277,24 @@ for channel in ['mt',] :
     nvtxs = ['nvtx0to15','nvtx15to25','nvtx25to35','nvtx35plus',]
     nvtxsRunD = ['2017 RunD 0 <= nvtx <= 25','2017 RunD nvtx > 25',]
     all2017 = ['All 2017 Data',]
+    all2017nvtx = ['All 2017 Data - nvtx',]
 
     if 'Medium' not in Divisions.keys() : isolations = []
     if 'RunB' not in Divisions.keys() : runs = []
     if 'nvtx0to15' not in Divisions.keys() : nvtxs = []
     if '2017 RunD 0 <= nvtx <= 25' not in Divisions.keys() : nvtxsRunD = []
     if 'All 2017 Data' not in Divisions.keys() : all2017 = []
+    if 'All 2017 Data - nvtx' not in Divisions.keys() : all2017nvtx = []
 
 
+    saveMap = {}
     #isolations = ['Tight',]
     for trigger in triggers :
-        binning = getBinning( trigger )
         print "\n\nHLT Trigger: ",trigger
         effPlots = {}
         #for iso in isolations :
         for division in Divisions :
+            binning = getBinning( trigger, division )
             print division
             effPlots[division] = {}
 
@@ -308,7 +325,13 @@ for channel in ['mt',] :
             for name, cut in cuts.iteritems() :
                 print name, cut
                 xCut = '('+cut+')'
-                hists[ name ] = getHist( tree, 'tPt', xCut, name, division, trigger )
+                if ' - nvtx' in division :
+                    if 'PFTau20' in trigger : xCut += '*(tPt > 20)'
+                    if 'PFTau35' in trigger : xCut += '*(tPt > 35)'
+                    if 'PFTau50' in trigger : xCut += '*(tPt > 50)'
+                    hists[ name ] = getHist( tree, 'nvtx', xCut, name, division, trigger )
+                else : # normal hists via tau pt
+                    hists[ name ] = getHist( tree, 'tPt', xCut, name, division, trigger )
                 
             ### Do OS - SS
             #groups = ['Pass','Fail','All']
@@ -355,11 +378,31 @@ for channel in ['mt',] :
             c.SetName(trigger+'_nvtxRunD')
             makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, nvtxsRunD, '' )
 
-        # Do NVTX comparison for Run D
+        # Do all data
         if all2017 != [] :
             print "All 2017 Data"
             c.SetName(trigger+'_combined')
             makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, all2017, '' )
+
+        # Do NVTX comparison for all 2017
+        if all2017nvtx != [] :
+            print "All 2017 Data NVTX"
+            c.SetName(trigger+'_nvtxAll')
+            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, all2017nvtx, '' )
+            #if doNvtxComb :
+            #    effPlots[0].SetTitle(trigger+all2017nvtx[0]+' - nvtx')
+            #    saveMap[trigger+all2017nvtx[0]] = effPlots[0]
+
+    ## Do NVTX comparison for all 2017 and all triggers
+    #if doNvtxComb and all2017nvtx != [] :
+    #    Divisions = OrderedDict()
+    #    Divisions['PFTau20, All 2017 Data - nvtx'] = ''
+    #    Divisions['PFTau35, All 2017 Data - nvtx'] = ''
+    #    Divisions['PFTau50, All 2017 Data - nvtx'] = ''
+
+    #    print "All 2017 Data NVTX"
+    #    c.SetName('all_triggers_all_data_nvtxAll')
+    #    makeFinalEfficiencyPlot( c, trigger, Divisions, saveMap, Divisions.keys(), '' )
 
 
 

@@ -96,14 +96,19 @@ def subtractTH1( h1, h2 ) :
 
 def checkReturnedUncert( g, g2 ) :
     print g
-    #x = ROOT.Double(0)
-    #y = ROOT.Double(0)
+    x = ROOT.Double(0)
+    y = ROOT.Double(0)
     for i in range( g.GetN() ) :
         # If the error calculation failed in TGraphAsymmErrors
         # take it from the "unweighted" version
         if g.GetErrorYhigh(i) == 0.0 and g.GetErrorYlow(i) == 0.0 :
-            #point = g.GetPoint( i, x, y )
-            g.SetPointEYlow( i, g2.GetErrorYlow(i) )
+            point = g.GetPoint( i, x, y )
+            if y == 1.0 :
+                g.SetPointEYlow( i, g2.GetErrorYlow(i) )
+            elif y == 0.0 :
+                g.SetPointEYlow( i, g2.GetErrorYhigh(i) )
+            else :
+                print "\n\n\nHaven't been here before checkReturnedUncert point not 100% or 0% \n\n\n"
 
 
 
@@ -235,8 +240,7 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
 
 for channel in ['mt',] :
 
-    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/sept26_100to250_noLog_fit/'
-    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/sept26_100to250_noLog_fit2/'
+    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/oct01/'
 
     triggers = mt_triggers
     f = ROOT.TFile('/data/truggles/tau_trigger_eff_MuTauSkim_20170925v1.root', 'r')
@@ -258,6 +262,9 @@ for channel in ['mt',] :
     Divisions = OrderedDict()
 
     Divisions['All 2017 Data - nvtx'] = 'run > 0'
+    Divisions['RunB - nvtx'] = 'run >= 297020 && run <= 299329'
+    Divisions['RunC - nvtx'] = 'run >= 299337 && run <= 302029'
+    Divisions['RunD - nvtx'] = 'run >= 302030 && run <= 303434'
     #Divisions['All 2017 Data'] = 'run > 0'
     #Divisions['RunB'] = 'run >= 297020 && run <= 299329'
     #Divisions['RunC'] = 'run >= 299337 && run <= 302029'
@@ -278,6 +285,7 @@ for channel in ['mt',] :
     nvtxsRunD = ['2017 RunD 0 <= nvtx <= 25','2017 RunD nvtx > 25',]
     all2017 = ['All 2017 Data',]
     all2017nvtx = ['All 2017 Data - nvtx',]
+    nvtxByRun = ['RunB - nvtx', 'RunC - nvtx', 'RunD - nvtx']
 
     if 'Medium' not in Divisions.keys() : isolations = []
     if 'RunB' not in Divisions.keys() : runs = []
@@ -285,6 +293,7 @@ for channel in ['mt',] :
     if '2017 RunD 0 <= nvtx <= 25' not in Divisions.keys() : nvtxsRunD = []
     if 'All 2017 Data' not in Divisions.keys() : all2017 = []
     if 'All 2017 Data - nvtx' not in Divisions.keys() : all2017nvtx = []
+    if 'RunB - nvtx' not in Divisions.keys() : nvtxByRun = []
 
 
     saveMap = {}
@@ -392,6 +401,12 @@ for channel in ['mt',] :
             #if doNvtxComb :
             #    effPlots[0].SetTitle(trigger+all2017nvtx[0]+' - nvtx')
             #    saveMap[trigger+all2017nvtx[0]] = effPlots[0]
+
+        # Do NVTX comparison by run
+        if all2017nvtx != [] :
+            print "All 2017 Data By Run NVTX"
+            c.SetName(trigger+'_nvtxByRun')
+            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, nvtxByRun, '' )
 
     ## Do NVTX comparison for all 2017 and all triggers
     #if doNvtxComb and all2017nvtx != [] :

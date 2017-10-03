@@ -494,14 +494,13 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
         bestMuon = mu;
     }
     // Require strictly 1 muon
-    if (isData && !doTauTau)
+    if (!doTauTau)
         if (passingMuons == 0) return;
     if (doTauTau)
         if (passingMuons > 0) return;
     cutFlow->Fill(4., 1.);
     // Extra lepton veto (muons)
-    if (isData)
-        if (passingMuons > 1) return;
+    if (passingMuons > 1) return;
     cutFlow->Fill(5., 1.);
 
 

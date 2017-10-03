@@ -73,7 +73,7 @@ def getBinning( name, division ) :
     return binning
 
 
-def getHist( tree, var, cut, name, division, trigger ) :
+def getHist( trees, var, cut, name, division, trigger ) :
     binning = getBinning( trigger, division )
     #h = ROOT.TH1F( name, name, 20, 0, 100)
     h = ROOT.TH1F( name, name+trigger, len(binning)-1, binning)
@@ -81,7 +81,14 @@ def getHist( tree, var, cut, name, division, trigger ) :
     doCut = ''
     doCut += cut
 
-    tree.Draw( var+' >> '+name, doCut )
+    # Adding MC Samples
+    if 'ggH125' in division :
+        trees['ggH125'].Draw( var+' >> '+name, doCut )
+    elif 'qqH125' in division :
+        trees['qqH125'].Draw( var+' >> '+name, doCut )
+    else :
+        trees['singleMu'].Draw( var+' >> '+name, doCut )
+
     print name, h.Integral(), binning
     h.GetXaxis().SetTitle('Offline #tau p_{T} (GeV)')
     h.GetYaxis().SetTitle('Number of Events')
@@ -243,11 +250,19 @@ for channel in ['mt',] :
     plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/oct01/'
 
     triggers = mt_triggers
-    f = ROOT.TFile('/data/truggles/tau_trigger_eff_MuTauSkim_20170925v1.root', 'r')
-    tree = f.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
-
-    print f
-    print tree
+    fData = ROOT.TFile('/data/truggles/hltTaus_oct03v2/SingleMuon.root', 'r')
+    tData = fData.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
+    fggH125 = ROOT.TFile('/data/truggles/hltTaus_oct03v2/GluGluHToTauTau_M125.root', 'r')
+    tggH125 = fggH125.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
+    fqqH125 = ROOT.TFile('/data/truggles/hltTaus_oct03v2/VBFHToTauTau_M125.root', 'r')
+    tqqH125 = fqqH125.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
+    trees = {
+        'ggH125' : tggH125,
+        'qqH125' : tqqH125,
+        'singleMu' : tData,
+    }
+    for k, v in trees.iteritems() :
+        print k, v
     
     c = ROOT.TCanvas( 'c1', 'c1', 800, 700 ) 
     p = ROOT.TPad( 'p1', 'p1', 0, 0, 1, 1 )
@@ -262,10 +277,14 @@ for channel in ['mt',] :
     Divisions = OrderedDict()
 
     Divisions['All 2017 Data - nvtx'] = 'run > 0'
+    Divisions['ggH125 - nvtx'] = 'run > 0'
+    Divisions['qqH125 - nvtx'] = 'run > 0'
     Divisions['RunB - nvtx'] = 'run >= 297020 && run <= 299329'
     Divisions['RunC - nvtx'] = 'run >= 299337 && run <= 302029'
     Divisions['RunD - nvtx'] = 'run >= 302030 && run <= 303434'
-    #Divisions['All 2017 Data'] = 'run > 0'
+    Divisions['All 2017 Data'] = 'run > 0'
+    Divisions['ggH125'] = 'run > 0'
+    Divisions['qqH125'] = 'run > 0'
     #Divisions['RunB'] = 'run >= 297020 && run <= 299329'
     #Divisions['RunC'] = 'run >= 299337 && run <= 302029'
     #Divisions['RunD'] = 'run >= 302030 && run <= 303434'
@@ -283,8 +302,8 @@ for channel in ['mt',] :
     runs = ['RunB','RunC','RunD']
     nvtxs = ['nvtx0to15','nvtx15to25','nvtx25to35','nvtx35plus',]
     nvtxsRunD = ['2017 RunD 0 <= nvtx <= 25','2017 RunD nvtx > 25',]
-    all2017 = ['All 2017 Data',]
-    all2017nvtx = ['All 2017 Data - nvtx',]
+    all2017 = ['All 2017 Data','ggH125','qqH125']
+    all2017nvtx = ['All 2017 Data - nvtx','ggH125 - nvtx','qqH125 - nvtx']
     nvtxByRun = ['RunB - nvtx', 'RunC - nvtx', 'RunD - nvtx']
 
     if 'Medium' not in Divisions.keys() : isolations = []
@@ -338,9 +357,9 @@ for channel in ['mt',] :
                     if 'PFTau20' in trigger : xCut += '*(tPt > 20)'
                     if 'PFTau35' in trigger : xCut += '*(tPt > 35)'
                     if 'PFTau50' in trigger : xCut += '*(tPt > 50)'
-                    hists[ name ] = getHist( tree, 'nvtx', xCut, name, division, trigger )
+                    hists[ name ] = getHist( trees, 'nvtx', xCut, name, division, trigger )
                 else : # normal hists via tau pt
-                    hists[ name ] = getHist( tree, 'tPt', xCut, name, division, trigger )
+                    hists[ name ] = getHist( trees, 'tPt', xCut, name, division, trigger )
                 
             ### Do OS - SS
             #groups = ['Pass','Fail','All']

@@ -86,6 +86,8 @@ def getHist( trees, var, cut, name, division, trigger ) :
         trees['ggH125'].Draw( var+' >> '+name, doCut )
     elif 'qqH125' in division :
         trees['qqH125'].Draw( var+' >> '+name, doCut )
+    elif 'DYJets' in division :
+        trees['DYJets'].Draw( var+' >> '+name, doCut )
     else :
         trees['singleMu'].Draw( var+' >> '+name, doCut )
 
@@ -165,6 +167,7 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
     fits = []
     for i, division in enumerate(divisions) :
         if division not in matchList : continue
+        print i, division, effPlots[division]
         if effPlots[division].Integral() == 0.0 : continue
         #print i, cnt, division, effPlots[division].Integral(), "color:",colors[cnt]
         #effPlots[division].SetLineColor( colors[cnt] )
@@ -213,7 +216,7 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
             #f2.SetLineColor( cnt+1 )
             f2.SetLineColor( colors[cnt] )
             fits.append( f2 )
-        mg.Add( effPlots[division] )
+        mg.Add( effPlots[division].Clone() )
         legItems.append( effPlots[division] )
         legNames.append( legendApp+division )
         cnt += 1
@@ -247,7 +250,7 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
 
 for channel in ['mt',] :
 
-    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/oct01/'
+    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/oct05/'
 
     triggers = mt_triggers
     fData = ROOT.TFile('/data/truggles/hltTaus_oct03v2/SingleMuon.root', 'r')
@@ -256,9 +259,12 @@ for channel in ['mt',] :
     tggH125 = fggH125.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
     fqqH125 = ROOT.TFile('/data/truggles/hltTaus_oct03v2/VBFHToTauTau_M125.root', 'r')
     tqqH125 = fqqH125.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
+    fDYJets = ROOT.TFile('/data/truggles/hltTaus_oct03v2/DYJets.root', 'r')
+    tDYJets = fDYJets.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
     trees = {
-        'ggH125' : tggH125,
-        'qqH125' : tqqH125,
+        #'ggH125' : tggH125,
+        #'qqH125' : tqqH125,
+        'DYJets' : tDYJets,
         'singleMu' : tData,
     }
     for k, v in trees.iteritems() :
@@ -277,17 +283,19 @@ for channel in ['mt',] :
     Divisions = OrderedDict()
 
     Divisions['All 2017 Data - nvtx'] = 'run > 0'
-    Divisions['ggH125 - nvtx'] = 'run > 0'
-    Divisions['qqH125 - nvtx'] = 'run > 0'
+    #Divisions['ggH125 - nvtx'] = 'run > 0'
+    #Divisions['qqH125 - nvtx'] = 'run > 0'
+    Divisions['DYJets - nvtx'] = 'run > 0'
     Divisions['RunB - nvtx'] = 'run >= 297020 && run <= 299329'
     Divisions['RunC - nvtx'] = 'run >= 299337 && run <= 302029'
     Divisions['RunD - nvtx'] = 'run >= 302030 && run <= 303434'
     Divisions['All 2017 Data'] = 'run > 0'
-    Divisions['ggH125'] = 'run > 0'
-    Divisions['qqH125'] = 'run > 0'
-    #Divisions['RunB'] = 'run >= 297020 && run <= 299329'
-    #Divisions['RunC'] = 'run >= 299337 && run <= 302029'
-    #Divisions['RunD'] = 'run >= 302030 && run <= 303434'
+    #Divisions['ggH125'] = 'run > 0'
+    #Divisions['qqH125'] = 'run > 0'
+    Divisions['DYJets'] = 'run > 0'
+    Divisions['RunB'] = 'run >= 297020 && run <= 299329'
+    Divisions['RunC'] = 'run >= 299337 && run <= 302029'
+    Divisions['RunD'] = 'run >= 302030 && run <= 303434'
     #Divisions['Medium'] = 'tMVAIsoMedium == 1 && tMVAIsoTight != 1'
     #Divisions['Tight'] = 'tMVAIsoTight == 1 && tMVAIsoVTight != 1'
     #Divisions['VTight'] = 'tMVAIsoVTight == 1'
@@ -299,12 +307,14 @@ for channel in ['mt',] :
     #Divisions['2017 RunD nvtx > 25'] = 'nvtx >= 25 && run >= 302030 && run <= 303434'
 
     isolations = ['Medium','Tight','VTight']
-    runs = ['RunB','RunC','RunD']
+    runs = ['RunB','RunC','RunD','DYJets']
     nvtxs = ['nvtx0to15','nvtx15to25','nvtx25to35','nvtx35plus',]
     nvtxsRunD = ['2017 RunD 0 <= nvtx <= 25','2017 RunD nvtx > 25',]
-    all2017 = ['All 2017 Data','ggH125','qqH125']
-    all2017nvtx = ['All 2017 Data - nvtx','ggH125 - nvtx','qqH125 - nvtx']
-    nvtxByRun = ['RunB - nvtx', 'RunC - nvtx', 'RunD - nvtx']
+    #all2017 = ['All 2017 Data','ggH125','qqH125','DYJets']
+    all2017 = ['All 2017 Data','DYJets']
+    #all2017nvtx = ['All 2017 Data - nvtx','ggH125 - nvtx','qqH125 - nvtx','DYJets - nvtx']
+    all2017nvtx = ['All 2017 Data - nvtx','DYJets - nvtx']
+    nvtxByRun = ['RunB - nvtx', 'RunC - nvtx', 'RunD - nvtx','DYJets - nvtx']
 
     if 'Medium' not in Divisions.keys() : isolations = []
     if 'RunB' not in Divisions.keys() : runs = []
@@ -382,6 +392,7 @@ for channel in ['mt',] :
 
         if doLog :
             ROOT.gPad.SetLogx()
+
 
         # Do MVA ID/Iso comparison
         if isolations != [] :

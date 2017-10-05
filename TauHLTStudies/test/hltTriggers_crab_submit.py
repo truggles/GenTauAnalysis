@@ -21,18 +21,18 @@ config.Site.storageSite        = 'T2_US_Wisconsin'
 config.User.voGroup            = 'uscms'
 
 dataMap = OrderedDict()
-#dataMap['ggH125'] = '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v2/MINIAODSIM'
-#dataMap['qqH125'] = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v2/MINIAODSIM'
+dataMap['ggH125'] = '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v2/MINIAODSIM'
+dataMap['qqH125'] = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v2/MINIAODSIM'
 dataMap['DYJets'] = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v7-v1/MINIAODSIM'
 dataMap['DYJetsExt1'] = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10_ext1-v2/MINIAODSIM'
 dataMap['DYJetsExt2'] = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10_ext1-v1/MINIAODSIM'
-#dataMap['dataSingleMuonBv1'] = '/SingleMuon/Run2017B-PromptReco-v1/MINIAOD'
-#dataMap['dataSingleMuonBv2'] = '/SingleMuon/Run2017B-PromptReco-v2/MINIAOD'
-#dataMap['dataSingleMuonCv1'] = '/SingleMuon/Run2017C-PromptReco-v1/MINIAOD'
-#dataMap['dataSingleMuonCv2'] = '/SingleMuon/Run2017C-PromptReco-v2/MINIAOD'
-#dataMap['dataSingleMuonCv3'] = '/SingleMuon/Run2017C-PromptReco-v3/MINIAOD'
-#dataMap['dataSingleMuonDv1'] = '/SingleMuon/Run2017D-PromptReco-v1/MINIAOD'
-#dataMap['dataSingleMuonEv1'] = '/SingleMuon/Run2017E-PromptReco-v1/MINIAOD'
+dataMap['dataSingleMuonBv1'] = '/SingleMuon/Run2017B-PromptReco-v1/MINIAOD'
+dataMap['dataSingleMuonBv2'] = '/SingleMuon/Run2017B-PromptReco-v2/MINIAOD'
+dataMap['dataSingleMuonCv1'] = '/SingleMuon/Run2017C-PromptReco-v1/MINIAOD'
+dataMap['dataSingleMuonCv2'] = '/SingleMuon/Run2017C-PromptReco-v2/MINIAOD'
+dataMap['dataSingleMuonCv3'] = '/SingleMuon/Run2017C-PromptReco-v3/MINIAOD'
+dataMap['dataSingleMuonDv1'] = '/SingleMuon/Run2017D-PromptReco-v1/MINIAOD'
+dataMap['dataSingleMuonEv1'] = '/SingleMuon/Run2017E-PromptReco-v1/MINIAOD'
 
 if __name__ == '__main__':
 

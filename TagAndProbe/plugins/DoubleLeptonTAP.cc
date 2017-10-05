@@ -112,9 +112,30 @@ class DoubleLeptonTAP : public edm::one::EDAnalyzer<edm::one::SharedResources>  
         l2LooseMuon, l2MediumMuon, l2ElecWP90, l2ElecWP80,
         m_vis, transMass, met, metPhi, SS, nBTags,
         leptonDR_l11_l22;
-        //mTrigMatch, tTrigMatch,
       std::map<std::string, int*> triggers;
+      std::map<std::string, int*> l1MatchTriggers;
+      std::map<std::string, int*> l2MatchTriggers;
       std::map<std::string, int>::iterator triggerIterator;
+      int l1Match_HLT_IsoMu27;
+      int l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ;
+      int l1Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
+      int l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
+      int l1Match_HLT_Mu17_TrkIsoVVL;
+      int l1Match_HLT_Mu8_TrkIsoVVL;
+      int l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
+      int l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL;
+      int l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL;
+      int l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL;
+      int l2Match_HLT_IsoMu27;
+      int l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ;
+      int l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
+      int l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
+      int l2Match_HLT_Mu17_TrkIsoVVL;
+      int l2Match_HLT_Mu8_TrkIsoVVL;
+      int l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
+      int l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL;
+      int l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL;
+      int l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL;
       int HLT_IsoMu27;
       int HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ;
       int HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
@@ -158,7 +179,29 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    //usesResource("TFileService");
    edm::Service<TFileService> fs;
 
-   triggers["HLT_IsoMu27_v"]                                            = &HLT_IsoMu27;
+   l1MatchTriggers["HLT_IsoMu27_v"]                                              = &l1Match_HLT_IsoMu27;
+   l1MatchTriggers["HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"]                    = &l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ;
+   l1MatchTriggers["HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"]                      = &l1Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
+   l1MatchTriggers["HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"]                       = &l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
+   l1MatchTriggers["HLT_Mu17_TrkIsoVVL_v"]                                       = &l1Match_HLT_Mu17_TrkIsoVVL;
+   l1MatchTriggers["HLT_Mu8_TrkIsoVVL_v"]                                        = &l1Match_HLT_Mu8_TrkIsoVVL;
+   l1MatchTriggers["HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"]                = &l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
+   l1MatchTriggers["HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v"]                         = &l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL;
+   l1MatchTriggers["HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v"]                         = &l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL;
+   l1MatchTriggers["HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"]                   = &l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL;
+
+   l2MatchTriggers["HLT_IsoMu27_v"]                                              = &l2Match_HLT_IsoMu27;
+   l2MatchTriggers["HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"]                    = &l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ;
+   l2MatchTriggers["HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"]                      = &l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
+   l2MatchTriggers["HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"]                       = &l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
+   l2MatchTriggers["HLT_Mu17_TrkIsoVVL_v"]                                       = &l2Match_HLT_Mu17_TrkIsoVVL;
+   l2MatchTriggers["HLT_Mu8_TrkIsoVVL_v"]                                        = &l2Match_HLT_Mu8_TrkIsoVVL;
+   l2MatchTriggers["HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"]                = &l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
+   l2MatchTriggers["HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v"]                         = &l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL;
+   l2MatchTriggers["HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v"]                         = &l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL;
+   l2MatchTriggers["HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"]                   = &l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL;
+
+   triggers["HLT_IsoMu27_v"]                                              = &HLT_IsoMu27;
    triggers["HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"]                    = &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ;
    triggers["HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"]                      = &HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
    triggers["HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"]                       = &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
@@ -189,8 +232,6 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    tree->Branch("l1MediumMuon",&l1MediumMuon,"l1MediumMuon/F");
    tree->Branch("l1ElecWP90",&l1ElecWP90,"l1ElecWP90/F");
    tree->Branch("l1ElecWP80",&l1ElecWP80,"l1ElecWP80/F");
-   //tree->Branch("mTrigMatch",&mTrigMatch,"mTrigMatch/F");
-   //tree->Branch("mL1Match",&mL1Match,"mL1Match/F");
    tree->Branch("l2Pt",&l2Pt,"l2Pt/F");
    tree->Branch("l2Eta",&l2Eta,"l2Eta/F");
    tree->Branch("l2Phi",&l2Phi,"l2Phi/F");
@@ -199,8 +240,6 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    tree->Branch("l2MediumMuon",&l2MediumMuon,"l2MediumMuon/F");
    tree->Branch("l2ElecWP90",&l2ElecWP90,"l2ElecWP90/F");
    tree->Branch("l2ElecWP80",&l2ElecWP80,"l2ElecWP80/F");
-   //tree->Branch("tTrigMatch",&tTrigMatch,"tTrigMatch/F");
-   //tree->Branch("tL1Match",&tL1Match,"tL1Match/F");
    tree->Branch("leptonDR_l11_l22",&leptonDR_l11_l22,"leptonDR_l11_l22/F");
    tree->Branch("m_vis",&m_vis,"m_vis/F");
    tree->Branch("transMass",&transMass,"transMass/F");
@@ -219,6 +258,28 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    tree->Branch("HLT_Ele23_CaloIdL_TrackIdL_IsoVL",            &HLT_Ele23_CaloIdL_TrackIdL_IsoVL,             "HLT_Ele23_CaloIdL_TrackIdL_IsoVL/I");
    tree->Branch("HLT_Ele12_CaloIdL_TrackIdL_IsoVL",            &HLT_Ele12_CaloIdL_TrackIdL_IsoVL,             "HLT_Ele12_CaloIdL_TrackIdL_IsoVL/I");
    tree->Branch("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL",      &HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL,       "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL/I");
+
+   tree->Branch("l1Match_HLT_IsoMu27",                                 &l1Match_HLT_IsoMu27,                                  "l1Match_HLT_IsoMu27/I");
+   tree->Branch("l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ",       &l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ,        "l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ/I");
+   tree->Branch("l1Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ",         &l1Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ,          "l1Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ/I");
+   tree->Branch("l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL",          &l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL,           "l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL/I");
+   tree->Branch("l1Match_HLT_Mu17_TrkIsoVVL",                          &l1Match_HLT_Mu17_TrkIsoVVL,                           "l1Match_HLT_Mu17_TrkIsoVVL/I");
+   tree->Branch("l1Match_HLT_Mu8_TrkIsoVVL",                           &l1Match_HLT_Mu8_TrkIsoVVL,                            "l1Match_HLT_Mu8_TrkIsoVVL/I");
+   tree->Branch("l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",   &l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ,    "l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ/I");
+   tree->Branch("l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL",            &l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL,             "l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL/I");
+   tree->Branch("l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL",            &l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL,             "l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL/I");
+   tree->Branch("l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL",      &l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL,       "l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL/I");
+
+   tree->Branch("l2Match_HLT_IsoMu27",                                 &l2Match_HLT_IsoMu27,                                  "l2Match_HLT_IsoMu27/I");
+   tree->Branch("l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ",       &l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ,        "l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ/I");
+   tree->Branch("l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ",         &l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ,          "l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ/I");
+   tree->Branch("l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL",          &l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL,           "l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL/I");
+   tree->Branch("l2Match_HLT_Mu17_TrkIsoVVL",                          &l2Match_HLT_Mu17_TrkIsoVVL,                           "l2Match_HLT_Mu17_TrkIsoVVL/I");
+   tree->Branch("l2Match_HLT_Mu8_TrkIsoVVL",                           &l2Match_HLT_Mu8_TrkIsoVVL,                            "l2Match_HLT_Mu8_TrkIsoVVL/I");
+   tree->Branch("l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",   &l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ,    "l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ/I");
+   tree->Branch("l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL",            &l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL,             "l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL/I");
+   tree->Branch("l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL",            &l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL,             "l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL/I");
+   tree->Branch("l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL",      &l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL,       "l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL/I");
 
 }
 
@@ -473,15 +534,8 @@ DoubleLeptonTAP::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 
 
-
-
-
-
-
   edm::Handle<edm::TriggerResults> triggerResults;   
   iEvent.getByToken(triggerToken_, triggerResults);
-  edm::Handle<pat::TriggerObjectStandAloneCollection> triggerObjects;
-  iEvent.getByToken(triggerObjectsToken_, triggerObjects);
 
   for (auto& pair : triggers) {
       (*pair.second) = 0;
@@ -505,40 +559,70 @@ DoubleLeptonTAP::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   }
 
 
-  //// Do trigger object matching
-  //// for the moment, just record the number
-  //// of times our 'best' objects match
-  //// this can be expanded later to indivual trigs if necessary
-  //mTrigMatch = 0;
-  //tTrigMatch = 0;
-  //t2TrigMatch = 0;
-  //for (pat::TriggerObjectStandAlone obj : *triggerObjects) { // note: not "const &" since we want to call unpackPathNames
-  //    obj.unpackPathNames(names);
-  //    std::vector<std::string> pathNamesLast = obj.pathNames(true);
-  //    // pathNamesLast = vector of flags, if this object was used in the final 
-  //    // filter of a succeeding HLT path resp. in a succeeding 
-  //    // condition of a succeeding L1 algorithm
-  //    for (unsigned h = 0, n = pathNamesLast.size(); h < n; ++h) {
-  //        if (std::find( usedPaths.begin(), usedPaths.end(), pathNamesLast[h]) != usedPaths.end()) {
-  //            //std::cout << " ---  " << pathNamesLast[h] << std::endl;
-  //            //std::cout << "\tTrigger object:  pt " << obj.pt() << ", eta " << obj.eta() << ", phi " << obj.phi() << std::endl;
-  //            if (!doDoubleMu) {
-  //                float drMu = deltaR( bestMuon, obj );
-  //                //std::cout << "\tbestMuon dR: " << drMu << std::endl;
-  //                if (drMu < 0.5) ++mTrigMatch;
-  //            }
-  //            float drTau = deltaR( *passingTausV.at(0), obj );
-  //            //std::cout << "\tpassingTausV.at(0) dR: " << drTau << std::endl;
-  //            if (drTau < 0.5) ++tTrigMatch;
-  //            if (doDoubleMu) {
-  //                float drTau2 = deltaR( *passingTausV.at(1), obj );
-  //                //std::cout << "\tpassingTausV.at(0) dR: " << drTau << std::endl;
-  //                if (drTau2 < 0.5) ++t2TrigMatch;
-  //            }
-  //        }
-  //    }
-  //}
-  
+  // Do trigger object matching
+  // for the moment, just record the number
+  // of times our 'best' objects match
+  // this can be expanded later to indivual trigs if necessary
+  edm::Handle<pat::TriggerObjectStandAloneCollection> triggerObjects;
+  iEvent.getByToken(triggerObjectsToken_, triggerObjects);
+
+  // Clear previous run
+  for (auto pair : l1MatchTriggers) (*pair.second) = 0;
+  for (auto pair : l2MatchTriggers) (*pair.second) = 0;
+
+  for (pat::TriggerObjectStandAlone obj : *triggerObjects) { // note: not "const &" since we want to call unpackPathNames
+      obj.unpackPathNames(names);
+      std::vector<std::string> pathNamesLast = obj.pathNames(true);
+      // pathNamesLast = vector of flags, if this object was used in the final 
+      // filter of a succeeding HLT path resp. in a succeeding 
+      // condition of a succeeding L1 algorithm
+      for (unsigned h = 0, n = pathNamesLast.size(); h < n; ++h) {
+          if (std::find( usedPaths.begin(), usedPaths.end(), pathNamesLast[h]) != usedPaths.end()) {
+              if (verbose) std::cout << " ---  " << pathNamesLast[h] << std::endl;
+              if (verbose) std::cout << "\tTrigger object:  pt " << obj.pt() << ", eta " << obj.eta() << ", phi " << obj.phi() << std::endl;
+              if (passingMuonsV.size() == 2) {
+                  float drMu1 = deltaR( *passingMuonsV.at(0), obj );
+                  if (drMu1 < 0.3) {
+                    if (verbose) std::cout << "\tmuon1 dR: " << drMu1 << std::endl;
+                    for (auto pair : l1MatchTriggers) {
+                        std::cout << pair.first << " : " << pathNamesLast[h] << std::endl;
+                        if ( pathNamesLast[h].find( std::string(pair.first)) != std::string::npos ) {
+                            std::cout << "\t\tmuon1 " << pathNamesLast[h] << std::endl;
+                            (*pair.second) += 1;
+                        }
+                    }
+                  }
+                  float drMu2 = deltaR( *passingMuonsV.at(1), obj );
+                  if (drMu2 < 0.3) {
+                    if (verbose) std::cout << "\tmuon2 dR: " << drMu2 << std::endl;
+                    for (auto pair : l2MatchTriggers) {
+                        if ( pathNamesLast[h].find( std::string(pair.first)) != std::string::npos ) (*pair.second) += 1;
+                    }
+                  }
+              }
+              if (passingElectronsV.size() == 2) {
+                  float drElec1 = deltaR( *passingElectronsV.at(0), obj );
+                  if (drElec1 < 0.3) {
+                    if (verbose) std::cout << "\tmuon1 dR: " << drElec1 << std::endl;
+                    for (auto pair : l1MatchTriggers) {
+                        std::cout << pair.first << " : " << pathNamesLast[h] << std::endl;
+                        if ( pathNamesLast[h].find( std::string(pair.first)) != std::string::npos ) {
+                            std::cout << "\t\tmuon1 " << pathNamesLast[h] << std::endl;
+                            (*pair.second) += 1;
+                        }
+                    }
+                  }
+                  float drElec2 = deltaR( *passingElectronsV.at(1), obj );
+                  if (drElec2 < 0.3) {
+                    if (verbose) std::cout << "\tmuon2 dR: " << drElec2 << std::endl;
+                    for (auto pair : l2MatchTriggers) {
+                        if ( pathNamesLast[h].find( std::string(pair.first)) != std::string::npos ) (*pair.second) += 1;
+                    }
+                  }
+              }
+          }
+      }
+  }
 
 
 

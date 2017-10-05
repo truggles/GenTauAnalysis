@@ -9,5 +9,5 @@ DoubleLeptonTAPStudies = cms.EDAnalyzer("DoubleLeptonTAP",
     metSrc = cms.InputTag("slimmedMETs"),
     pvSrc = cms.InputTag("offlineSlimmedPrimaryVertices"),
     triggerSrc = cms.InputTag("TriggerResults","","HLT"),
-    triggerObjectsSrc = cms.InputTag("slimmedPatTrigger"),
+    triggerObjectsSrc = cms.InputTag("selectedPatTrigger"),
 )

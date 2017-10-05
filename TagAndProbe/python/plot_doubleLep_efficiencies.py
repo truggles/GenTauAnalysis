@@ -3,16 +3,16 @@
 mm_triggers = [
    #"HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ",
    #"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ",
-   "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL",
-#   "HLT_Mu17_TrkIsoVVL",
-#   "HLT_Mu8_TrkIsoVVL",
+   #"HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL",
+   #"HLT_Mu17_TrkIsoVVL",
+   "HLT_Mu8_TrkIsoVVL",
 ]
 
 ee_triggers = [
 #   "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
    "HLT_Ele23_CaloIdL_TrackIdL_IsoVL",
-#   "HLT_Ele12_CaloIdL_TrackIdL_IsoVL",
-#   "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL",
+   "HLT_Ele12_CaloIdL_TrackIdL_IsoVL",
+   "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL",
 ]
 
 nvtxTriggers = [
@@ -29,6 +29,7 @@ ROOT.gStyle.SetOptStat(0)
 from array import array
 from collections import OrderedDict
 from math import sqrt
+import copy
 
 
 
@@ -104,6 +105,12 @@ def subtractTH1( h1, h2 ) :
     h3 = h1
     h3.Add( -1 * h2 )
     h3.SetTitle( h1.GetTitle()+'_Minus_'+h2.GetTitle() )
+    return h3
+
+def addTH1( h1, h2 ) :
+    h3 = h1
+    h3.Add( 1 * h2 )
+    h3.SetTitle( h1.GetTitle()+'_Plus_'+h2.GetTitle() )
     return h3
 
 def checkReturnedUncert( g, g2 ) :
@@ -229,11 +236,11 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
     if trigger in nvtxTriggers :
         mg.GetXaxis().SetTitle('Num. Reconstructed Vertixes')
     else :
-        mg.GetXaxis().SetTitle('Offline #tau p_{T} (GeV)')
+        mg.GetXaxis().SetTitle('Offline Lepton p_{T} (GeV)')
     mg.GetXaxis().SetTitleOffset( mg.GetXaxis().GetTitleOffset()*1.3 )
     mg.GetYaxis().SetTitle('HLT Efficiency')
     if doLog :
-        mg.GetXaxis().SetLimits( 20., maxi )
+        mg.GetXaxis().SetLimits( 10., maxi )
     else :
         mg.GetXaxis().SetLimits( 0., maxi )
     mg.GetXaxis().SetMoreLogLabels()
@@ -251,10 +258,11 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
     del leg
     c.Clear()
 
-for channel in ['ee',]:#'mm'] :
+#for channel in ['ee','mm',] :
+for channel in ['mm',] :
 
     plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/doubleLep_oct05/'
-    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/doubleLep_oct05v1/'
+    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/doubleLep_oct05v2/'
 
     if channel == 'ee' :
         triggers = ee_triggers
@@ -343,23 +351,30 @@ for channel in ['ee',]:#'mm'] :
 
             if channel == 'ee' :
                 lepCount = 'passingElectrons == 2'
-                numTrigger = 'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ'
+                numTrigger = 'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5'
             if channel == 'mm' :
                 lepCount = 'passingMuons == 2'
-                numTrigger = 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ'
+                # FIXME decide on double Mu triggers
+                #numTrigger = '(HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5 || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ > 0.5)'
+                numTrigger = 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ > 0.5'
 
+            #baselineCut = lepCount+' && l2Match_'+trigger+' == 1 && (eventD%2==0)'
             baselineCut = lepCount+' && l2Match_'+trigger+' == 1'
 
             baselineCut += ' && '+Divisions[division]
 
             cuts = {
-                'SSPass': baselineCut+' && SS == 1 \
-                    && %s > 0.5' % numTrigger,
-                'OSPass': baselineCut+' && SS == 0 \
-                    && %s > 0.5' % numTrigger,
-                'SSAll': baselineCut+' && SS == 1',
-                'OSAll': baselineCut+' && SS == 0'
+                'SSPassL1': baselineCut+' && SS == 1 \
+                    && %s' % numTrigger,
+                'OSPassL1': baselineCut+' && SS == 0 \
+                    && %s' % numTrigger,
+                'SSAllL1': baselineCut+' && SS == 1',
+                'OSAllL1': baselineCut+' && SS == 0'
             }
+            #cuts['SSPassL2'] = copy.deepcopy(cuts['SSPassL1']).replace('l2Match','l1Match').replace('D%2==0','D%2==1')
+            #cuts['OSPassL2'] = copy.deepcopy(cuts['OSPassL1']).replace('l2Match','l1Match').replace('D%2==0','D%2==1')
+            #cuts['SSAllL2'] = copy.deepcopy(cuts['SSAllL1']).replace('l2Match','l1Match').replace('D%2==0','D%2==1')
+            #cuts['OSAllL2'] = copy.deepcopy(cuts['OSAllL1']).replace('l2Match','l1Match').replace('D%2==0','D%2==1')
 
 
             hists = {}
@@ -368,22 +383,32 @@ for channel in ['ee',]:#'mm'] :
                 xCut = '('+cut+')'
                 if trigger in nvtxTriggers :
                     hists[ name ] = getHist( trees, 'nvtx', xCut, name, division, trigger )
-                else :
+                elif 'L2' in name :
+                    print "Drawing l2Pt"
+                    hists[ name ] = getHist( trees, 'l2Pt', xCut, name, division, trigger )
+                else : # 'L1' in name
+                    print "Drawing l1Pt"
                     hists[ name ] = getHist( trees, 'l1Pt', xCut, name, division, trigger )
                 
             ### Do OS - SS
-            #groups = ['Pass','Fail','All']
+            #groups = ['PassL1','AllL1','PassL2','AllL2']
+            groups = ['PassL1','AllL1']
+            subMap1 = {}
+            for group in groups :
+                subMap1[ group ] = subtractTH1( hists['OS'+group], hists['SS'+group] )
+                #subMap1[ group ] = hists['OS'+group].Clone()
+            ### Do adding of both legs
             groups = ['Pass','All']
             subMap = {}
             for group in groups :
-                subMap[ group ] = subtractTH1( hists['OS'+group], hists['SS'+group] )
-                #subMap[ group ] = hists['OS'+group].Clone()
+                #subMap[ group ] = addTH1( subMap1[group+'L1'], subMap1[group+'L2'] )
+                subMap[ group ] = hists['OS'+group+'L1'].Clone()
 
 
             ### Make Eff Plot
             g = divideTH1( subMap['Pass'], subMap['All'], binning )    
             c.SetGrid()
-            g.GetXaxis().SetTitle('#tau p_{T} (GeV)')
+            g.GetXaxis().SetTitle('Lepton p_{T} (GeV)')
             g.GetYaxis().SetTitle('L1 + HLT Efficiency')
             g.SetTitle(trigger)
             g.SetLineWidth(2)

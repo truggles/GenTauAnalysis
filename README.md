@@ -19,13 +19,23 @@ cmsRun python/rerunningHLT_cfg.py
 ```
 
 
-# Tau Tag and Probe
-Get previous HLT_doubleTau35 work
+# Tau and Electrons and Muons Tag and Probe
+Get previous HLT_doubleTau35 work (only necessary if you want to compare
+to Riccardo's 2016 results)
 
 ```
 cd TagAndProbe
 source setup.sh
 ```
+
+For Elec + Muon triggers:
+EDAnalyzer is here: TagAndProbe/plugins/DoubleLeptonTAP.cc
+Run via crab submissions here: TagAndProbe/test/doubleLepTAP_crab_submit.py
+Then hadd the output files, transport locally
+Add puWeight terms using: puWeights/addPUReweight.py which is set to use 2016 Moriond17 MC and full 2016 35.9/fb data nTruePU
+Then make the scalefactor output file and plots using: TagAndProbe/python/plot_doubleLep_efficiencies.py
+
+
 
 
 # GenTauAnalysis

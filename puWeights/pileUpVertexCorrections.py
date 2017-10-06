@@ -9,11 +9,11 @@ from collections import OrderedDict
 
 def PUreweight() :
     # https://twiki.cern.ch/twiki/bin/view/CMS/HiggsToTauTauWorking2015#PU_reweighting
-    datafile = ROOT.TFile('Data_Pileup_2015D_Feb02.root', 'READ') # Made by Adinda
+    datafile = ROOT.TFile('data/Data_Pileup_2016_271036-284044_80bins.root', 'READ') # Moriond2017, full 2016 dataset
     dHist = datafile.Get('pileup')
     dHist.Scale( 1 / dHist.Integral() )
 
-    samplefile = ROOT.TFile('MC_Fall15_PU25_V1.root', 'READ') # Made by Adinda, same as mine but shifter up 1 bin
+    samplefile = ROOT.TFile('data/MC_Moriond17_PU25ns_V1.root', 'READ') # Moriond2017, full 2016 dataset
     sHist = samplefile.Get('pileup')
     sHist.Scale( 1 / sHist.Integral() )
 

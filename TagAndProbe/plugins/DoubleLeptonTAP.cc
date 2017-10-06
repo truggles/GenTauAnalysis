@@ -61,6 +61,13 @@
 #include "DataFormats/L1Trigger/interface/BXVector.h"
 #include "DataFormats/L1Trigger/interface/Tau.h"
 
+// Electron missing hits
+#include "DataFormats/TrackReco/interface/HitPattern.h"
+
+// Lepton track extractor
+//#include "FinalStateAnalysis/PatTools/interface/PATLeptonTrackVectorExtractor.h"
+#include "THRAnalysis/TagAndProbe/include/PATLeptonTrackVectorExtractor.h"
+
 #include <algorithm>
 #include <map>
 
@@ -100,6 +107,8 @@ class DoubleLeptonTAP : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       edm::EDGetTokenT<std::vector<reco::Vertex>> vertexToken_;
       edm::EDGetTokenT<edm::TriggerResults> triggerToken_;
       edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> triggerObjectsToken_;
+      ek::PATLeptonTrackVectorExtractor<pat::Electron> trackExtractorElec_;
+      ek::PATLeptonTrackVectorExtractor<pat::Muon> trackExtractorMuon_;
 
       TTree *tree;
       TH1D *nEvents;
@@ -121,6 +130,7 @@ class DoubleLeptonTAP : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       int l1Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
       int l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
       int l1Match_HLT_Mu17_TrkIsoVVL;
+      int l1Match_HLT_Mu8;
       int l1Match_HLT_Mu8_TrkIsoVVL;
       int l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
       int l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL;
@@ -131,6 +141,7 @@ class DoubleLeptonTAP : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       int l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
       int l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
       int l2Match_HLT_Mu17_TrkIsoVVL;
+      int l2Match_HLT_Mu8;
       int l2Match_HLT_Mu8_TrkIsoVVL;
       int l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
       int l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL;
@@ -141,6 +152,7 @@ class DoubleLeptonTAP : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       int HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
       int HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
       int HLT_Mu17_TrkIsoVVL;
+      int HLT_Mu8;
       int HLT_Mu8_TrkIsoVVL;
       int HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
       int HLT_Ele23_CaloIdL_TrackIdL_IsoVL;
@@ -184,6 +196,7 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    l1MatchTriggers["HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"]                      = &l1Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
    l1MatchTriggers["HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"]                       = &l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
    l1MatchTriggers["HLT_Mu17_TrkIsoVVL_v"]                                       = &l1Match_HLT_Mu17_TrkIsoVVL;
+   l1MatchTriggers["HLT_Mu8_v"]                                                  = &l1Match_HLT_Mu8;
    l1MatchTriggers["HLT_Mu8_TrkIsoVVL_v"]                                        = &l1Match_HLT_Mu8_TrkIsoVVL;
    l1MatchTriggers["HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"]                = &l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
    l1MatchTriggers["HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v"]                         = &l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL;
@@ -195,6 +208,7 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    l2MatchTriggers["HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"]                      = &l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
    l2MatchTriggers["HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"]                       = &l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
    l2MatchTriggers["HLT_Mu17_TrkIsoVVL_v"]                                       = &l2Match_HLT_Mu17_TrkIsoVVL;
+   l2MatchTriggers["HLT_Mu8_v"]                                                  = &l2Match_HLT_Mu8;
    l2MatchTriggers["HLT_Mu8_TrkIsoVVL_v"]                                        = &l2Match_HLT_Mu8_TrkIsoVVL;
    l2MatchTriggers["HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"]                = &l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
    l2MatchTriggers["HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v"]                         = &l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL;
@@ -206,6 +220,7 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    triggers["HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"]                      = &HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
    triggers["HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"]                       = &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
    triggers["HLT_Mu17_TrkIsoVVL_v"]                                       = &HLT_Mu17_TrkIsoVVL;
+   triggers["HLT_Mu8_v"]                                                  = &HLT_Mu8;
    triggers["HLT_Mu8_TrkIsoVVL_v"]                                        = &HLT_Mu8_TrkIsoVVL;
    triggers["HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"]                = &HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
    triggers["HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v"]                         = &HLT_Ele23_CaloIdL_TrackIdL_IsoVL;
@@ -253,6 +268,7 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    tree->Branch("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ",         &HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ,          "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ/I");
    tree->Branch("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL",          &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL,           "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL/I");
    tree->Branch("HLT_Mu17_TrkIsoVVL",                          &HLT_Mu17_TrkIsoVVL,                           "HLT_Mu17_TrkIsoVVL/I");
+   tree->Branch("HLT_Mu8",                                     &HLT_Mu8,                                      "HLT_Mu8/I");
    tree->Branch("HLT_Mu8_TrkIsoVVL",                           &HLT_Mu8_TrkIsoVVL,                            "HLT_Mu8_TrkIsoVVL/I");
    tree->Branch("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",   &HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ,    "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ/I");
    tree->Branch("HLT_Ele23_CaloIdL_TrackIdL_IsoVL",            &HLT_Ele23_CaloIdL_TrackIdL_IsoVL,             "HLT_Ele23_CaloIdL_TrackIdL_IsoVL/I");
@@ -264,6 +280,7 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    tree->Branch("l1Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ",         &l1Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ,          "l1Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ/I");
    tree->Branch("l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL",          &l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL,           "l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL/I");
    tree->Branch("l1Match_HLT_Mu17_TrkIsoVVL",                          &l1Match_HLT_Mu17_TrkIsoVVL,                           "l1Match_HLT_Mu17_TrkIsoVVL/I");
+   tree->Branch("l1Match_HLT_Mu8",                                     &l1Match_HLT_Mu8,                                      "l1Match_HLT_Mu8/I");
    tree->Branch("l1Match_HLT_Mu8_TrkIsoVVL",                           &l1Match_HLT_Mu8_TrkIsoVVL,                            "l1Match_HLT_Mu8_TrkIsoVVL/I");
    tree->Branch("l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",   &l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ,    "l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ/I");
    tree->Branch("l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL",            &l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL,             "l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL/I");
@@ -275,6 +292,7 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    tree->Branch("l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ",         &l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ,          "l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ/I");
    tree->Branch("l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL",          &l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL,           "l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL/I");
    tree->Branch("l2Match_HLT_Mu17_TrkIsoVVL",                          &l2Match_HLT_Mu17_TrkIsoVVL,                           "l2Match_HLT_Mu17_TrkIsoVVL/I");
+   tree->Branch("l2Match_HLT_Mu8",                                     &l2Match_HLT_Mu8,                                      "l2Match_HLT_Mu8/I");
    tree->Branch("l2Match_HLT_Mu8_TrkIsoVVL",                           &l2Match_HLT_Mu8_TrkIsoVVL,                            "l2Match_HLT_Mu8_TrkIsoVVL/I");
    tree->Branch("l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",   &l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ,    "l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ/I");
    tree->Branch("l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL",            &l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL,             "l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL/I");
@@ -351,7 +369,7 @@ DoubleLeptonTAP::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
       pat::MuonRef muonCandidate(muons, iMuon);
 
-      if (muonCandidate->pt() < 10 || fabs(muonCandidate->eta()) > 2.4 || !muonCandidate->isLooseMuon()) continue;
+      if (muonCandidate->pt() < 5 || fabs(muonCandidate->eta()) > 2.4 || !muonCandidate->isLooseMuon()) continue;
       mIso = (muonCandidate->pfIsolationR04().sumChargedHadronPt
           + TMath::Max(0., muonCandidate->pfIsolationR04().sumNeutralHadronEt
           + muonCandidate->pfIsolationR04().sumPhotonEt
@@ -384,9 +402,13 @@ DoubleLeptonTAP::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   for (size_t iElec = 0; iElec != electrons->size(); ++iElec) {
 
       pat::ElectronRef electronCandidate(electrons, iElec);
-      if (electronCandidate->pt() < 10 || fabs(electronCandidate->eta()) > 2.5 || 
+      if (electronCandidate->pt() < 7 || fabs(electronCandidate->eta()) > 2.5 || 
           electronCandidate->electronID("mvaEleID-Spring15-25ns-nonTrig-V1-wp90") < 0.5) continue;
       // No isolation as it is built into MVA WP 90
+
+      // Check conversion veto and missing hits to align with analysis
+      if (electronCandidate->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS) >= 2) continue;
+      if (electronCandidate->passConversionVeto() < 0.5) continue;
 
       // Check deltaR after we have 1 electron, throw away any within dR 0.3 of leading electron
       if (passingElectronsV.size() > 0)
@@ -408,6 +430,40 @@ DoubleLeptonTAP::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   if (passingElectronsV.size() + passingMuonsV.size() == 0) return;
   if (passingElectronsV.size() + passingMuonsV.size() == 4) return;
   cutFlow->Fill(4., 1.);
+
+
+
+  // Check impact parameters of muons and electrons
+  bool passesIPs = true;
+  if (passingElectronsV.size() == 2) {
+    for (auto electron : passingElectronsV) {
+        std::vector<const reco::Track*> tracks = trackExtractorElec_(*electron);
+        const reco::Track* track = tracks.size() ? tracks.at(0) : NULL;
+        if (track == NULL) {
+          passesIPs = false;
+          continue;
+        }
+        if (track->dxy(PV.position()) > 0.045) passesIPs = false; // works for both
+        if (track->dz(PV.position()) > 0.2) passesIPs = false; // works for electrons
+    }
+  }
+  if (passingMuonsV.size() == 2) {
+    for (auto muon : passingMuonsV) {
+        std::vector<const reco::Track*> tracks = trackExtractorMuon_(*muon);
+        const reco::Track* track = tracks.size() ? tracks.at(0) : NULL;
+        if (track == NULL) {
+          passesIPs = false;
+          continue;
+        }
+        if (track->dxy(PV.position()) > 0.045) passesIPs = false; // works for both
+        if (muon->muonBestTrack()->dz(PV.position()) > 0.2) passesIPs = false; // muon only
+    }
+  }
+
+  if (!passesIPs) return;
+  cutFlow->Fill(5., 1.);
+  
+
 
 
   // Pt order passing reco::muons/electrons
@@ -434,7 +490,7 @@ DoubleLeptonTAP::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   }
   // FIXME don't cut on bjets right now, curious how many there are in Zee/mm
   //if (btagged) return;
-  cutFlow->Fill(5., 1.);
+  cutFlow->Fill(6., 1.);
 
 
   
@@ -558,6 +614,15 @@ DoubleLeptonTAP::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       }
   }
 
+  // Make sure a trigger fired
+  int numFired = 0;
+  for (auto pair : triggers) {
+      if ((*pair.second) > 0) numFired += 1;
+  }
+  if (numFired == 0) return;
+  cutFlow->Fill(7., 1.);
+
+
 
   // Do trigger object matching
   // for the moment, just record the number
@@ -585,9 +650,9 @@ DoubleLeptonTAP::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   if (drMu1 < 0.3) {
                     if (verbose) std::cout << "\tmuon1 dR: " << drMu1 << std::endl;
                     for (auto pair : l1MatchTriggers) {
-                        std::cout << pair.first << " : " << pathNamesLast[h] << std::endl;
+                        //std::cout << pair.first << " : " << pathNamesLast[h] << std::endl;
                         if ( pathNamesLast[h].find( std::string(pair.first)) != std::string::npos ) {
-                            std::cout << "\t\tmuon1 " << pathNamesLast[h] << std::endl;
+                            //std::cout << "\t\tmuon1 " << pathNamesLast[h] << std::endl;
                             (*pair.second) += 1;
                         }
                     }
@@ -605,9 +670,9 @@ DoubleLeptonTAP::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   if (drElec1 < 0.3) {
                     if (verbose) std::cout << "\tmuon1 dR: " << drElec1 << std::endl;
                     for (auto pair : l1MatchTriggers) {
-                        std::cout << pair.first << " : " << pathNamesLast[h] << std::endl;
+                        //std::cout << pair.first << " : " << pathNamesLast[h] << std::endl;
                         if ( pathNamesLast[h].find( std::string(pair.first)) != std::string::npos ) {
-                            std::cout << "\t\tmuon1 " << pathNamesLast[h] << std::endl;
+                            //std::cout << "\t\tmuon1 " << pathNamesLast[h] << std::endl;
                             (*pair.second) += 1;
                         }
                     }

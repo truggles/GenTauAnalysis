@@ -1,23 +1,30 @@
 #!/usr/bin/env python
 
-mm_triggers = [
-   #"HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ",
-   #"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ",
-   #"HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL",
-   #"HLT_Mu17_TrkIsoVVL",
-   "HLT_Mu8_TrkIsoVVL",
-]
+mm_triggers = {
+#    # PROBE : [TAG,OtherCuts]
+#    # NAME : [TAG,PROBE,PlotBy/ProbeBy]
+   "HLT_Mu17_TrkIsoVVL_vMu17" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "l2Match_"],
+   "HLT_Mu17_TrkIsoVVL_vMu17" : ["(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "l1Match_"],
+   "TkMu8_TrkIsoVVL_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)","l2Match_"],
+   "Mu8_TrkIsoVVL_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ > 0.5)","l2Match_"],
+   "HLT_Mu8_TrkIsoVVL_self_vial1" : ["(l2Match_HLT_Mu8_TrkIsoVVL > 0.5)", "(l1Match_HLT_Mu8_TrkIsoVVL > 0.5)","l1Match_"],
+   "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_Part" : ["(l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL > 0.5 && l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL > 0.5)", "(l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5 && l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)",""],
+}
 
-ee_triggers = [
-#   "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
-   "HLT_Ele23_CaloIdL_TrackIdL_IsoVL",
-   "HLT_Ele12_CaloIdL_TrackIdL_IsoVL",
-   "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL",
-]
+ee_triggers = {
+   #"HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_Match" : ["(l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5 && l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5 && l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5)", ""],
+   #"HLT_Ele23_CaloIdL_TrackIdL_IsoVL_E23D" : ["(l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "l1Match_"],
+   #"HLT_Ele23_CaloIdL_TrackIdL_IsoVL_E23D_vial1" : ["(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "l2Match_"],
+   #"HLT_Ele12_CaloIdL_TrackIdL_IsoVL" : ["(l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "l1Match_"],
+   #"HLT_Ele12_CaloIdL_TrackIdL_IsoVL_vial1" : ["(l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "l2Match_"],
+}
 
 nvtxTriggers = [
+            "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_Part",
             "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL",
-            "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL",]
+            "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
+            "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_Match",
+]
 
 doLog = True
 #doLog = False
@@ -72,8 +79,10 @@ def getBinning( name, trigger ) :
         for i in range( 0, 110, 10 ) :
             binning.append( i )
     else :
-        binning = array('d', [10,12.5,15,17.5,20,22.5,25,27.5,30,32.5,35,37.5,40,\
-            42.5,45,47.5,50,55,60,67.5,80,100,250])#,400,1000])
+        #binning = array('d', [10,12.5,15,17.5,20,22.5,25,27.5,30,32.5,35,37.5,40,\
+        #    42.5,45,47.5,50,55,60,67.5,80,100,250])#,400,1000])
+        binning = array('d', [5,7.5,10,12.5,15,17.5,20,22.5,25,27.5,30,35,40,\
+            50,60,80,100,150])#,400,1000])
     return binning
 
 
@@ -130,6 +139,13 @@ def checkReturnedUncert( g, g2 ) :
                 print "\n\n\nHaven't been here before checkReturnedUncert point not 100% or 0% \n\n\n"
 
 
+def tgraphToTH1( graph, hist ) :
+    x = ROOT.Double(0)
+    y = ROOT.Double(0)
+    for i in range( graph.GetN() ) :
+        graph.GetPoint( i, x, y )
+        hist.SetBinContent( hist.FindBin( x ), y )
+    
 
 
 def divideTH1( h1, h2, binning ) :
@@ -155,9 +171,9 @@ def divideTH1( h1, h2, binning ) :
     return g
 
 
-def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendApp='', doFit=True ) :
-    mini = 15.
-    maxi = 250.
+def makeFinalEfficiencyPlot( fOut, c, trigger, divisions, effPlots, matchList, legendApp='', doFit=True ) :
+    mini = 5.
+    maxi = 150.
     #maxi = 100.
     fitMin = 20.
     doFit=False
@@ -175,6 +191,33 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
     mg.SetTitle( trigger )
     xMax = 0.
     fits = []
+
+
+    # Before plotting, get the ratio for storage of SF
+    binning = getBinning( trigger, trigger )
+    ratioPlot = ROOT.TH1D(trigger+'_SF',trigger+'_SF',len(binning)-1,binning)
+    ratioPlotN = ROOT.TH1D('ratioN','ratioN',len(binning)-1,binning)
+    ratioPlotD = ROOT.TH1D('ratioD','ratioD',len(binning)-1,binning)
+    for i, division in enumerate(divisions) :
+        if division not in matchList : continue
+        if effPlots[division].Integral() == 0.0 : continue
+
+        # For SF calculation
+        if 'All 2016 Data' in division :
+            tgraphToTH1( effPlots[division], ratioPlotN )
+            fOut.cd()
+            effPlots[division].Write(trigger+'_data')
+        if 'DYJets' in division :
+            tgraphToTH1( effPlots[division], ratioPlotD )
+            fOut.cd()
+            effPlots[division].Write(trigger+'_MC')
+    ratioPlot.Add( ratioPlotN )
+    ratioPlot.Divide( ratioPlotD )
+
+    # Finish ratio plot
+    fOut.cd()
+    ratioPlot.Write()
+
     for i, division in enumerate(divisions) :
         if division not in matchList : continue
         print i, division, effPlots[division]
@@ -188,7 +231,7 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
         effPlots[division].SetMarkerStyle( 20+cnt )
         effPlots[division].SetMarkerColor( colors[cnt] )
         #effPlots[division].SetMarkerColor( cnt+1 )
-        if doLog :
+        if doLog and trigger not in nvtxTriggers :
             effPlots[division].GetXaxis().SetLimits( mini, maxi )
         else :
             effPlots[division].GetXaxis().SetLimits( 0., maxi )
@@ -230,6 +273,8 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
         legItems.append( effPlots[division] )
         legNames.append( legendApp+division )
         cnt += 1
+
+    ROOT.gPad.cd()
     mg.Draw('ap')
     mg.SetMaximum( 1.3 )
     mg.SetMinimum( 0. )
@@ -239,8 +284,8 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
         mg.GetXaxis().SetTitle('Offline Lepton p_{T} (GeV)')
     mg.GetXaxis().SetTitleOffset( mg.GetXaxis().GetTitleOffset()*1.3 )
     mg.GetYaxis().SetTitle('HLT Efficiency')
-    if doLog :
-        mg.GetXaxis().SetLimits( 10., maxi )
+    if doLog and trigger not in nvtxTriggers :
+        mg.GetXaxis().SetLimits( mini, maxi )
     else :
         mg.GetXaxis().SetLimits( 0., maxi )
     mg.GetXaxis().SetMoreLogLabels()
@@ -254,24 +299,28 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
     ROOT.gPad.Update()
     decorate(35.9)
     c.SaveAs(plotBase+c.GetName()+'.png')
-    c.SaveAs(plotBase+c.GetName()+'.pdf')
+    #c.SaveAs(plotBase+c.GetName()+'.pdf')
     del leg
     c.Clear()
 
+fOut = ROOT.TFile('triggerSFs2.root','RECREATE')
+
 #for channel in ['ee','mm',] :
 for channel in ['mm',] :
+#for channel in ['ee',] :
 
-    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/doubleLep_oct05/'
-    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/doubleLep_oct05v2/'
+    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/doubleLep_oct07v6/'
 
     if channel == 'ee' :
-        triggers = ee_triggers
+        triggers = ee_triggers.keys()
         dataFile = 'DoubleEG'
+        #dataFile = 'SingleElectron'
     if channel == 'mm' :
-        triggers = mm_triggers
+        triggers = mm_triggers.keys()
         dataFile = 'DoubleMuon'
+        #dataFile = 'SingleMuon'
 
-    directory = 'doubleLepTAP_oct05v1'
+    directory = 'doubleLepTAP_oct06v2'
 
     fData = ROOT.TFile('/data/truggles/'+directory+'/'+dataFile+'.root', 'r')
     tData = fData.Get('DoubleLeptonTAPStudies/tagAndProbe/Ntuple')
@@ -351,15 +400,22 @@ for channel in ['mm',] :
 
             if channel == 'ee' :
                 lepCount = 'passingElectrons == 2'
-                numTrigger = 'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5'
+                #numTrigger = 'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5'
+                numTrigger = ee_triggers[trigger][1]
+                denomTrigger = ee_triggers[trigger][0]
             if channel == 'mm' :
                 lepCount = 'passingMuons == 2'
                 # FIXME decide on double Mu triggers
                 #numTrigger = '(HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5 || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ > 0.5)'
-                numTrigger = 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ > 0.5'
+                #numTrigger = 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ > 0.5'
+                numTrigger = mm_triggers[trigger][1]
+                denomTrigger = mm_triggers[trigger][0]
 
             #baselineCut = lepCount+' && l2Match_'+trigger+' == 1 && (eventD%2==0)'
-            baselineCut = lepCount+' && l2Match_'+trigger+' == 1'
+            print "num:",numTrigger
+            print "denom:",denomTrigger
+            baselineCut = lepCount+' && m_vis>75 && m_vis<105 &&  nBTags == 0 && '+denomTrigger
+            print "baseline:",baselineCut
 
             baselineCut += ' && '+Divisions[division]
 
@@ -379,16 +435,20 @@ for channel in ['mm',] :
 
             hists = {}
             for name, cut in cuts.iteritems() :
-                print name, cut
-                xCut = '('+cut+')'
+                xCut = '('+cut+')*puweight' # puweight set to 1 for all data events
+                print name, xCut
                 if trigger in nvtxTriggers :
                     hists[ name ] = getHist( trees, 'nvtx', xCut, name, division, trigger )
                 elif 'L2' in name :
                     print "Drawing l2Pt"
                     hists[ name ] = getHist( trees, 'l2Pt', xCut, name, division, trigger )
                 else : # 'L1' in name
-                    print "Drawing l1Pt"
-                    hists[ name ] = getHist( trees, 'l1Pt', xCut, name, division, trigger )
+                    if channel == 'mm' :
+                        print "Drawing "+mm_triggers[trigger][2]+"Pt"
+                        hists[ name ] = getHist( trees, mm_triggers[trigger][2].replace('Match_','')+'Pt', xCut, name, division, trigger )
+                    if channel == 'ee' :
+                        print "Drawing "+ee_triggers[trigger][2]+"Pt"
+                        hists[ name ] = getHist( trees, ee_triggers[trigger][2].replace('Match_','')+'Pt', xCut, name, division, trigger )
                 
             ### Do OS - SS
             #groups = ['PassL1','AllL1','PassL2','AllL2']
@@ -416,44 +476,43 @@ for channel in ['mm',] :
             c.Clear()
             effPlots[division] = g
 
-        if doLog :
+        if doLog and trigger not in nvtxTriggers :
             ROOT.gPad.SetLogx()
-
 
         # Do MVA ID/Iso comparison
         if isolations != [] :
             print "Tau MVA ID/Iso Comparison"
             c.SetName(trigger+'_allIsos')
-            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, isolations, 'Tau MVA Iso ' )
+            makeFinalEfficiencyPlot( fOut, c, trigger, Divisions, effPlots, isolations, 'Tau MVA Iso ' )
         # Do Run comparison
         if runs != [] :
             print "Run Comparison"
             c.SetName(trigger+'_allRuns')
-            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, runs, '2016 ' )
+            makeFinalEfficiencyPlot( fOut, c, trigger, Divisions, effPlots, runs, '2016 ' )
 
         # Do NVTX comparison
         if nvtxs != [] :
             print "NVTX Comparison"
             c.SetName(trigger+'_nvtx')
-            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, nvtxs, '' )
+            makeFinalEfficiencyPlot( fOut, c, trigger, Divisions, effPlots, nvtxs, '' )
 
         # Do NVTX comparison for Run D
         if nvtxsRunD != [] :
             print "NVTX Comparison for Run D"
             c.SetName(trigger+'_nvtxRunD')
-            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, nvtxsRunD, '' )
+            makeFinalEfficiencyPlot( fOut, c, trigger, Divisions, effPlots, nvtxsRunD, '' )
 
         # Do all data
         if all2016 != [] :
             print "All 2016 Data"
             c.SetName(trigger+'_combined')
-            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, all2016, '' )
+            makeFinalEfficiencyPlot( fOut, c, trigger, Divisions, effPlots, all2016, '' )
 
         # Do NVTX comparison for all 2016
         if all2016nvtx != [] :
             print "All 2016 Data NVTX"
             c.SetName(trigger+'_nvtxAll')
-            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, all2016nvtx, '' )
+            makeFinalEfficiencyPlot( fOut, c, trigger, Divisions, effPlots, all2016nvtx, '' )
             #if doNvtxComb :
             #    effPlots[0].SetTitle(trigger+all2016nvtx[0]+' - nvtx')
             #    saveMap[trigger+all2016nvtx[0]] = effPlots[0]
@@ -462,7 +521,7 @@ for channel in ['mm',] :
         if all2016nvtx != [] :
             print "All 2016 Data By Run NVTX"
             c.SetName(trigger+'_nvtxByRun')
-            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, nvtxByRun, '' )
+            makeFinalEfficiencyPlot( fOut, c, trigger, Divisions, effPlots, nvtxByRun, '' )
 
     ## Do NVTX comparison for all 2016 and all triggers
     #if doNvtxComb and all2016nvtx != [] :
@@ -476,6 +535,7 @@ for channel in ['mm',] :
     #    makeFinalEfficiencyPlot( c, trigger, Divisions, saveMap, Divisions.keys(), '' )
 
 
+fOut.Close()
 
 
 

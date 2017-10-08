@@ -26,6 +26,7 @@ ROOT.gStyle.SetOptStat(0)
 from array import array
 from collections import OrderedDict
 from math import sqrt
+import os
 
 
 
@@ -150,7 +151,7 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
     maxi = 250.
     #maxi = 100.
     fitMin = 20.
-    #doFit=False
+    doFit=False
     
     # turn off doFit if plot by nvtx
     if ' - nvtx' in matchList[0] :
@@ -250,7 +251,8 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
 
 for channel in ['mt',] :
 
-    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/oct05/'
+    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/oct08_noFit/'
+    if not os.path.exists( plotBase ) : os.makedirs( plotBase )
 
     triggers = mt_triggers
     fData = ROOT.TFile('/data/truggles/hltTaus_oct03v2/SingleMuon.root', 'r')
@@ -336,7 +338,7 @@ for channel in ['mt',] :
             print division
             effPlots[division] = {}
 
-            baselineCut = 'mPt > 27 && tMVAIsoMedium == 1 && HLT_IsoMu27 == 1 && m_vis > 40 && m_vis < 80 && transMass < 30'
+            baselineCut = 'mPt > 24 && tMVAIsoMedium == 1 && HLT_IsoMu24 == 1 && m_vis > 40 && m_vis < 80 && transMass < 30'
 
             # If 1pt, it wasn't in Run B
             if "Trk30_eta2p1_1pr" in trigger and 'All 2017 Data' in division :
@@ -362,7 +364,7 @@ for channel in ['mt',] :
             hists = {}
             for name, cut in cuts.iteritems() :
                 print name, cut
-                xCut = '('+cut+')'
+                xCut = '('+cut+')*puweight'
                 if ' - nvtx' in division :
                     if 'PFTau20' in trigger : xCut += '*(tPt > 20)'
                     if 'PFTau35' in trigger : xCut += '*(tPt > 35)'

@@ -41,10 +41,25 @@ def addPuWeight( iFile, iDir, iTree, isData=False ) :
 
 if '__main__' in __name__ :
 
+    # Double Lepton Efficiencies
     tName = 'DoubleLeptonTAPStudies/tagAndProbe/Ntuple'
     dName = 'DoubleLeptonTAPStudies/tagAndProbe'
     base = '/data/truggles/doubleLepTAP_oct06v2/'
-    addPuWeight( base+'DYJets.root', dName, tName )
+    #addPuWeight( base+'DYJets.root', dName, tName )
     isData = True
-    addPuWeight( base+'DoubleEG.root', dName, tName, isData )
-    addPuWeight( base+'DoubleMuon.root', dName, tName, isData )
+    #addPuWeight( base+'SingleMuon.root', dName, tName, isData )
+    #addPuWeight( base+'SingleElectron.root', dName, tName, isData )
+
+
+    # Tau Trigger Efficiencies
+    tName = 'tauMiniAODHLTStudies/tagAndProbe/Ntuple'
+    dName = 'tauMiniAODHLTStudies/tagAndProbe'
+    base = '/data/truggles/hltTaus_oct03v2/'
+    #addPuWeight( base+'DYJets.root', dName, tName )
+    #addPuWeight( base+'GluGluHToTauTau_M125.root', dName, tName )
+    #addPuWeight( base+'VBFHToTauTau_M125.root', dName, tName )
+    #isData = True
+    #addPuWeight( base+'SingleMuon.root', dName, tName, isData )
+
+
+

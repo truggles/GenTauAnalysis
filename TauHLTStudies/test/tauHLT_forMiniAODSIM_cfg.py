@@ -14,6 +14,14 @@ process.source = cms.Source("PoolSource",
     )
 )
 
+
+# ---- Global Tag :
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+from Configuration.AlCa.GlobalTag import GlobalTag
+#process.GlobalTag = GlobalTag(process.GlobalTag, '92X_upgrade2017_realistic_v10')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc')
+
+
 ### Gen Taus ###
 process.tauGenJets = cms.EDProducer(
     "TauGenJetProducer",

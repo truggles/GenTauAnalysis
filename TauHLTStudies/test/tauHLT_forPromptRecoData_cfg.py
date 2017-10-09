@@ -15,6 +15,13 @@ process.source = cms.Source("PoolSource",
 )
 
 
+# ---- Global Tag :
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, '92X_dataRun2_Prompt_v9')
+
+
+
 process.load("THRAnalysis.TauHLTStudies.miniAOD_CfiFile_cfi")
 process.tauMiniAODHLTStudies.isData = cms.untracked.bool(True)
 process.tauMiniAODHLTStudies.requireMediumTauMVA = cms.untracked.bool(True)

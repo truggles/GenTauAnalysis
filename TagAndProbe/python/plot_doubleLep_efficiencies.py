@@ -4,19 +4,19 @@ mm_triggers = {
 #    # PROBE : [TAG,OtherCuts]
 #    # NAME : [TAG,PROBE,PlotBy/ProbeBy]
    "HLT_Mu17_TrkIsoVVL_vMu17" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "l2Match_"],
-   "HLT_Mu17_TrkIsoVVL_vMu17" : ["(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "l1Match_"],
-   "TkMu8_TrkIsoVVL_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)","l2Match_"],
-   "Mu8_TrkIsoVVL_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ > 0.5)","l2Match_"],
+   "HLT_Mu17_TrkIsoVVL_vMu17_vial1" : ["(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "l1Match_"],
+   "HLT_TkMu8_TrkIsoVVL_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)","l2Match_"],
+   "HLT_Mu8_TrkIsoVVL_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ > 0.5)","l2Match_"],
    "HLT_Mu8_TrkIsoVVL_self_vial1" : ["(l2Match_HLT_Mu8_TrkIsoVVL > 0.5)", "(l1Match_HLT_Mu8_TrkIsoVVL > 0.5)","l1Match_"],
    "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_Part" : ["(l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL > 0.5 && l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL > 0.5)", "(l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5 && l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)",""],
 }
 
 ee_triggers = {
-   #"HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_Match" : ["(l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5 && l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5 && l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5)", ""],
-   #"HLT_Ele23_CaloIdL_TrackIdL_IsoVL_E23D" : ["(l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "l1Match_"],
-   #"HLT_Ele23_CaloIdL_TrackIdL_IsoVL_E23D_vial1" : ["(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "l2Match_"],
-   #"HLT_Ele12_CaloIdL_TrackIdL_IsoVL" : ["(l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "l1Match_"],
-   #"HLT_Ele12_CaloIdL_TrackIdL_IsoVL_vial1" : ["(l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "l2Match_"],
+   "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_Match" : ["(l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5 && l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5 && l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5)", ""],
+   "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_E23D" : ["(l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "l1Match_"],
+   "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_E23D_vial1" : ["(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "l2Match_"],
+   "HLT_Ele12_CaloIdL_TrackIdL_IsoVL" : ["(l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "l1Match_"],
+   "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_vial1" : ["(l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "l2Match_"],
 }
 
 nvtxTriggers = [
@@ -306,10 +306,10 @@ def makeFinalEfficiencyPlot( fOut, c, trigger, divisions, effPlots, matchList, l
 fOut = ROOT.TFile('triggerSFs2.root','RECREATE')
 
 #for channel in ['ee','mm',] :
-for channel in ['mm',] :
-#for channel in ['ee',] :
+#for channel in ['mm',] :
+for channel in ['ee',] :
 
-    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/doubleLep_oct07v6/'
+    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/doubleLep_oct08v1/'
 
     if channel == 'ee' :
         triggers = ee_triggers.keys()
@@ -324,7 +324,7 @@ for channel in ['mm',] :
 
     fData = ROOT.TFile('/data/truggles/'+directory+'/'+dataFile+'.root', 'r')
     tData = fData.Get('DoubleLeptonTAPStudies/tagAndProbe/Ntuple')
-    fDYJets = ROOT.TFile('/data/truggles/'+directory+'/DYJets.root', 'r')
+    fDYJets = ROOT.TFile('/data/truggles/'+directory+'/DYJetsExt.root', 'r')
     tDYJets = fDYJets.Get('DoubleLeptonTAPStudies/tagAndProbe/Ntuple')
     trees = {
         'DYJets' : tDYJets,

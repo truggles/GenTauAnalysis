@@ -5,15 +5,15 @@ mt_triggers = [
    #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1",
    #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
    #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
-   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1",
+#   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1",
    #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1",
-   #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
+   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
    "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
-   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr",
+   #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr",
    #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1",
    #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1",
-   #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
-   #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
+   "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
+   "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
 ]
 
 doLog = True
@@ -45,7 +45,7 @@ def decorate(cmsLumi) :
     
     lumi = ROOT.TText(.7,1.05,"X fb^{-1} (13 TeV)")
     lumi.SetTextSize(0.03)
-    lumi.DrawTextNDC(.67,.91,"%.1f / fb (13 TeV)" % cmsLumi )
+    lumi.DrawTextNDC(.60,.91,"2017, %.1f / fb (13 TeV)" % cmsLumi )
 
 def getBinning( name, division ) :
     #if 'IsoPFTau20' in trigger or 'IsoPFTau35' in trigger :
@@ -92,7 +92,7 @@ def getHist( trees, var, cut, name, division, trigger ) :
     else :
         trees['singleMu'].Draw( var+' >> '+name, doCut )
 
-    print name, h.Integral(), binning
+    print name, h.Integral() #, binning
     h.GetXaxis().SetTitle('Offline #tau p_{T} (GeV)')
     h.GetYaxis().SetTitle('Number of Events')
     h.SetDirectory( 0 )
@@ -251,17 +251,18 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
 
 for channel in ['mt',] :
 
-    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/oct08_noFit/'
+    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/oct11/'
     if not os.path.exists( plotBase ) : os.makedirs( plotBase )
 
+    inDir = '/data/truggles/oct09v1_TauTAP/'
     triggers = mt_triggers
-    fData = ROOT.TFile('/data/truggles/hltTaus_oct03v2/SingleMuon.root', 'r')
+    fData = ROOT.TFile(inDir+'SingleMuonTauTAP.root', 'r')
     tData = fData.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
-    fggH125 = ROOT.TFile('/data/truggles/hltTaus_oct03v2/GluGluHToTauTau_M125.root', 'r')
-    tggH125 = fggH125.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
-    fqqH125 = ROOT.TFile('/data/truggles/hltTaus_oct03v2/VBFHToTauTau_M125.root', 'r')
-    tqqH125 = fqqH125.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
-    fDYJets = ROOT.TFile('/data/truggles/hltTaus_oct03v2/DYJets.root', 'r')
+    #fggH125 = ROOT.TFile('/data/truggles/hltTaus_oct03v2/GluGluHToTauTau_M125.root', 'r')
+    #tggH125 = fggH125.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
+    #fqqH125 = ROOT.TFile('/data/truggles/hltTaus_oct03v2/VBFHToTauTau_M125.root', 'r')
+    #tqqH125 = fqqH125.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
+    fDYJets = ROOT.TFile(inDir+'DYJetsTauTAP.root', 'r')
     tDYJets = fDYJets.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
     trees = {
         #'ggH125' : tggH125,
@@ -350,6 +351,7 @@ for channel in ['mt',] :
             # For 1pr HLT Paths
             if "Trk30_eta2p1_1pr" in trigger :
                  baselineCut += ' && tDecayMode < 2'
+                 #baselineCut += ' && tDecayMode == 10'
 
             cuts = {
                 'SSPass': baselineCut+' && SS == 1 \

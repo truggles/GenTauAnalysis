@@ -89,8 +89,8 @@ class TauHLTStudiesMiniAODAnalyzer : public edm::one::EDAnalyzer<edm::one::Share
         edm::Handle<std::vector<reco::GenJet>> genETaus,
         edm::Handle<std::vector<reco::GenJet>> genMTaus,
         edm::Handle<std::vector<reco::GenParticle>> genParticles);
-      float getL1TauMatch( pat::TauRef& tau,
-        edm::Handle<BXVector<l1t::Tau>> l1Taus);
+      void getL1TauMatch( pat::TauRef& tau,
+        edm::Handle<BXVector<l1t::Tau>> l1Taus, float& l1TauMatch, float& l1TauPt, float& l1TauIso );
 
       // ----------member data ---------------------------
       bool isData;
@@ -120,11 +120,14 @@ class TauHLTStudiesMiniAODAnalyzer : public edm::one::EDAnalyzer<edm::one::Share
       TTree *tree;
       TH1D *nEvents;
       TH1D *cutFlow;
-      double eventD;
-      float run, lumi, nTruePU, nvtx, nvtxCleaned, passingTaus, passingMuons,
-        mPt, mEta, mPhi,
+      double event;
+      float run, lumi, nTruePU, nvtx, nvtxCleaned, passingTaus, passingMuons, nVetoMuons, nSlimmedMuons,
+        mPt, mEta, mPhi, mIso,
+        tmpPt, tmpEta, tmpPhi, tmpIso,
+        l1TauPt, l1TauIso,
         tPt, tEta, tPhi, tMVAIsoVLoose, tMVAIsoLoose, tMVAIsoMedium, 
-        tMVAIsoTight, tMVAIsoVTight, tMVAIsoVVTight, m_vis, transMass, SS,
+        tMVAIsoTight, tMVAIsoVTight, tMVAIsoVVTight, m_vis, transMass, SS, isOS, pfMet,
+        nBTag, nBTagAll, passingElectrons,
         //tIsoCmbLoose, tIsoCmbLoose03, tIsoCmbMedium, tIsoCmbMedium03, tIsoCmbTight, tIsoCmbTight03,
         tIsoCmbLoose, tIsoCmbMedium, tIsoCmbTight,
         leptonDR_t1_t2, leptonDR_m_t1, leptonDR_m_t2,
@@ -134,7 +137,7 @@ class TauHLTStudiesMiniAODAnalyzer : public edm::one::EDAnalyzer<edm::one::Share
         t2MVAIsoTight, t2MVAIsoVTight, t2MVAIsoVVTight, t2_gen_match,t2DecayMode,
         //t2IsoCmbLoose, t2IsoCmbLoose03, t2IsoCmbMedium, t2IsoCmbMedium03, t2IsoCmbTight, t2IsoCmbTight03,
         t2IsoCmbLoose, t2IsoCmbMedium, t2IsoCmbTight,
-        t2TrigMatch,t2L1Match;
+        t2TrigMatch,t2L1Match, emptyVertices, failNdof;
       bool foundGenTau, foundGenMuon; 
       std::map<std::string, int*> triggers;
       std::map<std::string, int>::iterator triggerIterator;
@@ -268,22 +271,33 @@ TauHLTStudiesMiniAODAnalyzer::TauHLTStudiesMiniAODAnalyzer(const edm::ParameterS
    nEvents = subDir.make<TH1D>("nEvents","nEvents",1,-0.5,0.5);
    cutFlow = subDir.make<TH1D>("cutFlow","cutFlow",10,-0.5,9.5);
    tree = subDir.make<TTree>("Ntuple","My T-A-P Ntuple");
-   tree->Branch("run",&run,"run/F");
+   tree->Branch("RunNumber",&run,"RunNumber/F");
    tree->Branch("lumi",&lumi,"lumi/F");
-   tree->Branch("eventD",&eventD,"eventD/D");
+   tree->Branch("EventNumber",&event,"EventNumber/D");
    tree->Branch("nTruePU",&nTruePU,"nTruePU/F");
    tree->Branch("nvtx",&nvtx,"nvtx/F");
    tree->Branch("nvtxCleaned",&nvtxCleaned,"nvtxCleaned/F");
    tree->Branch("passingTaus",&passingTaus,"passingTaus/F");
    tree->Branch("passingMuons",&passingMuons,"passingMuons/F");
-   tree->Branch("mPt",&mPt,"mPt/F");
-   tree->Branch("mEta",&mEta,"mEta/F");
-   tree->Branch("mPhi",&mPhi,"mPhi/F");
+   tree->Branch("nVetoMuons",&nVetoMuons,"nVetoMuons/F");
+   tree->Branch("nSlimmedMuons",&nSlimmedMuons,"nSlimmedMuons/F");
+   tree->Branch("passingElectrons",&passingElectrons,"passingElectrons/F");
+   tree->Branch("muonPt",&mPt,"muonPt/F");
+   tree->Branch("muonEta",&mEta,"muonEta/F");
+   tree->Branch("muonPhi",&mPhi,"muonPhi/F");
+   tree->Branch("muonIso",&mIso,"muonIso/F");
+   tree->Branch("tmpMuonPt",&tmpPt,"tmpMuonPt/F");
+   tree->Branch("tmpMuonEta",&tmpEta,"tmpMuonEta/F");
+   tree->Branch("tmpMuonPhi",&tmpPhi,"tmpMuonPhi/F");
+   tree->Branch("tmpMuonIso",&tmpIso,"tmpMuonIso/F");
    tree->Branch("mTrigMatch",&mTrigMatch,"mTrigMatch/F");
    tree->Branch("mL1Match",&mL1Match,"mL1Match/F");
-   tree->Branch("tPt",&tPt,"tPt/F");
-   tree->Branch("tEta",&tEta,"tEta/F");
-   tree->Branch("tPhi",&tPhi,"tPhi/F");
+   tree->Branch("tauPt",&tPt,"tauPt/F");
+   tree->Branch("tauEta",&tEta,"tauEta/F");
+   tree->Branch("tauPhi",&tPhi,"tauPhi/F");
+   tree->Branch("l1TauPt",&l1TauPt,"l1TauPt/F");
+   tree->Branch("l1TauIso",&l1TauIso,"l1TauIso/F");
+   tree->Branch("tL1Match",&tL1Match,"tL1Match/F");
    tree->Branch("t1_gen_match",&t1_gen_match,"t1_gen_match/F");
    tree->Branch("tMVAIsoVLoose",&tMVAIsoVLoose,"tMVAIsoVLoose/F");
    tree->Branch("tMVAIsoLoose",&tMVAIsoLoose,"tMVAIsoLoose/F");
@@ -297,9 +311,8 @@ TauHLTStudiesMiniAODAnalyzer::TauHLTStudiesMiniAODAnalyzer(const edm::ParameterS
    //tree->Branch("tIsoCmbMedium03",&tIsoCmbMedium03,"tIsoCmbMedium03/F");
    tree->Branch("tIsoCmbTight",&tIsoCmbTight,"tIsoCmbTight/F");
    //tree->Branch("tIsoCmbTight03",&tIsoCmbTight03,"tIsoCmbTight03/F");
-   tree->Branch("tDecayMode",&tDecayMode,"tDecayMode/F");
+   tree->Branch("tauDM",&tDecayMode,"tauDM/F");
    tree->Branch("tTrigMatch",&tTrigMatch,"tTrigMatch/F");
-   tree->Branch("tL1Match",&tL1Match,"tL1Match/F");
    tree->Branch("t2Pt",&t2Pt,"t2Pt/F");
    tree->Branch("t2Eta",&t2Eta,"t2Eta/F");
    tree->Branch("t2Phi",&t2Phi,"t2Phi/F");
@@ -324,7 +337,13 @@ TauHLTStudiesMiniAODAnalyzer::TauHLTStudiesMiniAODAnalyzer(const edm::ParameterS
    tree->Branch("leptonDR_t1_t2",&leptonDR_t1_t2,"leptonDR_t1_t2/F");
    tree->Branch("m_vis",&m_vis,"m_vis/F");
    tree->Branch("transMass",&transMass,"transMass/F");
+   tree->Branch("pfMet",&pfMet,"pfMet/F");
    tree->Branch("SS",&SS,"SS/F");
+   tree->Branch("isOS",&isOS,"isOS/F");
+   tree->Branch("nBTag",&nBTag,"nBTag/F");
+   tree->Branch("nBTagAll",&nBTagAll,"nBTagAll/F");
+   tree->Branch("emptyVertices",&emptyVertices,"emptyVertices/F");
+   tree->Branch("failNdof",&failNdof,"failNdof/F");
 
    tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1",                   &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1,                  "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1/I");
    tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1",           &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1,          "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1/I");
@@ -394,33 +413,55 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
   // First thing, fill the nEvents
   nEvents->Fill(0.);
 
-  eventD = iEvent.eventAuxiliary().event();
+  event = iEvent.eventAuxiliary().event();
   lumi = iEvent.eventAuxiliary().luminosityBlock();
   run = iEvent.eventAuxiliary().run();
-  if (verbose) printf("Run: %.0f    Evt: %.0f   Lumi: %.0f\n", run, eventD, lumi);
+  if (verbose) printf("Run: %.0f    Evt: %.0f   Lumi: %.0f\n", run, event, lumi);
 
 
   if (!isRAW) {
+    emptyVertices = 0;
+    failNdof = 0;
     cutFlow->Fill(0., 1.);
 
     edm::Handle<std::vector<reco::Vertex>> vertices;   
     iEvent.getByToken(vertexToken_, vertices);
-    if (vertices->empty()) return; // skip the event if no PV found
+    //if (vertices->empty()) return; // skip the event if no PV found
+    if (vertices->empty()) emptyVertices = 1; // skip the event if no PV found
     const reco::Vertex &PV = vertices->front();
-    if (PV.ndof() < 4) return; // bad vertex
-    nvtx = vertices.product()->size();
-    nvtxCleaned = 0;
-    for (const reco::Vertex &vertex : *vertices)
-        if (!vertex.isFake()) ++nvtxCleaned;
+    //if (PV.ndof() < 4) return; // bad vertex
+    //nvtx = vertices.product()->size();
+    //nvtxCleaned = 0;
+    //for (const reco::Vertex &vertex : *vertices)
+    //    if (!vertex.isFake()) ++nvtxCleaned;
 
-    // Get the number of true events
-    // This is used later for pile up reweighting
-    edm::Handle<std::vector<PileupSummaryInfo>> puInfo;   
-    iEvent.getByToken(puToken_, puInfo);
-    nTruePU = -99;
-    if (puInfo.isValid()) {
-        if (puInfo->size() > 0) {
-            nTruePU = puInfo->at(1).getTrueNumInteractions();
+    //// Get the number of true events
+    //// This is used later for pile up reweighting
+    //edm::Handle<std::vector<PileupSummaryInfo>> puInfo;   
+    //iEvent.getByToken(puToken_, puInfo);
+    //nTruePU = -99;
+    //if (puInfo.isValid()) {
+    //    if (puInfo->size() > 0) {
+    //        nTruePU = puInfo->at(1).getTrueNumInteractions();
+    //    }
+    //}
+
+    if (!(vertices->empty())) {
+        if (PV.ndof() < 4) failNdof = 1; // bad vertex
+        nvtx = vertices.product()->size();
+        nvtxCleaned = 0;
+        for (const reco::Vertex &vertex : *vertices)
+            if (!vertex.isFake()) ++nvtxCleaned;
+
+        // Get the number of true events
+        // This is used later for pile up reweighting
+        edm::Handle<std::vector<PileupSummaryInfo>> puInfo;   
+        iEvent.getByToken(puToken_, puInfo);
+        nTruePU = -99;
+        if (puInfo.isValid()) {
+            if (puInfo->size() > 0) {
+                nTruePU = puInfo->at(1).getTrueNumInteractions();
+            }
         }
     }
 
@@ -481,32 +522,53 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
     // Storage for the "best" muon
     pat::Muon bestMuon;
     passingMuons = 0;
+    nSlimmedMuons = 0;
+    nVetoMuons = 0;
 
+
+    tmpPt = -1;
+    tmpEta = -1;
+    tmpPhi = -1;
+    tmpIso = -1;
     for (const pat::Muon &mu : *muons) {
-        if (mu.pt() < 20 || fabs(mu.eta()) > 2.1 || !mu.isMediumMuon()) continue;
-        float mIso = (mu.pfIsolationR04().sumChargedHadronPt
+        ++nSlimmedMuons;
+        tmpPt = mu.pt();
+        tmpEta = mu.eta();
+        tmpPhi = mu.phi();
+        tmpIso = (mu.pfIsolationR04().sumChargedHadronPt
             + TMath::Max(0., mu.pfIsolationR04().sumNeutralHadronEt
             + mu.pfIsolationR04().sumPhotonEt
             - 0.5*mu.pfIsolationR04().sumPUPt))
             /mu.pt();
-        if (mIso > 0.1) continue;
-        passingMuons++;
+        if (mu.pt() > 10 && fabs(mu.eta()) < 2.4 && mu.isLooseMuon() && tmpIso < 0.3) ++nVetoMuons;
+        //if (event == 11168213 || event == 10412964 || event == 20665439 ) {
+        //    std::cout << "event:pt:eta:phi:iso - " << event<<":"<<tmpPt<<":"<<tmpEta<<":"<<tmpPhi<<":"<<tmpIso<<std::endl;
+        //    std::cout << " --- mu.pfIsolationR04().sumChargedHadronPt: " << mu.pfIsolationR04().sumChargedHadronPt << std::endl;
+        //    std::cout << " --- mu.pfIsolationR04().sumNeutralHadronEt: " << mu.pfIsolationR04().sumNeutralHadronEt << std::endl;
+        //    std::cout << " --- mu.pfIsolationR04().sumPhotonEt: " << mu.pfIsolationR04().sumPhotonEt << std::endl;
+        //    std::cout << " --- mu.pfIsolationR04().sumPUPt: " << mu.pfIsolationR04().sumPUPt << std::endl;
+        //    std::cout << " --- mu.pt(): " << mu.pt() << std::endl;
+        //}
+        if (mu.pt() < 24 || fabs(mu.eta()) > 2.1 || !mu.isMediumMuon()) continue;
+        //if (mu.pt() < 24 || fabs(mu.eta()) > 2.1 || !mu.isLooseMuon()) continue;
+        if (tmpIso > 0.1) continue;
+        ++passingMuons;
         bestMuon = mu;
     }
     // Require strictly 1 muon
-    if (!doTauTau)
-        if (passingMuons == 0) return;
-    if (doTauTau)
-        if (passingMuons > 0) return;
+    //if (!doTauTau)
+    //    if (passingMuons == 0) return;
+    //if (doTauTau)
+    //    if (passingMuons > 0) return;
     cutFlow->Fill(4., 1.);
     // Extra lepton veto (muons)
-    if (passingMuons > 1) return;
+    //if (passingMuons > 1) return;
     cutFlow->Fill(5., 1.);
 
 
     edm::Handle<std::vector<pat::Electron>> electrons;   
     iEvent.getByToken(electronToken_, electrons);
-    int passingElectrons = 0;
+    passingElectrons = 0;
     for (const pat::Electron &el : *electrons) {
         if (el.pt() < 20 || fabs(el.eta()) > 2.1 || 
             el.electronID("mvaEleID-Spring15-25ns-nonTrig-V1-wp90") < 0.5) continue;
@@ -515,10 +577,10 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
             el.pfIsolationVariables().sumPhotonEt -
             0.5 * el.pfIsolationVariables().sumPUPt, 0.0)) / el.pt();
         if (eIso > 0.1) continue;
-        passingElectrons++;
+        ++passingElectrons;
     }
     // Extra lepton veto (electrons)
-    if (passingElectrons > 0) return;
+    //if (passingElectrons > 0) return;
     cutFlow->Fill(6., 1.);
 
 
@@ -536,7 +598,8 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
         if (tauCandidate->pt() < 20 || (fabs(tauCandidate->eta()) > 2.1) ||
             fabs(tauCandidate->charge()) != 1 ||
             tauCandidate->tauID("decayModeFinding") < 0.5 ||
-            tauCandidate->tauID("againstElectronLooseMVA6") < 0.5 ||
+            //tauCandidate->tauID("againstElectronLooseMVA6") < 0.5 ||
+            tauCandidate->tauID("againstElectronVLooseMVA6") < 0.5 ||
             tauCandidate->tauID("againstMuonLoose3") < 0.5) continue;
 
         if (!doTauTau) // For TauTau only require looser selection, but MuTau is tighter
@@ -572,7 +635,7 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
     }
     // Tau study so...
     if (passingTausV.size() == 0) return;
-    if (doTauTau && passingTausV.size() < 2) return;
+    //if (doTauTau && passingTausV.size() < 2) return;
     passingTaus = passingTausV.size();
     cutFlow->Fill(7., 1.);
     if (verbose) std::cout << "Passing Muons: " << passingMuons << "   Passing Taus: " << passingTausV.size() << std::endl;
@@ -588,14 +651,18 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
     // using Medium CISV value of 0.8
     edm::Handle<std::vector<pat::Jet>> jets;   
     iEvent.getByToken(jetToken_, jets);
-    bool btagged = false;
+    nBTag = 0;
+    nBTagAll = 0;
+    //bool btagged = false;
     for (const pat::Jet &j : *jets) {
         if (j.pt() < 20 || fabs(j.eta()) > 2.4 || j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") < 0.8) continue;
+        ++nBTagAll;
         if (!doTauTau && deltaR(j, bestMuon) < 0.5) continue;
         if (deltaR(j.p4(), passingTausV.at(0)->p4()) < 0.5) continue;
-        btagged = true;
+        //btagged = true;
+        ++nBTag;
     }
-    if (btagged) return;
+    //if (btagged) return;
     cutFlow->Fill(8., 1.);
 
 
@@ -604,11 +671,17 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
         mPt = bestMuon.pt();
         mEta = bestMuon.eta();
         mPhi = bestMuon.phi();
+        mIso = (bestMuon.pfIsolationR04().sumChargedHadronPt
+            + TMath::Max(0., bestMuon.pfIsolationR04().sumNeutralHadronEt
+            + bestMuon.pfIsolationR04().sumPhotonEt
+            - 0.5*bestMuon.pfIsolationR04().sumPUPt))
+            /bestMuon.pt();
     }
     else { // doTauTau
         mPt = -10;
         mEta = -10;
         mPhi = -10;
+        mIso = -10;
     }
     
     tPt = passingTausV.at(0)->pt();
@@ -716,6 +789,7 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
     edm::Handle<std::vector<pat::MET>> mets;   
     iEvent.getByToken(metToken_, mets);
     const pat::MET &met = mets->front();
+    pfMet = met.pt();
     if (!doTauTau )
         transMass = TMath::Sqrt( 2. * bestMuon.pt() * met.pt() * (1. - TMath::Cos( bestMuon.phi() - met.phi())));
 
@@ -753,6 +827,10 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
         m_vis = -1;
         SS = -1;
     }
+
+    if (SS == -1) isOS = -1;
+    if (SS == 0) isOS = 1;
+    if (SS == 1) isOS = 0;
 
 
     edm::Handle<edm::TriggerResults> triggerResults;   
@@ -824,10 +902,10 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
     edm::Handle<BXVector<l1t::Tau>> l1Taus; 
     iEvent.getByToken(stage2TauToken_, l1Taus);
     
-    tL1Match = getL1TauMatch( passingTausV.at(0), l1Taus);
-    if (passingTausV.size() > 1) {
-        t2L1Match = getL1TauMatch( passingTausV.at(1), l1Taus);
-    }
+    getL1TauMatch( passingTausV.at(0), l1Taus, tL1Match, l1TauPt, l1TauIso);
+    //if (passingTausV.size() > 1) {
+    //    t2L1Match = getL1TauMatch( passingTausV.at(1), l1Taus);
+    //}
 
 
 
@@ -1063,12 +1141,14 @@ TauHLTStudiesMiniAODAnalyzer::getGenMatchNumber( pat::TauRef& tau,
   return gen_match;
 }
 
-float
+void
 TauHLTStudiesMiniAODAnalyzer::getL1TauMatch( pat::TauRef& tau,
-        edm::Handle<BXVector<l1t::Tau>> l1Taus) {
-    float tL1Match = -1;
+        edm::Handle<BXVector<l1t::Tau>> l1Taus, float& l1TauMatch, float& l1TauPt, float& l1TauIso ) {
+    l1TauMatch = -1;
+    l1TauPt = -1;
+    l1TauIso = -1;
     if (l1Taus.isValid()) {
-        tL1Match = 0;
+        l1TauMatch = 0;
         //std::cout << "L1 Extras is valid" << std::endl;
         for (size_t i = 0; i < l1Taus->size(0); ++i) {
             const l1t::Tau &l1Tau = l1Taus->at(0,i);
@@ -1079,10 +1159,13 @@ TauHLTStudiesMiniAODAnalyzer::getL1TauMatch( pat::TauRef& tau,
             float drTau = deltaR( *tau, l1Tau );
             //std::cout << " - " << i << " L1Tau pt: " << l1Tau.pt() 
             //<< " Iso: " << l1Tau.hwIso() << " dr: " << drTau << std::endl;
-            if (drTau < 0.5) ++tL1Match;
+            if (drTau < 0.5) {
+                ++l1TauMatch;
+                l1TauPt = l1Tau.pt();
+                l1TauIso = l1Tau.hwIso();
+            }
         }    
     } // end l1Taus
-    return tL1Match;
 
 }
 

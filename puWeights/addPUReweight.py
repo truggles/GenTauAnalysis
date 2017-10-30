@@ -54,16 +54,16 @@ if '__main__' in __name__ :
 
 
     #### Tau Trigger Efficiencies ####
-    dataFile = 'Data_Pileup_2017_294927-303825_80bins.root' # 18.90/fb - 9 Oct 2017
+    dataFile = 'Data_Pileup_2017_294927-304507_80bins.root' # 24.92/fb
     puDict = PUreweight( dataFile )
     #print puDict
 
     tName = 'tauMiniAODHLTStudies/tagAndProbe/Ntuple'
     dName = 'tauMiniAODHLTStudies/tagAndProbe'
-    base = '/data/truggles/oct09v1_TauTAP/'
+    base = '/data/truggles/oct24_tauTAP_sync/'
     #addPuWeight( puDict, base+'DYJetsTauTAP.root', dName, tName )
-    #addPuWeight( puDict, base+'GluGluHToTauTau_M125.root', dName, tName )
-    #addPuWeight( puDict, base+'VBFHToTauTau_M125.root', dName, tName )
+    ###addPuWeight( puDict, base+'GluGluHToTauTau_M125.root', dName, tName )
+    ###addPuWeight( puDict, base+'VBFHToTauTau_M125.root', dName, tName )
     isData = True
     addPuWeight( puDict, base+'SingleMuonTauTAP.root', dName, tName, isData )
 

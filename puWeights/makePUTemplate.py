@@ -25,7 +25,7 @@ def makeDataPUTemplate( cert, puJson, year='17' ) :
 
 if __name__ == '__main__' :
 
-    cert = 'PromptReco/Cert_294927-303825_13TeV_PromptReco_Collisions17_JSON.txt' # 18.90/fb
+    cert = 'PromptReco/Cert_294927-304507_13TeV_PromptReco_Collisions17_JSON.txt' # 24.92/fb
     year = '17'
     makeDataPUTemplate( cert, 'pileup_latest.txt', year )
 

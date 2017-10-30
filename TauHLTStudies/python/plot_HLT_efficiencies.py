@@ -243,7 +243,7 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
     leg = buildLegend( legItems, legNames )
     leg.Draw()
     ROOT.gPad.Update()
-    decorate(17.8)
+    decorate(21.15)
     c.SaveAs(plotBase+c.GetName()+'.png')
     c.SaveAs(plotBase+c.GetName()+'.pdf')
     del leg
@@ -292,6 +292,7 @@ for channel in ['mt',] :
     Divisions['RunB - nvtx'] = 'run >= 297020 && run <= 299329'
     Divisions['RunC - nvtx'] = 'run >= 299337 && run <= 302029'
     Divisions['RunD - nvtx'] = 'run >= 302030 && run <= 303434'
+    Divisions['RunE - nvtx'] = 'run >= 303435 && run <= 304826'
     Divisions['All 2017 Data'] = 'run > 0'
     #Divisions['ggH125'] = 'run > 0'
     #Divisions['qqH125'] = 'run > 0'
@@ -299,6 +300,7 @@ for channel in ['mt',] :
     Divisions['RunB'] = 'run >= 297020 && run <= 299329'
     Divisions['RunC'] = 'run >= 299337 && run <= 302029'
     Divisions['RunD'] = 'run >= 302030 && run <= 303434'
+    Divisions['RunE'] = 'run >= 303435 && run <= 304826'
     #Divisions['Medium'] = 'tMVAIsoMedium == 1 && tMVAIsoTight != 1'
     #Divisions['Tight'] = 'tMVAIsoTight == 1 && tMVAIsoVTight != 1'
     #Divisions['VTight'] = 'tMVAIsoVTight == 1'
@@ -310,14 +312,14 @@ for channel in ['mt',] :
     #Divisions['2017 RunD nvtx > 25'] = 'nvtx >= 25 && run >= 302030 && run <= 303434'
 
     isolations = ['Medium','Tight','VTight']
-    runs = ['RunB','RunC','RunD','DYJets']
+    runs = ['RunB','RunC','RunD','RunE','DYJets']
     nvtxs = ['nvtx0to15','nvtx15to25','nvtx25to35','nvtx35plus',]
     nvtxsRunD = ['2017 RunD 0 <= nvtx <= 25','2017 RunD nvtx > 25',]
     #all2017 = ['All 2017 Data','ggH125','qqH125','DYJets']
     all2017 = ['All 2017 Data','DYJets']
     #all2017nvtx = ['All 2017 Data - nvtx','ggH125 - nvtx','qqH125 - nvtx','DYJets - nvtx']
     all2017nvtx = ['All 2017 Data - nvtx','DYJets - nvtx']
-    nvtxByRun = ['RunB - nvtx', 'RunC - nvtx', 'RunD - nvtx','DYJets - nvtx']
+    nvtxByRun = ['RunB - nvtx', 'RunC - nvtx', 'RunD - nvtx', 'RunE - nvtx', 'DYJets - nvtx']
 
     if 'Medium' not in Divisions.keys() : isolations = []
     if 'RunB' not in Divisions.keys() : runs = []

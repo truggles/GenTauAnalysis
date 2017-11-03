@@ -54,7 +54,7 @@ if '__main__' in __name__ :
 
 
     #### Tau Trigger Efficiencies ####
-    dataFile = 'Data_Pileup_2017_294927-304507_80bins.root' # 24.92/fb
+    dataFile = 'Data_Pileup_2017_AllRunB-E_80bins.root'
     puDict = PUreweight( dataFile )
     #print puDict
 

@@ -126,6 +126,8 @@ class DoubleLeptonTAP : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       std::map<std::string, int*> l2MatchTriggers;
       std::map<std::string, int>::iterator triggerIterator;
       int l1Match_HLT_IsoMu27;
+      int l1Match_HLT_IsoMu24;
+      int l1Match_HLT_IsoTkMu24;
       int l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ;
       int l1Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
       int l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
@@ -136,7 +138,10 @@ class DoubleLeptonTAP : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       int l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL;
       int l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL;
       int l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL;
+      int l1Match_HLT_Ele27_WPTight_Gsf;
       int l2Match_HLT_IsoMu27;
+      int l2Match_HLT_IsoTkMu24;
+      int l2Match_HLT_IsoMu24;
       int l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ;
       int l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
       int l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
@@ -147,7 +152,10 @@ class DoubleLeptonTAP : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       int l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL;
       int l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL;
       int l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL;
+      int l2Match_HLT_Ele27_WPTight_Gsf;
       int HLT_IsoMu27;
+      int HLT_IsoMu24;
+      int HLT_IsoTkMu24;
       int HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ;
       int HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
       int HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
@@ -158,6 +166,7 @@ class DoubleLeptonTAP : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       int HLT_Ele23_CaloIdL_TrackIdL_IsoVL;
       int HLT_Ele12_CaloIdL_TrackIdL_IsoVL;
       int HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL;
+      int HLT_Ele27_WPTight_Gsf;
 
 };
 
@@ -192,6 +201,8 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    edm::Service<TFileService> fs;
 
    l1MatchTriggers["HLT_IsoMu27_v"]                                              = &l1Match_HLT_IsoMu27;
+   l1MatchTriggers["HLT_IsoMu24_v"]                                              = &l1Match_HLT_IsoMu24;
+   l1MatchTriggers["HLT_IsoTkMu24_v"]                                            = &l1Match_HLT_IsoTkMu24;
    l1MatchTriggers["HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"]                    = &l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ;
    l1MatchTriggers["HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"]                      = &l1Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
    l1MatchTriggers["HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"]                       = &l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
@@ -202,8 +213,11 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    l1MatchTriggers["HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v"]                         = &l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL;
    l1MatchTriggers["HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v"]                         = &l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL;
    l1MatchTriggers["HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"]                   = &l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL;
+   l1MatchTriggers["HLT_Ele27_WPTight_Gsf_v"]                                    = &l1Match_HLT_Ele27_WPTight_Gsf;
 
    l2MatchTriggers["HLT_IsoMu27_v"]                                              = &l2Match_HLT_IsoMu27;
+   l2MatchTriggers["HLT_IsoMu24_v"]                                              = &l2Match_HLT_IsoMu24;
+   l2MatchTriggers["HLT_IsoTkMu24_v"]                                            = &l2Match_HLT_IsoTkMu24;
    l2MatchTriggers["HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"]                    = &l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ;
    l2MatchTriggers["HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"]                      = &l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
    l2MatchTriggers["HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"]                       = &l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
@@ -214,8 +228,11 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    l2MatchTriggers["HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v"]                         = &l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL;
    l2MatchTriggers["HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v"]                         = &l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL;
    l2MatchTriggers["HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"]                   = &l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL;
+   l2MatchTriggers["HLT_Ele27_WPTight_Gsf_v"]                                    = &l2Match_HLT_Ele27_WPTight_Gsf;
 
    triggers["HLT_IsoMu27_v"]                                              = &HLT_IsoMu27;
+   triggers["HLT_IsoMu24_v"]                                              = &HLT_IsoMu24;
+   triggers["HLT_IsoTkMu24_v"]                                            = &HLT_IsoTkMu24;
    triggers["HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"]                    = &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ;
    triggers["HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"]                      = &HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
    triggers["HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"]                       = &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
@@ -226,6 +243,7 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    triggers["HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v"]                         = &HLT_Ele23_CaloIdL_TrackIdL_IsoVL;
    triggers["HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v"]                         = &HLT_Ele12_CaloIdL_TrackIdL_IsoVL;
    triggers["HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"]                   = &HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL;
+   triggers["HLT_Ele27_WPTight_Gsf_v"]                                    = &HLT_Ele27_WPTight_Gsf;
 
    TFileDirectory subDir = fs->mkdir( "tagAndProbe" );
    nEvents = subDir.make<TH1D>("nEvents","nEvents",1,-0.5,0.5);
@@ -264,6 +282,8 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    tree->Branch("nBTags",&nBTags,"nBTags/F");
 
    tree->Branch("HLT_IsoMu27",                                 &HLT_IsoMu27,                                  "HLT_IsoMu27/I");
+   tree->Branch("HLT_IsoMu24",                                 &HLT_IsoMu24,                                  "HLT_IsoMu24/I");
+   tree->Branch("HLT_IsoTkMu24",                               &HLT_IsoTkMu24,                                "HLT_IsoTkMu24/I");
    tree->Branch("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ",       &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ,        "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ/I");
    tree->Branch("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ",         &HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ,          "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ/I");
    tree->Branch("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL",          &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL,           "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL/I");
@@ -274,8 +294,11 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    tree->Branch("HLT_Ele23_CaloIdL_TrackIdL_IsoVL",            &HLT_Ele23_CaloIdL_TrackIdL_IsoVL,             "HLT_Ele23_CaloIdL_TrackIdL_IsoVL/I");
    tree->Branch("HLT_Ele12_CaloIdL_TrackIdL_IsoVL",            &HLT_Ele12_CaloIdL_TrackIdL_IsoVL,             "HLT_Ele12_CaloIdL_TrackIdL_IsoVL/I");
    tree->Branch("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL",      &HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL,       "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL/I");
+   tree->Branch("HLT_Ele27_WPTight_Gsf",                       &HLT_Ele27_WPTight_Gsf,                        "HLT_Ele27_WPTight_Gsf/I");
 
    tree->Branch("l1Match_HLT_IsoMu27",                                 &l1Match_HLT_IsoMu27,                                  "l1Match_HLT_IsoMu27/I");
+   tree->Branch("l1Match_HLT_IsoMu24",                                 &l1Match_HLT_IsoMu24,                                  "l1Match_HLT_IsoMu24/I");
+   tree->Branch("l1Match_HLT_IsoTkMu24",                               &l1Match_HLT_IsoTkMu24,                                "l1Match_HLT_IsoTkMu24/I");
    tree->Branch("l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ",       &l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ,        "l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ/I");
    tree->Branch("l1Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ",         &l1Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ,          "l1Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ/I");
    tree->Branch("l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL",          &l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL,           "l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL/I");
@@ -286,8 +309,11 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    tree->Branch("l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL",            &l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL,             "l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL/I");
    tree->Branch("l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL",            &l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL,             "l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL/I");
    tree->Branch("l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL",      &l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL,       "l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL/I");
+   tree->Branch("l1Match_HLT_Ele27_WPTight_Gsf",                       &l1Match_HLT_Ele27_WPTight_Gsf,                        "l1Match_HLT_Ele27_WPTight_Gsf/I");
 
    tree->Branch("l2Match_HLT_IsoMu27",                                 &l2Match_HLT_IsoMu27,                                  "l2Match_HLT_IsoMu27/I");
+   tree->Branch("l2Match_HLT_IsoMu24",                                 &l2Match_HLT_IsoMu24,                                  "l2Match_HLT_IsoMu24/I");
+   tree->Branch("l2Match_HLT_IsoTkMu24",                               &l2Match_HLT_IsoTkMu24,                                "l2Match_HLT_IsoTkMu24/I");
    tree->Branch("l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ",       &l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ,        "l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ/I");
    tree->Branch("l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ",         &l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ,          "l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ/I");
    tree->Branch("l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL",          &l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL,           "l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL/I");
@@ -298,6 +324,7 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    tree->Branch("l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL",            &l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL,             "l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL/I");
    tree->Branch("l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL",            &l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL,             "l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL/I");
    tree->Branch("l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL",      &l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL,       "l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL/I");
+   tree->Branch("l2Match_HLT_Ele27_WPTight_Gsf",                       &l2Match_HLT_Ele27_WPTight_Gsf,                        "l2Match_HLT_Ele27_WPTight_Gsf/I");
 
 }
 

@@ -22,8 +22,8 @@ config.User.voGroup            = 'uscms'
 
 dataMap = OrderedDict()
 
-#dataMap['DYJetsExt1'] = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/MINIAODSIM' # 477 files
-#dataMap['DYJetsExt2'] = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext2-v1/MINIAODSIM' # 837 files
+dataMap['DYJetsExt1'] = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/MINIAODSIM' # 477 files
+dataMap['DYJetsExt2'] = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext2-v1/MINIAODSIM' # 837 files
 #
 #dataMap['dataDoubleMuBv1'] = '/DoubleMuon/Run2016B-03Feb2017_ver1-v1/MINIAOD'
 #dataMap['dataDoubleMuBv2'] = '/DoubleMuon/Run2016B-03Feb2017_ver2-v2/MINIAOD'
@@ -92,7 +92,7 @@ if __name__ == '__main__':
         else :
             config.Data.unitsPerJob        = 4 # Some DY jobs had trouble, trying smaller size
         config.JobType.psetName        = 'doubleLeptonTAP_cfg.py'
-        config.General.requestName = '%s_oct06v2' % k
+        config.General.requestName = '%s_nov08' % k
         config.Data.outputDatasetTag   = config.General.requestName
         config.Data.inputDataset = v
         print 'submitting config:'

@@ -8,4 +8,5 @@
 <use name="FWCore/ServiceRegistry"/>
 <use name="SimDataFormats/PileupSummaryInfo"/>
 <use name="DataFormats/TauReco"/>
+<use name="RecoEgamma/ElectronIdentification"/>
 <flags EDM_PLUGIN="1"/>

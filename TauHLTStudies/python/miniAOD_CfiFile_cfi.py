@@ -15,4 +15,6 @@ tauMiniAODHLTStudies = cms.EDAnalyzer("TauHLTStudiesMiniAODAnalyzer",
     triggerObjectsSrc = cms.InputTag("slimmedPatTrigger"),
     stage2TauSrc = cms.InputTag("caloStage2Digis","Tau","RECO"),
     genSrc = cms.InputTag("prunedGenParticles","","PAT"),
+    eleMediumIdMap = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring16-GeneralPurpose-V1-wp90"),
+    eleLooseIdMap = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring16-HZZ-V1-wpLoose"),
 )

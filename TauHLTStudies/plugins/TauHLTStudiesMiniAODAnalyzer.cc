@@ -106,7 +106,7 @@ class TauHLTStudiesMiniAODAnalyzer : public edm::one::EDAnalyzer<edm::one::Share
       edm::EDGetTokenT<std::vector<pat::Tau>> tauToken_;
 
       edm::EDGetTokenT<std::vector<pat::Muon>> muonToken_;
-      edm::EDGetTokenT<std::vector<pat::Electron>> electronToken_;
+      edm::EDGetTokenT<edm::View<reco::GsfElectron> > electronToken_;
       edm::EDGetTokenT<std::vector<pat::Jet>> jetToken_;
       edm::EDGetTokenT<std::vector<pat::MET>> metToken_;
       edm::EDGetTokenT<std::vector<reco::Vertex>> vertexToken_;
@@ -114,6 +114,9 @@ class TauHLTStudiesMiniAODAnalyzer : public edm::one::EDAnalyzer<edm::one::Share
       edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> triggerObjectsToken_;
       edm::EDGetTokenT<BXVector<l1t::Tau>> stage2TauToken_;
       edm::EDGetTokenT<std::vector<reco::GenParticle>> genToken_;
+
+      edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseIdMapTag_;
+
       // l1 extras
       //edm::EDGetTokenT<edm::TriggerResults> triggerToken_;
 
@@ -211,14 +214,15 @@ TauHLTStudiesMiniAODAnalyzer::TauHLTStudiesMiniAODAnalyzer(const edm::ParameterS
     tauToken_(consumes<std::vector<pat::Tau>>(iConfig.getParameter<edm::InputTag>("tauSrc"))),
 
     muonToken_(consumes<std::vector<pat::Muon>>(iConfig.getParameter<edm::InputTag>("muonSrc"))),
-    electronToken_(consumes<std::vector<pat::Electron>>(iConfig.getParameter<edm::InputTag>("electronSrc"))),
+    electronToken_(consumes<edm::View<reco::GsfElectron>>(iConfig.getParameter<edm::InputTag>("electronSrc"))),
     jetToken_(consumes<std::vector<pat::Jet>>(iConfig.getParameter<edm::InputTag>("jetSrc"))),
     metToken_(consumes<std::vector<pat::MET>>(iConfig.getParameter<edm::InputTag>("metSrc"))),
     vertexToken_(consumes<std::vector<reco::Vertex>>(iConfig.getParameter<edm::InputTag>("pvSrc"))),
     triggerToken_(consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerSrc"))),
     triggerObjectsToken_(consumes<pat::TriggerObjectStandAloneCollection>(iConfig.getParameter<edm::InputTag>("triggerObjectsSrc"))),
     stage2TauToken_(consumes<BXVector<l1t::Tau>>(iConfig.getParameter<edm::InputTag>("stage2TauSrc"))),
-    genToken_(consumes<std::vector<reco::GenParticle>>(iConfig.getParameter<edm::InputTag>("genSrc")))
+    genToken_(consumes<std::vector<reco::GenParticle>>(iConfig.getParameter<edm::InputTag>("genSrc"))),
+    eleLooseIdMapTag_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap")))
 {
    //now do what ever initialization is needed
    //usesResource("TFileService");
@@ -566,19 +570,22 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
     cutFlow->Fill(5., 1.);
 
 
-    edm::Handle<std::vector<pat::Electron>> electrons;   
+    // Veto events with loose electrons
+    Handle<edm::View<reco::GsfElectron> > electrons;
     iEvent.getByToken(electronToken_, electrons);
+    Handle<edm::ValueMap<bool> > loose_id_decisions;
+    iEvent.getByToken(eleLooseIdMapTag_, loose_id_decisions);
+
     passingElectrons = 0;
-    for (const pat::Electron &el : *electrons) {
-        if (el.pt() < 20 || fabs(el.eta()) > 2.1 || 
-            el.electronID("mvaEleID-Spring15-25ns-nonTrig-V1-wp90") < 0.5) continue;
-        float eIso = (el.pfIsolationVariables().sumChargedHadronPt + TMath::Max(
-            el.pfIsolationVariables().sumNeutralHadronEt +
-            el.pfIsolationVariables().sumPhotonEt -
-            0.5 * el.pfIsolationVariables().sumPUPt, 0.0)) / el.pt();
-        if (eIso > 0.1) continue;
-        ++passingElectrons;
+    for(unsigned int i = 0; i< electrons->size(); ++i){
+     
+        const auto ele = electrons->ptrAt(i);
+        int isLooseID = (*loose_id_decisions)[ele];
+        if(isLooseID && ele->p4().Pt()>10 && fabs(ele->p4().Eta())<2.5)
+            ++passingElectrons;
     }
+
+
     // Extra lepton veto (electrons)
     //if (passingElectrons > 0) return;
     cutFlow->Fill(6., 1.);
@@ -655,7 +662,7 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
     nBTagAll = 0;
     //bool btagged = false;
     for (const pat::Jet &j : *jets) {
-        if (j.pt() < 20 || fabs(j.eta()) > 2.4 || j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") < 0.8) continue;
+        if (j.pt() < 20 || fabs(j.eta()) > 2.4 || j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") < 0.8484) continue;
         ++nBTagAll;
         if (!doTauTau && deltaR(j, bestMuon) < 0.5) continue;
         if (deltaR(j.p4(), passingTausV.at(0)->p4()) < 0.5) continue;

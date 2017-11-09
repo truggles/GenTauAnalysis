@@ -7,7 +7,8 @@ def makeDataPUTemplate( cert, puJson, year='17' ) :
     executeArray = [
         'pileupCalc.py',
         '-i',
-        '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions%s/13TeV/%s' % (year, cert),
+        #'/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions%s/13TeV/%s' % (year, cert),
+        cert,
         '--inputLumiJSON',
         '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions%s/13TeV/PileUp/%s' % (year, puJson),
         '--calcMode',
@@ -25,7 +26,9 @@ def makeDataPUTemplate( cert, puJson, year='17' ) :
 
 if __name__ == '__main__' :
 
-    cert = 'PromptReco/Cert_294927-304507_13TeV_PromptReco_Collisions17_JSON.txt' # 24.92/fb
+    base = ''
+    cert = base+'data/Cert_294927-304797_RunB-E_13TeV_PromptReco_Collisions17_JSON.txt' # All Run B - E
+    #cert = 'PromptReco/Cert_294927-304507_13TeV_PromptReco_Collisions17_JSON.txt' # 24.92/fb
     year = '17'
     makeDataPUTemplate( cert, 'pileup_latest.txt', year )
 

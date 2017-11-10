@@ -115,9 +115,9 @@ class DoubleLeptonTAP : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       TH1D *cutFlow;
       double eventD;
       float run, lumi, nTruePU, nvtx, nvtxCleaned, passingMuons, passingElectrons,
-        l1Pt, l1Eta, l1Phi, l1Iso,
+        l1Pt, l1Eta, l1Phi, l1Iso, l1Level1Pt,
         l1LooseMuon, l1MediumMuon, l1ElecWP90, l1ElecWP80,
-        l2Pt, l2Eta, l2Phi, l2Iso,
+        l2Pt, l2Eta, l2Phi, l2Iso, l2Level1Pt,
         l2LooseMuon, l2MediumMuon, l2ElecWP90, l2ElecWP80,
         m_vis, transMass, met, metPhi, SS, nBTags,
         leptonDR_l11_l22;
@@ -261,6 +261,7 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    tree->Branch("l1Eta",&l1Eta,"l1Eta/F");
    tree->Branch("l1Phi",&l1Phi,"l1Phi/F");
    tree->Branch("l1Iso",&l1Iso,"l1Iso/F");
+   tree->Branch("l1Level1Pt",&l1Level1Pt,"l1Level1Pt/F");
    tree->Branch("l1LooseMuon",&l1LooseMuon,"l1LooseMuon/F");
    tree->Branch("l1MediumMuon",&l1MediumMuon,"l1MediumMuon/F");
    tree->Branch("l1ElecWP90",&l1ElecWP90,"l1ElecWP90/F");
@@ -269,6 +270,7 @@ DoubleLeptonTAP::DoubleLeptonTAP(const edm::ParameterSet& iConfig) :
    tree->Branch("l2Eta",&l2Eta,"l2Eta/F");
    tree->Branch("l2Phi",&l2Phi,"l2Phi/F");
    tree->Branch("l2Iso",&l2Iso,"l2Iso/F");
+   tree->Branch("l2Level1Pt",&l2Level1Pt,"l2Level1Pt/F");
    tree->Branch("l2LooseMuon",&l2LooseMuon,"l2LooseMuon/F");
    tree->Branch("l2MediumMuon",&l2MediumMuon,"l2MediumMuon/F");
    tree->Branch("l2ElecWP90",&l2ElecWP90,"l2ElecWP90/F");
@@ -508,7 +510,7 @@ DoubleLeptonTAP::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   iEvent.getByToken(jetToken_, jets);
   nBTags = 0;
   for (const pat::Jet &j : *jets) {
-      if (j.pt() < 20 || fabs(j.eta()) > 2.4 || j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") < 0.8) continue;
+      if (j.pt() < 20 || fabs(j.eta()) > 2.4 || j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") < 0.8484) continue;
       if (passingMuonsV.size() == 2)
         if (deltaR(j, *passingMuonsV.at(0)) < 0.5 || deltaR(j, *passingMuonsV.at(1)) < 0.5) continue;
       if (passingElectronsV.size() == 2)
@@ -661,6 +663,8 @@ DoubleLeptonTAP::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   // Clear previous run
   for (auto pair : l1MatchTriggers) (*pair.second) = 0;
   for (auto pair : l2MatchTriggers) (*pair.second) = 0;
+  l1Level1Pt = -99;
+  l2Level1Pt = -99;
 
   for (pat::TriggerObjectStandAlone obj : *triggerObjects) { // note: not "const &" since we want to call unpackPathNames
       obj.unpackPathNames(names);
@@ -675,6 +679,7 @@ DoubleLeptonTAP::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
               if (passingMuonsV.size() == 2) {
                   float drMu1 = deltaR( *passingMuonsV.at(0), obj );
                   if (drMu1 < 0.3) {
+                    l1Level1Pt = obj.pt();
                     if (verbose) std::cout << "\tmuon1 dR: " << drMu1 << std::endl;
                     for (auto pair : l1MatchTriggers) {
                         //std::cout << pair.first << " : " << pathNamesLast[h] << std::endl;
@@ -686,6 +691,7 @@ DoubleLeptonTAP::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   }
                   float drMu2 = deltaR( *passingMuonsV.at(1), obj );
                   if (drMu2 < 0.3) {
+                    l2Level1Pt = obj.pt();
                     if (verbose) std::cout << "\tmuon2 dR: " << drMu2 << std::endl;
                     for (auto pair : l2MatchTriggers) {
                         if ( pathNamesLast[h].find( std::string(pair.first)) != std::string::npos ) (*pair.second) += 1;
@@ -695,6 +701,7 @@ DoubleLeptonTAP::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
               if (passingElectronsV.size() == 2) {
                   float drElec1 = deltaR( *passingElectronsV.at(0), obj );
                   if (drElec1 < 0.3) {
+                    l1Level1Pt = obj.pt();
                     if (verbose) std::cout << "\tmuon1 dR: " << drElec1 << std::endl;
                     for (auto pair : l1MatchTriggers) {
                         //std::cout << pair.first << " : " << pathNamesLast[h] << std::endl;
@@ -706,6 +713,7 @@ DoubleLeptonTAP::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   }
                   float drElec2 = deltaR( *passingElectronsV.at(1), obj );
                   if (drElec2 < 0.3) {
+                    l2Level1Pt = obj.pt();
                     if (verbose) std::cout << "\tmuon2 dR: " << drElec2 << std::endl;
                     for (auto pair : l2MatchTriggers) {
                         if ( pathNamesLast[h].find( std::string(pair.first)) != std::string::npos ) (*pair.second) += 1;

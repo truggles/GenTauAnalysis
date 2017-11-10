@@ -39,33 +39,40 @@ def addPuWeight( puDict, iFile, iDir, iTree, isData=False ) :
 
 if '__main__' in __name__ :
 
-    #### Double Lepton Efficiencies ####
-    dataFile = 'Data_Pileup_2016_271036-284044_80bins.root' # Moriond2017, full 2016 dataset
-    puDict = PUreweight( dataFile )
-    #print puDict
+    doTauHLT = False
+    doZH = True
 
-    tName = 'DoubleLeptonTAPStudies/tagAndProbe/Ntuple'
-    dName = 'DoubleLeptonTAPStudies/tagAndProbe'
-    base = '/data/truggles/doubleLepTAP_oct06v2/'
-    #addPuWeight( puDict, base+'DYJetsExt.root', dName, tName )
-    #isData = True
-    #addPuWeight( puDict, base+'SingleMuon.root', dName, tName, isData )
-    #addPuWeight( puDict, base+'SingleElectron.root', dName, tName, isData )
+    if doZH :
+        #### Double Lepton Efficiencies ####
+        dataFile = 'Data_Pileup_2016_271036-284044_80bins.root' # Moriond2017, full 2016 dataset
+        puDict = PUreweight( dataFile )
+        #print puDict
+
+        date = 'nov09v3'
+        tName = 'DoubleLeptonTAPStudies/tagAndProbe/Ntuple'
+        dName = 'DoubleLeptonTAPStudies/tagAndProbe'
+        base = '/data/truggles/zhTrigEff_'+date+'/'
+        addPuWeight( puDict, base+'zhTrigEff_DYJets_'+date+'.root', dName, tName )
+        isData = True
+        addPuWeight( puDict, base+'zhTrigEff_SingleMuon_'+date+'.root', dName, tName, isData )
+        addPuWeight( puDict, base+'zhTrigEff_SingleElectron_'+date+'.root', dName, tName, isData )
 
 
-    #### Tau Trigger Efficiencies ####
-    dataFile = 'Data_Pileup_2017_AllRunB-E_80bins.root'
-    puDict = PUreweight( dataFile )
-    #print puDict
+    if doTauHLT :
+        #### Tau Trigger Efficiencies ####
+        dataFile = 'Data_Pileup_2017_AllRunB-E_80bins.root'
+        puDict = PUreweight( dataFile )
+        #print puDict
 
-    tName = 'tauMiniAODHLTStudies/tagAndProbe/Ntuple'
-    dName = 'tauMiniAODHLTStudies/tagAndProbe'
-    base = '/data/truggles/oct24_tauTAP_sync/'
-    #addPuWeight( puDict, base+'DYJetsTauTAP.root', dName, tName )
-    ###addPuWeight( puDict, base+'GluGluHToTauTau_M125.root', dName, tName )
-    ###addPuWeight( puDict, base+'VBFHToTauTau_M125.root', dName, tName )
-    isData = True
-    addPuWeight( puDict, base+'SingleMuonTauTAP.root', dName, tName, isData )
+        tName = 'tauMiniAODHLTStudies/tagAndProbe/Ntuple'
+        dName = 'tauMiniAODHLTStudies/tagAndProbe'
+        base = '/data/truggles/oct24_tauTAP_sync/'
+        addPuWeight( puDict, base+'DYJets_all_sync_ext1_v4.root', dName, tName )
+        #addPuWeight( puDict, base+'DYJetsTauTAP.root', dName, tName )
+        ###addPuWeight( puDict, base+'GluGluHToTauTau_M125.root', dName, tName )
+        ###addPuWeight( puDict, base+'VBFHToTauTau_M125.root', dName, tName )
+        isData = True
+        #addPuWeight( puDict, base+'SingleMuonTauTAP.root', dName, tName, isData )
 
 
 

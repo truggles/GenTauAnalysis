@@ -3,20 +3,28 @@
 mm_triggers = {
 #    # PROBE : [TAG,OtherCuts]
 #    # NAME : [TAG,PROBE,PlotBy/ProbeBy]
-   "HLT_Mu17_TrkIsoVVL_vMu17" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "l2Match_"],
-   "HLT_Mu17_TrkIsoVVL_vMu17_vial1" : ["(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "l1Match_"],
-   "HLT_TkMu8_TrkIsoVVL_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)","l2Match_"],
-   "HLT_Mu8_TrkIsoVVL_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ > 0.5)","l2Match_"],
-   "HLT_Mu8_TrkIsoVVL_self_vial1" : ["(l2Match_HLT_Mu8_TrkIsoVVL > 0.5)", "(l1Match_HLT_Mu8_TrkIsoVVL > 0.5)","l1Match_"],
-   "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_Part" : ["(l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL > 0.5 && l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL > 0.5)", "(l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5 && l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)",""],
+#   "HLT_Mu24" : ["(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l1Match_HLT_IsoMu24 > 0.5 || l1Match_HLT_IsoTkMu24 > 0.5)", "l1Match_"],
+#   "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_Part" : ["(l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL > 0.5 && l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL > 0.5)", "(l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5 && l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)",""],
+#   "HLT_Mu17_TrkIsoVVL_vMu17" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "l2Match_"],
+#   "HLT_Mu8_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ > 0.5 || l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)","l2Match_"],
+
+   #XXX Don'tUse#"HLT_TkMu8_TrkIsoVVL_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)","l2Match_"],
+   #XXX Don'tUse#"HLT_Mu8_TrkIsoVVL_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ > 0.5)","l2Match_"],
+   #XXX Don'tUse#"HLT_Mu17_TrkIsoVVL_vMu17_vial1" : ["(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "l1Match_"],
+   #XXX Don'tUse#"HLT_Mu8_TrkIsoVVL_self_vial1" : ["(l2Match_HLT_Mu8_TrkIsoVVL > 0.5)", "(l1Match_HLT_Mu8_TrkIsoVVL > 0.5)","l1Match_"],
 }
 
 ee_triggers = {
-   "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_Match" : ["(l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5 && l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5 && l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5)", ""],
-   "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_E23D" : ["(l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "l1Match_"],
-   "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_E23D_vial1" : ["(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "l2Match_"],
-   "HLT_Ele12_CaloIdL_TrackIdL_IsoVL" : ["(l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "l1Match_"],
-   "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_vial1" : ["(l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "l2Match_"],
+   "HLT_Ele27_WPTight_Gsf" : ["(l2Match_HLT_Ele27_WPTight_Gsf > 0.5)", "(l1Match_HLT_Ele27_WPTight_Gsf > 0.5)", "l1Match_"],
+#   "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_Match" : ["(l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5 && l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5 && l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5)", ""],
+#   "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_E23D" : ["(l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "l1Match_"],
+#   "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_leadingLepTagPtReq" : ["(l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5 && l1Pt > 25)", "(l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "l2Match_"],
+#   "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_fromDoubleE" : ["(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5 && l1Pt > 30)", "(l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5)", "l2Match_"],
+
+
+   #XXX Don'tUse#"HLT_Ele12_CaloIdL_TrackIdL_IsoVL" : ["(l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "l1Match_"],
+   #XXX Don'tUse"HLT_Ele12_CaloIdL_TrackIdL_IsoVL_E27" : ["(l1Match_HLT_Ele27_WPTight_Gsf > 0.5)", "(l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "l2Match_"],
+   #XXX Don'tUse "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_E23D_vial1" : ["(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "l2Match_"],
 }
 
 nvtxTriggers = [
@@ -81,8 +89,21 @@ def getBinning( name, trigger ) :
     else :
         #binning = array('d', [10,12.5,15,17.5,20,22.5,25,27.5,30,32.5,35,37.5,40,\
         #    42.5,45,47.5,50,55,60,67.5,80,100,250])#,400,1000])
-        binning = array('d', [5,7.5,10,12.5,15,17.5,20,22.5,25,27.5,30,35,40,\
-            50,60,80,100,150])#,400,1000])
+        if trigger == "HLT_Ele27_WPTight_Gsf" :
+            binning = array('d', [5,7.5,10,12.5,15,17.5,20,22,24,26,28,30,32,34,36,40,\
+                45,50,60,80,100,150,250,400])#,1000])
+        elif trigger == "HLT_Mu8_and_DZ" :
+            binning = array('d', [5,6,7,8,9,10,11,12.5,15,17.5,20,22.5,25,27.5,30,32.5,35,40,\
+                50,60,80,100,150,250,400])#,1000])
+        elif trigger == "HLT_Mu24" :
+            binning = array('d', [5,7.5,10,12.5,15,17.5,20,21,22,23,24,25,26,27,28,29,30,31,32.5,35,40,\
+                50,60,80,100,150,250,400])#,1000])
+        elif trigger == "HLT_Mu17_TrkIsoVVL_vMu17" :
+            binning = array('d', [5,7.5,10,12.5,15,16,17,18,19,20,22.5,25,27.5,30,35,40,\
+                50,60,80,100,150,250,400])#,1000])
+        else :
+            binning = array('d', [5,7.5,10,12.5,15,17.5,20,22.5,25,27.5,30,35,40,\
+                50,60,80,100,150,250,400])#,1000])
     return binning
 
 
@@ -173,10 +194,23 @@ def divideTH1( h1, h2, binning ) :
 
 def makeFinalEfficiencyPlot( fOut, c, trigger, divisions, effPlots, matchList, legendApp='', doFit=True ) :
     mini = 5.
-    maxi = 150.
+    maxi = 400.
     #maxi = 100.
     fitMin = 20.
     doFit=False
+    doLog=True
+
+    if doLog and trigger not in nvtxTriggers :
+        mini = 5.
+        maxi = 400.
+        #maxi = 100.
+        ROOT.gPad.SetLogx()
+    else :
+        mini = 0.
+        maxi = 60.
+        #maxi = 100.
+        ROOT.gPad.SetLogx(0)
+
     
     # turn off doFit if plot by nvtx
     if trigger in nvtxTriggers :
@@ -283,7 +317,7 @@ def makeFinalEfficiencyPlot( fOut, c, trigger, divisions, effPlots, matchList, l
     else :
         mg.GetXaxis().SetTitle('Offline Lepton p_{T} (GeV)')
     mg.GetXaxis().SetTitleOffset( mg.GetXaxis().GetTitleOffset()*1.3 )
-    mg.GetYaxis().SetTitle('HLT Efficiency')
+    mg.GetYaxis().SetTitle('L1 + HLT Efficiency')
     if doLog and trigger not in nvtxTriggers :
         mg.GetXaxis().SetLimits( mini, maxi )
     else :
@@ -305,26 +339,27 @@ def makeFinalEfficiencyPlot( fOut, c, trigger, divisions, effPlots, matchList, l
 
 fOut = ROOT.TFile('triggerSFs2.root','RECREATE')
 
-#for channel in ['ee','mm',] :
+for channel in ['ee','mm',] :
 #for channel in ['mm',] :
-for channel in ['ee',] :
+#for channel in ['ee',] :
 
-    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/doubleLep_oct08v1/'
+    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/zhTrigEff_nov09v2/'
 
     if channel == 'ee' :
         triggers = ee_triggers.keys()
-        dataFile = 'DoubleEG'
-        #dataFile = 'SingleElectron'
+        dataFile = 'zhTrigEff_SingleElectron_nov08.root'
     if channel == 'mm' :
         triggers = mm_triggers.keys()
-        dataFile = 'DoubleMuon'
-        #dataFile = 'SingleMuon'
+        dataFile = 'zhTrigEff_SingleMuon_nov08.root'
 
-    directory = 'doubleLepTAP_oct06v2'
+    nDYJets = 'zhTrigEff_DYJets_nov08.root'
+    
 
-    fData = ROOT.TFile('/data/truggles/'+directory+'/'+dataFile+'.root', 'r')
+    directory = 'zhTrigEff_nov09'
+
+    fData = ROOT.TFile('/data/truggles/'+directory+'/'+dataFile, 'r')
     tData = fData.Get('DoubleLeptonTAPStudies/tagAndProbe/Ntuple')
-    fDYJets = ROOT.TFile('/data/truggles/'+directory+'/DYJetsExt.root', 'r')
+    fDYJets = ROOT.TFile('/data/truggles/'+directory+'/'+nDYJets, 'r')
     tDYJets = fDYJets.Get('DoubleLeptonTAPStudies/tagAndProbe/Ntuple')
     trees = {
         'DYJets' : tDYJets,
@@ -475,9 +510,6 @@ for channel in ['ee',] :
             g.Draw()
             c.Clear()
             effPlots[division] = g
-
-        if doLog and trigger not in nvtxTriggers :
-            ROOT.gPad.SetLogx()
 
         # Do MVA ID/Iso comparison
         if isolations != [] :

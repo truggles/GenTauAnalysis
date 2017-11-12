@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
+
 mm_triggers = {
 #    # PROBE : [TAG,OtherCuts]
 #    # NAME : [TAG,PROBE,PlotBy/ProbeBy]
-#   "HLT_Mu24" : ["(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l1Match_HLT_IsoMu24 > 0.5 || l1Match_HLT_IsoTkMu24 > 0.5)", "l1Match_"],
-#   "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_Part" : ["(l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL > 0.5 && l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL > 0.5)", "(l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5 && l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)",""],
-#   "HLT_Mu17_TrkIsoVVL_vMu17" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "l2Match_"],
-#   "HLT_Mu8_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ > 0.5 || l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)","l2Match_"],
+   "HLT_Mu24" : ["(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "((l1Match_HLT_IsoMu24 > 0.5 || l1Match_HLT_IsoTkMu24 > 0.5) && l1Pt > 27)", "l1Match_",27],
+   #"HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_Part" : ["(l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL > 0.5 && l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL > 0.5)", "(l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5 && l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)","",0],
+   "HLT_Mu17_TrkIsoVVL_vMu17" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5 && l1Pt > 20)", "(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "l2Match_",19],
+   "HLT_Mu8_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5 && l1Pt > 20)", "(l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ > 0.5 || l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)","l2Match_",10],
 
    #XXX Don'tUse#"HLT_TkMu8_TrkIsoVVL_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)","l2Match_"],
    #XXX Don'tUse#"HLT_Mu8_TrkIsoVVL_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ > 0.5)","l2Match_"],
@@ -15,11 +16,11 @@ mm_triggers = {
 }
 
 ee_triggers = {
-   "HLT_Ele27_WPTight_Gsf" : ["(l2Match_HLT_Ele27_WPTight_Gsf > 0.5)", "(l1Match_HLT_Ele27_WPTight_Gsf > 0.5)", "l1Match_"],
-#   "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_Match" : ["(l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5 && l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5 && l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5)", ""],
-#   "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_E23D" : ["(l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "l1Match_"],
-#   "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_leadingLepTagPtReq" : ["(l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5 && l1Pt > 25)", "(l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "l2Match_"],
-#   "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_fromDoubleE" : ["(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5 && l1Pt > 30)", "(l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5)", "l2Match_"],
+   "HLT_Ele27_WPTight_Gsf" : ["(l2Match_HLT_Ele27_WPTight_Gsf > 0.5)", "(l1Match_HLT_Ele27_WPTight_Gsf > 0.5)", "l1Match_",32],
+#   #"HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_Match" : ["(l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5 && l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5 && l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5)", "",27.5],
+#   "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_E23D" : ["(l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5 && l2Pt > 30)", "(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "l1Match_",27.5],
+#   #"HLT_Ele12_CaloIdL_TrackIdL_IsoVL_leadingLepTagPtReq" : ["(l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5 && l1Pt > 25)", "(l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "l2Match_",17.5],
+#   "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_fromDoubleE" : ["(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5 && l1Pt > 30)", "(l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5)", "l2Match_",17.5],
 
 
    #XXX Don'tUse#"HLT_Ele12_CaloIdL_TrackIdL_IsoVL" : ["(l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "l1Match_"],
@@ -34,8 +35,11 @@ nvtxTriggers = [
             "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_Match",
 ]
 
+doEta = False
+doEta = True
 doLog = True
-#doLog = False
+if doEta :
+    doLog = False
 doNvtxComb = True
 
 import ROOT
@@ -66,22 +70,6 @@ def decorate(cmsLumi) :
     lumi.DrawTextNDC(.67,.91,"%.1f / fb (13 TeV)" % cmsLumi )
 
 def getBinning( name, trigger ) :
-    #if 'IsoPFTau20' in trigger or 'IsoPFTau35' in trigger :
-    #    binning = array('d', [])
-    #    for i in range( 20, 45, 2 ) :
-    #        binning.append( i )
-    #    for i in range( 45, 60, 5 ) :
-    #        binning.append( i )
-    #    for i in range( 60, 110, 20 ) :
-    #        binning.append( i )
-    #    #binning.append( 150 )
-    #    binning.append( 250 )
-    #    #binning.append( 400 )
-    #    #binning.append( 1000 )
-    #elif 'IsoPFTau50' in trigger :
-    #    binning = array('d', [20,22.5,25,27.5,30,32.5,35,37.5,40,\
-    #        42.5,45,47.5,50,55,60,67.5,80,100,250])#,400,1000])
-    
     if trigger in nvtxTriggers :
         binning = array('d', [])
         for i in range( 0, 110, 10 ) :
@@ -106,11 +94,43 @@ def getBinning( name, trigger ) :
                 50,60,80,100,150,250,400])#,1000])
     return binning
 
+def get2DBinningX( name, trigger ) :
+    #binning = array('d', [10,12.5,15,17.5,20,22.5,25,27.5,30,32.5,35,37.5,40,\
+    #    42.5,45,47.5,50,55,60,67.5,80,100,250])#,400,1000])
+    if trigger == "HLT_Ele27_WPTight_Gsf" :
+        binning = array('d', [28,30,32,36,40,45,50,60,80,100,400])
+    elif trigger == "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_fromDoubleE" :
+        binning = array('d', [15,17.5,20,25,30,40,60,400])
+    elif trigger == "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_E23D" :
+        binning = array('d', [25,27.5,32.5,40,50,60,80,100,400])
+    elif trigger == "HLT_Mu8_and_DZ" :
+        binning = array('d', [5,6,7,8,9,10,11,12.5,15,17.5,20,22.5,25,27.5,30,32.5,35,40,\
+            50,60,80,100,150,250,400])#,1000])
+    elif trigger == "HLT_Mu24" :
+        binning = array('d', [5,7.5,10,12.5,15,17.5,20,21,22,23,24,25,26,27,28,29,30,31,32.5,35,40,\
+            50,60,80,100,150,250,400])#,1000])
+    elif trigger == "HLT_Mu17_TrkIsoVVL_vMu17" :
+        binning = array('d', [5,7.5,10,12.5,15,16,17,18,19,20,22.5,25,27.5,30,35,40,\
+            50,60,80,100,150,250,400])#,1000])
+    else :
+        binning = array('d', [5,7.5,10,12.5,15,17.5,20,22.5,25,27.5,30,35,40,\
+            50,60,80,100,150,250,400])#,1000])
+    return binning
 
-def getHist( trees, var, cut, name, division, trigger ) :
-    binning = getBinning( trigger, trigger )
+
+def getHist( trees, var, cut, name, division, trigger, doEta=False ) :
     #h = ROOT.TH1F( name, name, 20, 0, 100)
-    h = ROOT.TH1F( name, name+trigger, len(binning)-1, binning)
+    if doEta :
+        binningX = get2DBinningX( trigger, trigger )
+        if "Ele" in trigger :
+            binningY = array('d', [-2.5,-1.5,-0.3,0.3,1.5,2.5])
+        if "Mu" in trigger :
+            binningY = array('d', [-2.4,-1.6,-0.8,-0.3,0.8,0.3,1.6,2.4])
+        h = ROOT.TH2F( name, name+trigger, len(binningX)+1, binningX, len(binningY)+1, binningY )
+        #h = ROOT.TH1F( name, name+trigger, 40, -2.5, 2.5 )
+    else :
+        binning = getBinning( trigger, trigger )
+        h = ROOT.TH1F( name, name+trigger, len(binning)-1, binning)
     #h.Sumw2()
     doCut = ''
     doCut += cut
@@ -198,7 +218,7 @@ def makeFinalEfficiencyPlot( fOut, c, trigger, divisions, effPlots, matchList, l
     #maxi = 100.
     fitMin = 20.
     doFit=False
-    doLog=True
+    #doLog=True
 
     if doLog and trigger not in nvtxTriggers :
         mini = 5.
@@ -265,10 +285,11 @@ def makeFinalEfficiencyPlot( fOut, c, trigger, divisions, effPlots, matchList, l
         effPlots[division].SetMarkerStyle( 20+cnt )
         effPlots[division].SetMarkerColor( colors[cnt] )
         #effPlots[division].SetMarkerColor( cnt+1 )
-        if doLog and trigger not in nvtxTriggers :
-            effPlots[division].GetXaxis().SetLimits( mini, maxi )
-        else :
-            effPlots[division].GetXaxis().SetLimits( 0., maxi )
+        if not doEta :
+            if doLog and trigger not in nvtxTriggers :
+                effPlots[division].GetXaxis().SetLimits( mini, maxi )
+            else :
+                effPlots[division].GetXaxis().SetLimits( 0., maxi )
         if doFit :
             #f1 = ROOT.TF1( 'f1', 'ROOT::Math::crystalball_cdf(x, [0], [1], [2], [3])*[4]', fitMin, maxi )
             f1 = ROOT.TF1( 'f1', '[5] - ROOT::Math::crystalball_cdf(-x, [0], [1], [2], [3])*[4]', fitMin, maxi )
@@ -318,10 +339,11 @@ def makeFinalEfficiencyPlot( fOut, c, trigger, divisions, effPlots, matchList, l
         mg.GetXaxis().SetTitle('Offline Lepton p_{T} (GeV)')
     mg.GetXaxis().SetTitleOffset( mg.GetXaxis().GetTitleOffset()*1.3 )
     mg.GetYaxis().SetTitle('L1 + HLT Efficiency')
-    if doLog and trigger not in nvtxTriggers :
-        mg.GetXaxis().SetLimits( mini, maxi )
-    else :
-        mg.GetXaxis().SetLimits( 0., maxi )
+    if not doEta :
+        if doLog and trigger not in nvtxTriggers :
+            mg.GetXaxis().SetLimits( mini, maxi )
+        else :
+            mg.GetXaxis().SetLimits( 0., maxi )
     mg.GetXaxis().SetMoreLogLabels()
 
     if doFit :
@@ -333,17 +355,17 @@ def makeFinalEfficiencyPlot( fOut, c, trigger, divisions, effPlots, matchList, l
     ROOT.gPad.Update()
     decorate(35.9)
     c.SaveAs(plotBase+c.GetName()+'.png')
-    #c.SaveAs(plotBase+c.GetName()+'.pdf')
+    c.SaveAs(plotBase+c.GetName()+'.pdf')
     del leg
     c.Clear()
 
 fOut = ROOT.TFile('triggerSFs2.root','RECREATE')
 
-for channel in ['ee','mm',] :
+#for channel in ['ee','mm',] :
 #for channel in ['mm',] :
-#for channel in ['ee',] :
+for channel in ['ee',] :
 
-    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/zhTrigEff_nov09v2/'
+    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/zhTrigEff_nov10v4_eta/'
 
     if channel == 'ee' :
         triggers = ee_triggers.keys()
@@ -472,12 +494,22 @@ for channel in ['ee','mm',] :
             for name, cut in cuts.iteritems() :
                 xCut = '('+cut+')*puweight' # puweight set to 1 for all data events
                 print name, xCut
+
+                lep = mm_triggers[trigger][2].replace('Match_','') if channel == 'mm' else ee_triggers[trigger][2].replace('Match_','')
+
                 if trigger in nvtxTriggers :
                     hists[ name ] = getHist( trees, 'nvtx', xCut, name, division, trigger )
-                elif 'L2' in name :
-                    print "Drawing l2Pt"
-                    hists[ name ] = getHist( trees, 'l2Pt', xCut, name, division, trigger )
-                else : # 'L1' in name
+                elif doEta : # via Eta
+                    # Modify xCut to include a base pT threshold on these eta plots
+                    if channel == 'mm' :
+                        etaCut = xCut+'*( %sPt > %s)' % ( mm_triggers[trigger][2].replace('Match_',''), mm_triggers[trigger][3])
+                        print "Drawing "+mm_triggers[trigger][2]+"Eta"
+                        hists[ name ] = getHist( trees, mm_triggers[trigger][2].replace('Match_','')+'Eta', etaCut, name, division, trigger, doEta )
+                    if channel == 'ee' :
+                        etaCut = xCut+'*( %sPt > %s)' % ( ee_triggers[trigger][2].replace('Match_',''), ee_triggers[trigger][3])
+                        print "Drawing "+ee_triggers[trigger][2]+"Eta"
+                        hists[ name ] = getHist( trees, ee_triggers[trigger][2].replace('Match_','')+'Eta', etaCut, name, division, trigger, doEta )
+                else : # via Pt
                     if channel == 'mm' :
                         print "Drawing "+mm_triggers[trigger][2]+"Pt"
                         hists[ name ] = getHist( trees, mm_triggers[trigger][2].replace('Match_','')+'Pt', xCut, name, division, trigger )
@@ -502,7 +534,7 @@ for channel in ['ee','mm',] :
 
             ### Make Eff Plot
             g = divideTH1( subMap['Pass'], subMap['All'], binning )    
-            c.SetGrid()
+            c.SetGrid(2, 2)
             g.GetXaxis().SetTitle('Lepton p_{T} (GeV)')
             g.GetYaxis().SetTitle('L1 + HLT Efficiency')
             g.SetTitle(trigger)

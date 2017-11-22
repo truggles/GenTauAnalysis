@@ -134,7 +134,7 @@ class TauHLTStudiesMiniAODAnalyzer : public edm::one::EDAnalyzer<edm::one::Share
         //tIsoCmbLoose, tIsoCmbLoose03, tIsoCmbMedium, tIsoCmbMedium03, tIsoCmbTight, tIsoCmbTight03,
         tIsoCmbLoose, tIsoCmbMedium, tIsoCmbTight,
         leptonDR_t1_t2, leptonDR_m_t1, leptonDR_m_t2,
-        mTrigMatch, tTrigMatch, mL1Match, tL1Match,
+        mTrigMatch, mTrigAllEtaMatch, tTrigMatch, mL1Match, tL1Match,
         t1_gen_match,tDecayMode,
         t2Pt, t2Eta, t2Phi, t2MVAIsoVLoose, t2MVAIsoLoose, t2MVAIsoMedium, 
         t2MVAIsoTight, t2MVAIsoVTight, t2MVAIsoVVTight, t2_gen_match,t2DecayMode,
@@ -295,6 +295,7 @@ TauHLTStudiesMiniAODAnalyzer::TauHLTStudiesMiniAODAnalyzer(const edm::ParameterS
    tree->Branch("tmpMuonPhi",&tmpPhi,"tmpMuonPhi/F");
    tree->Branch("tmpMuonIso",&tmpIso,"tmpMuonIso/F");
    tree->Branch("mTrigMatch",&mTrigMatch,"mTrigMatch/F");
+   tree->Branch("mTrigAllEtaMatch",&mTrigAllEtaMatch,"mTrigAllEtaMatch/F");
    tree->Branch("mL1Match",&mL1Match,"mL1Match/F");
    tree->Branch("tauPt",&tPt,"tauPt/F");
    tree->Branch("tauEta",&tEta,"tauEta/F");
@@ -545,14 +546,6 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
             - 0.5*mu.pfIsolationR04().sumPUPt))
             /mu.pt();
         if (mu.pt() > 10 && fabs(mu.eta()) < 2.4 && mu.isLooseMuon() && tmpIso < 0.3) ++nVetoMuons;
-        //if (event == 11168213 || event == 10412964 || event == 20665439 ) {
-        //    std::cout << "event:pt:eta:phi:iso - " << event<<":"<<tmpPt<<":"<<tmpEta<<":"<<tmpPhi<<":"<<tmpIso<<std::endl;
-        //    std::cout << " --- mu.pfIsolationR04().sumChargedHadronPt: " << mu.pfIsolationR04().sumChargedHadronPt << std::endl;
-        //    std::cout << " --- mu.pfIsolationR04().sumNeutralHadronEt: " << mu.pfIsolationR04().sumNeutralHadronEt << std::endl;
-        //    std::cout << " --- mu.pfIsolationR04().sumPhotonEt: " << mu.pfIsolationR04().sumPhotonEt << std::endl;
-        //    std::cout << " --- mu.pfIsolationR04().sumPUPt: " << mu.pfIsolationR04().sumPUPt << std::endl;
-        //    std::cout << " --- mu.pt(): " << mu.pt() << std::endl;
-        //}
         if (mu.pt() < 24 || fabs(mu.eta()) > 2.1 || !mu.isMediumMuon()) continue;
         //if (mu.pt() < 24 || fabs(mu.eta()) > 2.1 || !mu.isLooseMuon()) continue;
         if (tmpIso > 0.1) continue;
@@ -622,6 +615,8 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
                 tauCandidate->tauID("byLooseCombinedIsolationDeltaBetaCorr3Hits") < 0.5) continue;
                 //tauCandidate->tauID("byLooseCombinedIsolationDeltaBetaCorr3HitsdR03") < 0.5) continue;
         }
+        // TEMPORARY!?!?! FOR SYNC
+        //if (tauCandidate->tauID("byTightIsolationMVArun2v1DBoldDMwLT") < 0.5) continue;
  
         // Make sure tau doesn't overlap muon
         if (!doTauTau &&  deltaR( bestMuon.p4(), tauCandidate->p4() ) < 0.5) continue;
@@ -872,6 +867,7 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
     // of times our 'best' objects match
     // this can be expanded later to indivual trigs if necessary
     mTrigMatch = 0;
+    mTrigAllEtaMatch = 0;
     tTrigMatch = 0;
     t2TrigMatch = 0;
     for (pat::TriggerObjectStandAlone obj : *triggerObjects) { // note: not "const &" since we want to call unpackPathNames
@@ -887,7 +883,10 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
                 if (!doTauTau) {
                     float drMu = deltaR( bestMuon, obj );
                     //std::cout << "\tbestMuon dR: " << drMu << std::endl;
-                    if (drMu < 0.5) ++mTrigMatch;
+                    if (drMu < 0.5) {
+                        if (fabs(obj.eta()) < 2.1) {++mTrigMatch;}
+                        ++mTrigAllEtaMatch;
+                    }
                 }
                 float drTau = deltaR( *passingTausV.at(0), obj );
                 //std::cout << "\tpassingTausV.at(0) dR: " << drTau << std::endl;

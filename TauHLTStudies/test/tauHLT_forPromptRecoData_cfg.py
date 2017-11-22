@@ -20,6 +20,26 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '92X_dataRun2_Prompt_v9')
 
+#
+# Set up electron ID (VID framework)
+#
+
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+# turn on VID producer, indicate data format  to be
+# DataFormat.AOD or DataFormat.MiniAOD, as appropriate 
+dataFormat = DataFormat.MiniAOD
+
+switchOnVIDElectronIdProducer(process, dataFormat)
+
+# define which IDs we want to produce
+my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff',
+        'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_HZZ_V1_cff']
+
+#add them to the VID producer
+for idmod in my_id_modules:
+    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+
+
 
 
 process.load("THRAnalysis.TauHLTStudies.miniAOD_CfiFile_cfi")
@@ -34,6 +54,7 @@ process.TFileService = cms.Service("TFileService",
 
 process.p = cms.Path(
             #process.hltFilter*
+            process.egmGsfElectronIDSequence*
             process.tauMiniAODHLTStudies)
 
 #print process.dumpPython()

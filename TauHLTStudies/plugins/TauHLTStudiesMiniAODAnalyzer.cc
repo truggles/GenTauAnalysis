@@ -635,6 +635,17 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
             }
         }
     }
+
+    // If we want the most well IDed Tau we can do as follows:
+    // Sort our passing taus by Raw MVA Value (this is 99% correct) b/c Tau MVA ID is a 2D of
+    // Raw MVA Score and pT, we could in unlikely situations take the "less well IDed" Tau
+    std::sort(begin(passingTausV), end(passingTausV), [](
+            const pat::TauRef a, const pat::TauRef b){
+            return a->tauID("byIsolationMVArun2v1DBoldDMwLTraw") > b->tauID("byIsolationMVArun2v1DBoldDMwLTraw");});
+    std::sort(begin(passingGenMatchedTausV), end(passingGenMatchedTausV), [](
+            const pat::TauRef a, const pat::TauRef b){
+            return a->tauID("byIsolationMVArun2v1DBoldDMwLTraw") > b->tauID("byIsolationMVArun2v1DBoldDMwLTraw");});
+
     // Tau study so...
     if (passingTausV.size() == 0) return;
     //if (doTauTau && passingTausV.size() < 2) return;

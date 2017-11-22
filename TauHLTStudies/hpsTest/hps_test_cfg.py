@@ -1,10 +1,10 @@
-# hltGetConfiguration /users/truggles/HPS_at_HLT/HLT_with_HPS_PFTau20/V37 --full --offline --mc --unprescale --process TauHLT --globaltag auto:run2_mc_GRun --setup /dev/CMSSW_9_2_0/GRun
+# hltGetConfiguration /users/truggles/HPS_at_HLT/HLT_with_HPS_PFTau20/V37 --full --offline --mc --unprescale --process TAUHLT --globaltag auto:run2_mc_GRun --setup /dev/CMSSW_9_2_0/GRun
 
 # /users/truggles/HPS_at_HLT/HLT_with_HPS_PFTau20/V37 (CMSSW_9_2_14)
 
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process( "TauHLT" )
+process = cms.Process( "TAUHLT" )
 process.load("setup_dev_CMSSW_9_2_0_GRun_cff")
 
 process.HLTConfigVersion = cms.PSet(
@@ -8469,11 +8469,11 @@ if 'MessageLogger' in process.__dict__:
 process.load( "DQMServices.Core.DQMStore_cfi" )
 process.DQMStore.enableMultiThread = True
 
-process.dqmOutput = cms.OutputModule("DQMRootOutputModule",
-    fileName = cms.untracked.string("DQMIO.root")
-)
-
-process.DQMOutput = cms.EndPath( process.dqmOutput )
+#process.dqmOutput = cms.OutputModule("DQMRootOutputModule",
+#    fileName = cms.untracked.string("DQMIO.root")
+#)
+#
+#process.DQMOutput = cms.EndPath( process.dqmOutput )
 
 # add specific customizations
 _customInfo = {}
@@ -8518,8 +8518,9 @@ process.Out = cms.OutputModule( "PoolOutputModule",
                                            "keep *_caloStage2Digis_*_*",
                                            "keep *_reducedEgamma_*_*",
                                            "keep *_offlineBeamSpot_*_*",
-                                           #"keep *__*_*",
-                                           #"keep *__*_*",
+                                           "keep *_hltHpsPFTauProducerSingleTau_*_*",
+                                           "keep *_hltHpsSelectedPFTausTrackFinding_*_*",
+                                           "keep *_*_*_TAUHLT",
                                            #"keep *__*_*",
     )
 )

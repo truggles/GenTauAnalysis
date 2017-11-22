@@ -13,8 +13,9 @@ config.JobType.pluginName      = 'Analysis'
 config.JobType.maxMemoryMB     = 3500
 config.JobType.priority        = 2
 config.Data.splitting          = 'FileBased'
-config.Data.unitsPerJob        = 2
+config.Data.unitsPerJob        = 1
 #config.Data.totalUnits         = 10 # For small tests
+config.JobType.numCores        = 4
 
 config.Site.storageSite        = 'T2_US_Wisconsin'
 config.Site.blacklist          = ['T2_BE_IIHE',]
@@ -27,8 +28,13 @@ dataMap['qqH125'] = {
         'child' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
         'grandparent' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
     }
+dataMap['ggH125'] = {
+        'child' : '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/MINIAODSIM',
+        'grandparent' : '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/GEN-SIM-RAW',
+    }
 
 # dasgoclient --query="dataset dataset=/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17*-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/*"
+# dasgoclient --query="dataset dataset=/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17*-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/*"
 
 if __name__ == '__main__':
 
@@ -50,7 +56,7 @@ if __name__ == '__main__':
     print "Base: ",base
     for k, v in dataMap.iteritems() :
         config.JobType.psetName        = 'hps_test_cfg.py'
-        config.General.requestName = '%s_nov21_hps_v1' % k
+        config.General.requestName = '%s_nov22_hps_v2' % k
         config.Data.outputDatasetTag   = config.General.requestName
         config.Data.inputDataset = dataMap[ k ][ 'child' ]
         config.Data.secondaryInputDataset = dataMap[ k ][ 'grandparent' ]

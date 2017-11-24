@@ -16,7 +16,7 @@ config.JobType.priority        = 2
 #config.Data.unitsPerJob        = 1
 # Testing EventAwareLumiBased
 config.Data.splitting          = 'EventAwareLumiBased'
-config.Data.unitsPerJob        = 7500 # events / job when using EventAwareLumiBased
+config.Data.unitsPerJob        = 3000 # events / job when using EventAwareLumiBased
 #config.Data.totalUnits         = 10 # For small tests
 config.JobType.numCores        = 4
 
@@ -59,7 +59,7 @@ if __name__ == '__main__':
     print "Base: ",base
     for k in dataMap.keys() :
         config.JobType.psetName        = 'hps_test_cfg.py'
-        config.General.requestName = '%s_nov24_hps_v1' % k
+        config.General.requestName = '%s_nov24_hps_v2' % k
         config.Data.outputDatasetTag   = config.General.requestName
         config.Data.inputDataset = dataMap[ k ][ 'child' ]
         config.Data.secondaryInputDataset = dataMap[ k ][ 'grandparent' ]

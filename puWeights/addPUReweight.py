@@ -39,8 +39,8 @@ def addPuWeight( puDict, iFile, iDir, iTree, isData=False ) :
 
 if '__main__' in __name__ :
 
-    doTauHLT = False
-    doZH = True
+    doTauHLT = True
+    doZH = False
 
     if doZH :
         #### Double Lepton Efficiencies ####
@@ -60,19 +60,19 @@ if '__main__' in __name__ :
 
     if doTauHLT :
         #### Tau Trigger Efficiencies ####
-        dataFile = 'Data_Pileup_2017_AllRunB-E_80bins.root'
+        #dataFile = 'Data_Pileup_2017_AllRunB-E_80bins.root'
+        dataFile = 'Data_Pileup_2017_RunB-mostOfF_80bins.root'
         puDict = PUreweight( dataFile )
         #print puDict
 
         tName = 'tauMiniAODHLTStudies/tagAndProbe/Ntuple'
         dName = 'tauMiniAODHLTStudies/tagAndProbe'
-        base = '/data/truggles/oct24_tauTAP_sync/'
-        addPuWeight( puDict, base+'DYJets_all_sync_ext1_v4.root', dName, tName )
-        #addPuWeight( puDict, base+'DYJetsTauTAP.root', dName, tName )
+        base = '/data/truggles/tauTrigger_nov23forSyncV1/'
+        addPuWeight( puDict, base+'DYJetsTauTAP.root', dName, tName )
         ###addPuWeight( puDict, base+'GluGluHToTauTau_M125.root', dName, tName )
         ###addPuWeight( puDict, base+'VBFHToTauTau_M125.root', dName, tName )
         isData = True
-        #addPuWeight( puDict, base+'SingleMuonTauTAP.root', dName, tName, isData )
+        addPuWeight( puDict, base+'SingleMuonTauTAP_nov23forSyncV1.root', dName, tName, isData )
 
 
 

@@ -26,9 +26,10 @@ def makeDataPUTemplate( cert, puJson, year='17' ) :
 
 if __name__ == '__main__' :
 
-    base = ''
-    cert = base+'data/Cert_294927-304797_RunB-E_13TeV_PromptReco_Collisions17_JSON.txt' # All Run B - E
-    #cert = 'PromptReco/Cert_294927-304507_13TeV_PromptReco_Collisions17_JSON.txt' # 24.92/fb
+    #base = ''
+    #cert = base+'data/Cert_294927-304797_RunB-E_13TeV_PromptReco_Collisions17_JSON.txt' # All Run B - E
+    base = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/PromptReco/'
+    cert = base+'Cert_294927-306126_13TeV_PromptReco_Collisions17_JSON.txt' # 38.72/fb
     year = '17'
     makeDataPUTemplate( cert, 'pileup_latest.txt', year )
 

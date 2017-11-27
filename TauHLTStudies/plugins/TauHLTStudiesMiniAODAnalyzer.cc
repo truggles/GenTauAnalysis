@@ -144,6 +144,11 @@ class TauHLTStudiesMiniAODAnalyzer : public edm::one::EDAnalyzer<edm::one::Share
       bool foundGenTau, foundGenMuon; 
       std::map<std::string, int*> triggers;
       std::map<std::string, int>::iterator triggerIterator;
+
+      int HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr;
+      int HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1;
+      int HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr;
+
       int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1;
       int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1;
       int HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1;
@@ -228,6 +233,9 @@ TauHLTStudiesMiniAODAnalyzer::TauHLTStudiesMiniAODAnalyzer(const edm::ParameterS
    //usesResource("TFileService");
    edm::Service<TFileService> fs;
 
+   triggers["HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr_v"]              = &HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr; 
+   triggers["HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_v"]                  = &HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1;
+   triggers["HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_v"]                               = &HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr;
    triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_v"]                   = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1;
    triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1_v"]           = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1;
    triggers["HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1_v"]                  = &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1;
@@ -352,6 +360,9 @@ TauHLTStudiesMiniAODAnalyzer::TauHLTStudiesMiniAODAnalyzer(const edm::ParameterS
    tree->Branch("emptyVertices",&emptyVertices,"emptyVertices/F");
    tree->Branch("failNdof",&failNdof,"failNdof/F");
 
+   tree->Branch("HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr",              &HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr,             "HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr/I");
+   tree->Branch("HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1",                  &HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1,                 "HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1/I");
+   tree->Branch("HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr",                               &HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr,                              "HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr/I");
    tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1",                   &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1,                  "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1/I");
    tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1",           &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1,          "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1/I");
    tree->Branch("HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1",                  &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1,                 "HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1/I");

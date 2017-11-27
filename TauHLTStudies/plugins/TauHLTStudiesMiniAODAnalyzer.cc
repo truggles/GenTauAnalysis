@@ -123,12 +123,12 @@ class TauHLTStudiesMiniAODAnalyzer : public edm::one::EDAnalyzer<edm::one::Share
       TTree *tree;
       TH1D *nEvents;
       TH1D *cutFlow;
-      double event;
+      unsigned long event;
       float run, lumi, nTruePU, nvtx, nvtxCleaned, passingTaus, passingMuons, nVetoMuons, nSlimmedMuons,
         mPt, mEta, mPhi, mIso,
         tmpPt, tmpEta, tmpPhi, tmpIso,
         l1TauPt, l1TauIso,
-        tPt, tEta, tPhi, tMVAIsoVLoose, tMVAIsoLoose, tMVAIsoMedium, 
+        tPt, tEta, tPhi, tMVAIsoRaw, tMVAIsoVLoose, tMVAIsoLoose, tMVAIsoMedium, 
         tMVAIsoTight, tMVAIsoVTight, tMVAIsoVVTight, m_vis, transMass, SS, isOS, pfMet,
         nBTag, nBTagAll, passingElectrons,
         //tIsoCmbLoose, tIsoCmbLoose03, tIsoCmbMedium, tIsoCmbMedium03, tIsoCmbTight, tIsoCmbTight03,
@@ -136,7 +136,7 @@ class TauHLTStudiesMiniAODAnalyzer : public edm::one::EDAnalyzer<edm::one::Share
         leptonDR_t1_t2, leptonDR_m_t1, leptonDR_m_t2,
         mTrigMatch, mTrigAllEtaMatch, tTrigMatch, mL1Match, tL1Match,
         t1_gen_match,tDecayMode,
-        t2Pt, t2Eta, t2Phi, t2MVAIsoVLoose, t2MVAIsoLoose, t2MVAIsoMedium, 
+        t2Pt, t2Eta, t2Phi, t2MVAIsoRaw, t2MVAIsoVLoose, t2MVAIsoLoose, t2MVAIsoMedium, 
         t2MVAIsoTight, t2MVAIsoVTight, t2MVAIsoVVTight, t2_gen_match,t2DecayMode,
         //t2IsoCmbLoose, t2IsoCmbLoose03, t2IsoCmbMedium, t2IsoCmbMedium03, t2IsoCmbTight, t2IsoCmbTight03,
         t2IsoCmbLoose, t2IsoCmbMedium, t2IsoCmbTight,
@@ -277,7 +277,7 @@ TauHLTStudiesMiniAODAnalyzer::TauHLTStudiesMiniAODAnalyzer(const edm::ParameterS
    tree = subDir.make<TTree>("Ntuple","My T-A-P Ntuple");
    tree->Branch("RunNumber",&run,"RunNumber/F");
    tree->Branch("lumi",&lumi,"lumi/F");
-   tree->Branch("EventNumber",&event,"EventNumber/D");
+   tree->Branch("EventNumber",&event,"EventNumber/l");
    tree->Branch("nTruePU",&nTruePU,"nTruePU/F");
    tree->Branch("nvtx",&nvtx,"nvtx/F");
    tree->Branch("nvtxCleaned",&nvtxCleaned,"nvtxCleaned/F");
@@ -304,6 +304,7 @@ TauHLTStudiesMiniAODAnalyzer::TauHLTStudiesMiniAODAnalyzer(const edm::ParameterS
    tree->Branch("l1TauIso",&l1TauIso,"l1TauIso/F");
    tree->Branch("tL1Match",&tL1Match,"tL1Match/F");
    tree->Branch("t1_gen_match",&t1_gen_match,"t1_gen_match/F");
+   tree->Branch("tMVAIsoRaw",&tMVAIsoRaw,"tMVAIsoRaw/F");
    tree->Branch("tMVAIsoVLoose",&tMVAIsoVLoose,"tMVAIsoVLoose/F");
    tree->Branch("tMVAIsoLoose",&tMVAIsoLoose,"tMVAIsoLoose/F");
    tree->Branch("tMVAIsoMedium",&tMVAIsoMedium,"tMVAIsoMedium/F");
@@ -322,6 +323,7 @@ TauHLTStudiesMiniAODAnalyzer::TauHLTStudiesMiniAODAnalyzer(const edm::ParameterS
    tree->Branch("t2Eta",&t2Eta,"t2Eta/F");
    tree->Branch("t2Phi",&t2Phi,"t2Phi/F");
    tree->Branch("t2_gen_match",&t2_gen_match,"t2_gen_match/F");
+   tree->Branch("t2MVAIsoRaw",&t2MVAIsoRaw,"t2MVAIsoRaw/F");
    tree->Branch("t2MVAIsoVLoose",&t2MVAIsoVLoose,"t2MVAIsoVLoose/F");
    tree->Branch("t2MVAIsoLoose",&t2MVAIsoLoose,"t2MVAIsoLoose/F");
    tree->Branch("t2MVAIsoMedium",&t2MVAIsoMedium,"t2MVAIsoMedium/F");
@@ -421,7 +423,7 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
   event = iEvent.eventAuxiliary().event();
   lumi = iEvent.eventAuxiliary().luminosityBlock();
   run = iEvent.eventAuxiliary().run();
-  if (verbose) printf("Run: %.0f    Evt: %.0f   Lumi: %.0f\n", run, event, lumi);
+  //if (verbose) printf("Run: %.0f    Evt: %.0f   Lumi: %.0f\n", run, event, lumi);
 
 
   if (!isRAW) {
@@ -655,9 +657,9 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
     if (verbose) std::cout << " --- From vector   Passing Taus: " << passingTausV.size() << " gen matched taus: " << passingGenMatchedTausV.size() << std::endl;
 
     // Pt order passing reco::taus
-    std::sort(passingTausV.begin(), passingTausV.end(), [](pat::TauRef a, pat::TauRef b) {
-        return a->pt() > b->pt();
-    });
+    //std::sort(passingTausV.begin(), passingTausV.end(), [](pat::TauRef a, pat::TauRef b) {
+    //    return a->pt() > b->pt();
+    //});
 
 
     // Check for non-overlapping bjets
@@ -700,6 +702,7 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
     tPt = passingTausV.at(0)->pt();
     tEta = passingTausV.at(0)->eta();
     tPhi = passingTausV.at(0)->phi();
+    tMVAIsoRaw = passingTausV.at(0)->tauID("byIsolationMVArun2v1DBoldDMwLTraw");
     tMVAIsoVLoose = passingTausV.at(0)->tauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
     tMVAIsoLoose  = passingTausV.at(0)->tauID("byLooseIsolationMVArun2v1DBoldDMwLT");
     tMVAIsoMedium = passingTausV.at(0)->tauID("byMediumIsolationMVArun2v1DBoldDMwLT");
@@ -720,6 +723,7 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
         t2Pt = passingTausV.at(1)->pt();
         t2Eta = passingTausV.at(1)->eta();
         t2Phi = passingTausV.at(1)->phi();
+        t2MVAIsoRaw = passingTausV.at(1)->tauID("byIsolationMVArun2v1DBoldDMwLTraw");
         t2MVAIsoVLoose = passingTausV.at(1)->tauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
         t2MVAIsoLoose  = passingTausV.at(1)->tauID("byLooseIsolationMVArun2v1DBoldDMwLT");
         t2MVAIsoMedium = passingTausV.at(1)->tauID("byMediumIsolationMVArun2v1DBoldDMwLT");
@@ -742,6 +746,7 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
             t2Pt = -1;
             t2Eta = -1;
             t2Phi = -1;
+            t2MVAIsoRaw = -1;
             t2MVAIsoVLoose = -1;
             t2MVAIsoLoose  = -1;
             t2MVAIsoMedium = -1;
@@ -763,6 +768,7 @@ TauHLTStudiesMiniAODAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
         t2Pt = -1;
         t2Eta = -1;
         t2Phi = -1;
+        t2MVAIsoRaw = -1;
         t2MVAIsoVLoose = -1;
         t2MVAIsoLoose  = -1;
         t2MVAIsoMedium = -1;

@@ -8959,8 +8959,6 @@ process.HLTSchedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLT_Is
 process.source = cms.Source( "PoolSource",
     fileNames = cms.untracked.vstring(
     ),
-    secondaryFileNames= cms.untracked.vstring(
-    ),
     inputCommands = cms.untracked.vstring(
         'keep *'
     )

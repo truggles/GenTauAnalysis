@@ -105,7 +105,9 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
 
       edm::EDGetTokenT<std::vector<pat::Tau>> slimmedTauToken_;
       edm::EDGetTokenT<std::vector<reco::PFTau>> hpsTauToken_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> hpsTauDecayModeToken_;
       edm::EDGetTokenT<std::vector<reco::PFTau>> defaultTauToken_;
+      edm::EDGetTokenT<reco::PFTauDiscriminator> defaultTauDecayModeToken_;
 
       edm::EDGetTokenT<std::vector<pat::Muon>> muonToken_;
       edm::EDGetTokenT<edm::View<reco::GsfElectron> > electronToken_;
@@ -118,6 +120,7 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
       edm::EDGetTokenT<std::vector<reco::GenParticle>> genToken_;
 
       edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseIdMapTag_;
+
 
       // l1 extras
       //edm::EDGetTokenT<edm::TriggerResults> triggerToken_;
@@ -142,18 +145,21 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
         t2MVAIsoTight, t2MVAIsoVTight, t2MVAIsoVVTight, t2_gen_match,t2DecayMode,
         //t2IsoCmbLoose, t2IsoCmbLoose03, t2IsoCmbMedium, t2IsoCmbMedium03, t2IsoCmbTight, t2IsoCmbTight03,
         t2IsoCmbLoose, t2IsoCmbMedium, t2IsoCmbTight,
-        t2TrigMatch,t2L1Match, emptyVertices, failNdof;
+        t2TrigMatch,t2L1Match, emptyVertices, failNdof,
+        hpsTauPt, hpsTauEta, hpsTauPhi, hpsTauDM, hpsTauDR,
+        defaultTauPt, defaultTauEta, defaultTauPhi, defaultTauDM, defaultTauDR;
       bool foundGenTau, foundGenMuon; 
       std::map<std::string, int*> triggers;
       std::map<std::string, int>::iterator triggerIterator;
       int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1;
+      int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM;
       int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1;
       //int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1;
       //int HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1;
       //int HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1;
       //int HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1;
       //int HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1;
-      //int HLT_IsoMu20;
+      int HLT_IsoMu20;
       //int HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1;
       //int HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1;
       //int HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1;
@@ -172,11 +178,11 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
       //int HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1;
       //int HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1;
       //int HLT_IsoMu24_eta2p1;
-      //int HLT_IsoMu24;
+      int HLT_IsoMu24;
       //int HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1;
       //int HLT_IsoMu27_eta2p1_MediumChargedIsoPFTau20_SingleL1;
       //int HLT_IsoMu27_eta2p1_TightChargedIsoPFTau20_SingleL1;
-      //int HLT_IsoMu27;
+      int HLT_IsoMu27;
       //int HLT_DoubleLooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg;
       //int HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg;
       //int HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
@@ -216,7 +222,9 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
 
     slimmedTauToken_(consumes<std::vector<pat::Tau>>(iConfig.getParameter<edm::InputTag>("slimmedTauSrc"))),
     hpsTauToken_(consumes<std::vector<reco::PFTau>>(iConfig.getParameter<edm::InputTag>("hpsTauSrc"))),
+    hpsTauDecayModeToken_(consumes<reco::PFTauDiscriminator>(iConfig.getParameter<edm::InputTag>("hpsTauDM"))),
     defaultTauToken_(consumes<std::vector<reco::PFTau>>(iConfig.getParameter<edm::InputTag>("defaultTauSrc"))),
+    defaultTauDecayModeToken_(consumes<reco::PFTauDiscriminator>(iConfig.getParameter<edm::InputTag>("defaultTauDM"))),
 
     muonToken_(consumes<std::vector<pat::Muon>>(iConfig.getParameter<edm::InputTag>("muonSrc"))),
     electronToken_(consumes<edm::View<reco::GsfElectron>>(iConfig.getParameter<edm::InputTag>("electronSrc"))),
@@ -234,13 +242,14 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    edm::Service<TFileService> fs;
 
    triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_v"]                   = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1;
+   triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM_v"]                   = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM;
    triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1_v"]                = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1;
    //triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1_v"]           = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1;
    //triggers["HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1_v"]                  = &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1;
    //triggers["HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1_v"]          = &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1;
    //triggers["HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1_v"]                   = &HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1;
    //triggers["HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1_v"]           = &HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1;
-   //triggers["HLT_IsoMu20_v"]                                                                = &HLT_IsoMu20;
+   triggers["HLT_IsoMu20_v"]                                                                = &HLT_IsoMu20;
    //triggers["HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1_v"]                         = &HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1;
    //triggers["HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1_v"]                 = &HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1;
    //triggers["HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1_v"]  = &HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1;
@@ -259,11 +268,11 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    //triggers["HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1_v"]  = &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1;
    //triggers["HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1_v"]          = &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1;
    //triggers["HLT_IsoMu24_eta2p1_v"]                                                         = &HLT_IsoMu24_eta2p1;
-   //triggers["HLT_IsoMu24_v"]                                                                = &HLT_IsoMu24;
+   triggers["HLT_IsoMu24_v"]                                                                = &HLT_IsoMu24;
    //triggers["HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1_v"]                         = &HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1;
    //triggers["HLT_IsoMu27_eta2p1_MediumChargedIsoPFTau20_SingleL1_v"]                        = &HLT_IsoMu27_eta2p1_MediumChargedIsoPFTau20_SingleL1;
    //triggers["HLT_IsoMu27_eta2p1_TightChargedIsoPFTau20_SingleL1_v"]                         = &HLT_IsoMu27_eta2p1_TightChargedIsoPFTau20_SingleL1;
-   //triggers["HLT_IsoMu27_v"]                                                                = &HLT_IsoMu27;
+   triggers["HLT_IsoMu27_v"]                                                                = &HLT_IsoMu27;
    //triggers["HLT_DoubleLooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v"]                   = &HLT_DoubleLooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg;
    //triggers["HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg_v"]                           = &HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg;
    //triggers["HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v"]                   = &HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
@@ -323,6 +332,16 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    //tree->Branch("tIsoCmbTight03",&tIsoCmbTight03,"tIsoCmbTight03/F");
    tree->Branch("tauDM",&tDecayMode,"tauDM/F");
    tree->Branch("tTrigMatch",&tTrigMatch,"tTrigMatch/F");
+   tree->Branch("hpsTauPt",&hpsTauPt,"hpsTauPt/F");
+   tree->Branch("hpsTauEta",&hpsTauEta,"hpsTauEta/F");
+   tree->Branch("hpsTauPhi",&hpsTauPhi,"hpsTauPhi/F");
+   tree->Branch("hpsTauDM",&hpsTauDM,"hpsTauDM/F");
+   tree->Branch("hpsTauDR",&hpsTauDR,"hpsTauDR/F");
+   tree->Branch("defaultTauPt",&defaultTauPt,"defaultTauPt/F");
+   tree->Branch("defaultTauEta",&defaultTauEta,"defaultTauEta/F");
+   tree->Branch("defaultTauPhi",&defaultTauPhi,"defaultTauPhi/F");
+   tree->Branch("defaultTauDM",&defaultTauDM,"defaultTauDM/F");
+   tree->Branch("defaultTauDR",&defaultTauDR,"defaultTauDR/F");
    tree->Branch("t2Pt",&t2Pt,"t2Pt/F");
    tree->Branch("t2Eta",&t2Eta,"t2Eta/F");
    tree->Branch("t2Phi",&t2Phi,"t2Phi/F");
@@ -356,13 +375,14 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("failNdof",&failNdof,"failNdof/F");
 
    tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1",                   &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1,                  "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1/I");
+   tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM",                   &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM,                  "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM/I");
    tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1",                   &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1,                  "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1/I");
    //tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1",           &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1,          "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1/I");
    //tree->Branch("HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1",                  &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1,                 "HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1/I");
    //tree->Branch("HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1",          &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1,         "HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1/I");
    //tree->Branch("HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1",                   &HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1,                  "HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1/I");
    //tree->Branch("HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1",           &HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1,          "HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1/I");
-   //tree->Branch("HLT_IsoMu20",                                                                &HLT_IsoMu20,                                                               "HLT_IsoMu20/I");
+   tree->Branch("HLT_IsoMu20",                                                                &HLT_IsoMu20,                                                               "HLT_IsoMu20/I");
    //tree->Branch("HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1",                         &HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1,                        "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1/I");
    //tree->Branch("HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1",                 &HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1,                "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1/I");
    //tree->Branch("HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",  &HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1, "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1/I");
@@ -381,11 +401,11 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    //tree->Branch("HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1",  &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1, "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1/I");
    //tree->Branch("HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1",          &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1,         "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1/I");
    //tree->Branch("HLT_IsoMu24_eta2p1",                                                         &HLT_IsoMu24_eta2p1,                                                        "HLT_IsoMu24_eta2p1/I");
-   //tree->Branch("HLT_IsoMu24",                                                                &HLT_IsoMu24,                                                               "HLT_IsoMu24/I");
+   tree->Branch("HLT_IsoMu24",                                                                &HLT_IsoMu24,                                                               "HLT_IsoMu24/I");
    //tree->Branch("HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1",                         &HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1,                        "HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1/I");
    //tree->Branch("HLT_IsoMu27_eta2p1_MediumChargedIsoPFTau20_SingleL1",                        &HLT_IsoMu27_eta2p1_MediumChargedIsoPFTau20_SingleL1,                       "HLT_IsoMu27_eta2p1_MediumChargedIsoPFTau20_SingleL1/I");
    //tree->Branch("HLT_IsoMu27_eta2p1_TightChargedIsoPFTau20_SingleL1",                         &HLT_IsoMu27_eta2p1_TightChargedIsoPFTau20_SingleL1,                        "HLT_IsoMu27_eta2p1_TightChargedIsoPFTau20_SingleL1/I");
-   //tree->Branch("HLT_IsoMu27",                                                                &HLT_IsoMu27,                                                               "HLT_IsoMu27/I");
+   tree->Branch("HLT_IsoMu27",                                                                &HLT_IsoMu27,                                                               "HLT_IsoMu27/I");
    //tree->Branch("HLT_DoubleLooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg",                   &HLT_DoubleLooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg,                  "HLT_DoubleLooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg/I");
    //tree->Branch("HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg",                           &HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg,                          "HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg/I");
    //tree->Branch("HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg",                   &HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg,                  "HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg/I");
@@ -437,10 +457,10 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
 
     edm::Handle<std::vector<reco::Vertex>> vertices;   
     iEvent.getByToken(vertexToken_, vertices);
-    //if (vertices->empty()) return; // skip the event if no PV found
+    if (vertices->empty()) return; // skip the event if no PV found
     if (vertices->empty()) emptyVertices = 1; // skip the event if no PV found
     const reco::Vertex &PV = vertices->front();
-    //if (PV.ndof() < 4) return; // bad vertex
+    if (PV.ndof() < 4) return; // bad vertex
     //nvtx = vertices.product()->size();
     //nvtxCleaned = 0;
     //for (const reco::Vertex &vertex : *vertices)
@@ -537,10 +557,10 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     nVetoMuons = 0;
 
 
-    tmpPt = -1;
-    tmpEta = -1;
-    tmpPhi = -1;
-    tmpIso = -1;
+    tmpPt = -9;
+    tmpEta = -9;
+    tmpPhi = -9;
+    tmpIso = -9;
     for (const pat::Muon &mu : *muons) {
         ++nSlimmedMuons;
         tmpPt = mu.pt();
@@ -560,7 +580,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
         //    std::cout << " --- mu.pfIsolationR04().sumPUPt: " << mu.pfIsolationR04().sumPUPt << std::endl;
         //    std::cout << " --- mu.pt(): " << mu.pt() << std::endl;
         //}
-        if (mu.pt() < 24 || fabs(mu.eta()) > 2.1 || !mu.isMediumMuon()) continue;
+        if (mu.pt() < 20 || fabs(mu.eta()) > 2.1 || !mu.isMediumMuon()) continue;
         //if (mu.pt() < 24 || fabs(mu.eta()) > 2.1 || !mu.isLooseMuon()) continue;
         if (tmpIso > 0.1) continue;
         ++passingMuons;
@@ -663,36 +683,65 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
 
     edm::Handle<std::vector<reco::PFTau>> hpsTaus;
     try {iEvent.getByToken(hpsTauToken_, hpsTaus);} catch (...) {;}
-    //iEvent.getByToken(hpsTauToken_, hpsTaus);
+    edm::Handle<reco::PFTauDiscriminator> hpsTauDMs;
+    try {iEvent.getByToken(hpsTauDecayModeToken_, hpsTauDMs);} catch (...) {;}
 
+    hpsTauPt = -9;
+    hpsTauEta = -9;
+    hpsTauPhi = -9;
+    hpsTauDM = -9;
+    hpsTauDR = -9;
     if (hpsTaus.isValid()) {
         for (size_t iTau = 0; iTau != hpsTaus->size(); ++iTau) {
 
-            reco::PFTauRef tauCandidate(hpsTaus, iTau);
-            if (tauCandidate->pt() < 18 || fabs(tauCandidate->eta()) > 2.2) continue;
+            reco::PFTauRef hpsTauCandidate(hpsTaus, iTau);
+            if (hpsTauCandidate->pt() < 18 || fabs(hpsTauCandidate->eta()) > 2.2) continue;
 
-            if (deltaR(passingTausV.at(0)->p4(), tauCandidate->p4()) < 0.5) {
-                std::cout << "found hps tau matching slimmed tau:" << std::endl;
-                std::cout << " slimmed pt: " << passingTausV.at(0)->pt() << std::endl;
-                std::cout << " hps     pt: " << tauCandidate->pt() << std::endl;
+            if (deltaR(passingTausV.at(0)->p4(), hpsTauCandidate->p4()) < 0.5) {
+                hpsTauPt = hpsTauCandidate->pt();
+                hpsTauEta = hpsTauCandidate->eta();
+                hpsTauPhi = hpsTauCandidate->phi();
+                hpsTauDR = deltaR(passingTausV.at(0)->p4(), hpsTauCandidate->p4());
+                if (hpsTauDMs.isValid()) {
+                    hpsTauDM = (*hpsTauDMs)[hpsTauCandidate];
+                }
+                if (verbose) std::cout << "found hps tau matching slimmed tau:" << std::endl;
+                if (verbose) std::cout << " slimmed pt: " << passingTausV.at(0)->pt() << "      DM: " << passingTausV.at(0)->decayMode() <<  std::endl;
+                if (verbose) std::cout << " hps     pt: " << hpsTauPt << "      DM: " << hpsTauDM << std::endl;
+                break; // only match to leading tau
             }
         }
     }
+    //std::cout << "Finishd hps part" << std::endl;
 
     edm::Handle<std::vector<reco::PFTau>> defaultTaus;
     try {iEvent.getByToken(defaultTauToken_, defaultTaus);} catch (...) {;}
-    //iEvent.getByToken(defaultTauToken_, defaultTaus);
+    edm::Handle<reco::PFTauDiscriminator> defaultTauDMs;
+    try {iEvent.getByToken(defaultTauDecayModeToken_, defaultTauDMs);} catch (...) {;}
 
+    defaultTauPt = -9;
+    defaultTauEta = -9;
+    defaultTauPhi = -9;
+    defaultTauDM = -9;
+    defaultTauDR = -9;
     if (defaultTaus.isValid()) {
         for (size_t iTau = 0; iTau != defaultTaus->size(); ++iTau) {
 
-            reco::PFTauRef tauCandidate(defaultTaus, iTau);
-            if (tauCandidate->pt() < 18 || fabs(tauCandidate->eta()) > 2.2) continue;
+            reco::PFTauRef defaultTauCandidate(defaultTaus, iTau);
+            if (defaultTauCandidate->pt() < 18 || fabs(defaultTauCandidate->eta()) > 2.2) continue;
 
-            if (deltaR(passingTausV.at(0)->p4(), tauCandidate->p4()) < 0.5) {
-                std::cout << "found default tau matching slimmed tau:" << std::endl;
-                std::cout << " slimmed pt: " << passingTausV.at(0)->pt() << std::endl;
-                std::cout << " default pt: " << tauCandidate->pt() << std::endl;
+            if (deltaR(passingTausV.at(0)->p4(), defaultTauCandidate->p4()) < 0.5) {
+                defaultTauPt = defaultTauCandidate->pt();
+                defaultTauEta = defaultTauCandidate->eta();
+                defaultTauPhi = defaultTauCandidate->phi();
+                defaultTauDR = deltaR(passingTausV.at(0)->p4(), defaultTauCandidate->p4());
+                if (defaultTauDMs.isValid()) {
+                    defaultTauDM = (*defaultTauDMs)[defaultTauCandidate];
+                }
+                if (verbose) std::cout << "found default tau matching slimmed tau:" << std::endl;
+                if (verbose) std::cout << " slimmed pt: " << passingTausV.at(0)->pt() << "      DM: " << passingTausV.at(0)->decayMode() <<  std::endl;
+                if (verbose) std::cout << " default     pt: " << defaultTauPt << "      DM: " << defaultTauDM << std::endl;
+                break; // only match to leading tau
             }
         }
     }
@@ -729,10 +778,10 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
             /bestMuon.pt();
     }
     else { // doTauTau
-        mPt = -10;
-        mEta = -10;
-        mPhi = -10;
-        mIso = -10;
+        mPt = -9;
+        mEta = -9;
+        mPhi = -9;
+        mIso = -9;
     }
     
     tPt = passingTausV.at(0)->pt();
@@ -775,47 +824,47 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
             leptonDR_m_t2 = deltaR( bestMuon, *passingTausV.at(1) );
         leptonDR_t1_t2 = deltaR( *passingTausV.at(0), *passingTausV.at(1) );
 
-        // If tau2 is overlapped, fill with -1
+        // If tau2 is overlapped, fill with -9
         if (!doTauTau && leptonDR_m_t2 < 0.5) {
-            t2Pt = -1;
-            t2Eta = -1;
-            t2Phi = -1;
-            t2MVAIsoVLoose = -1;
-            t2MVAIsoLoose  = -1;
-            t2MVAIsoMedium = -1;
-            t2MVAIsoTight  = -1;
-            t2MVAIsoVTight = -1;
-            t2MVAIsoVVTight = -1;
-            t2IsoCmbLoose   = -1;
-            //t2IsoCmbLoose03 = -1;
-            t2IsoCmbMedium  = -1;
-            //t2IsoCmbMedium03 = -1;
-            t2IsoCmbTight   = -1;
-            //t2IsoCmbTight03 = -1;
-            t2DecayMode = -1;
-            leptonDR_m_t2 = -1;
-            leptonDR_t1_t2 = -1;
+            t2Pt = -9;
+            t2Eta = -9;
+            t2Phi = -9;
+            t2MVAIsoVLoose = -9;
+            t2MVAIsoLoose  = -9;
+            t2MVAIsoMedium = -9;
+            t2MVAIsoTight  = -9;
+            t2MVAIsoVTight = -9;
+            t2MVAIsoVVTight = -9;
+            t2IsoCmbLoose   = -9;
+            //t2IsoCmbLoose03 = -9;
+            t2IsoCmbMedium  = -9;
+            //t2IsoCmbMedium03 = -9;
+            t2IsoCmbTight   = -9;
+            //t2IsoCmbTight03 = -9;
+            t2DecayMode = -9;
+            leptonDR_m_t2 = -9;
+            leptonDR_t1_t2 = -9;
         }
     }
     else {
-        t2Pt = -1;
-        t2Eta = -1;
-        t2Phi = -1;
-        t2MVAIsoVLoose = -1;
-        t2MVAIsoLoose  = -1;
-        t2MVAIsoMedium = -1;
-        t2MVAIsoTight  = -1;
-        t2MVAIsoVTight = -1;
-        t2MVAIsoVVTight = -1;
-        t2IsoCmbLoose   = -1;
-        //t2IsoCmbLoose03 = -1;
-        t2IsoCmbMedium  = -1;
-        //t2IsoCmbMedium03 = -1;
-        t2IsoCmbTight   = -1;
-        //t2IsoCmbTight03 = -1;
-        t2DecayMode = -1;
-        leptonDR_m_t2 = -1;
-        leptonDR_t1_t2 = -1;
+        t2Pt = -9;
+        t2Eta = -9;
+        t2Phi = -9;
+        t2MVAIsoVLoose = -9;
+        t2MVAIsoLoose  = -9;
+        t2MVAIsoMedium = -9;
+        t2MVAIsoTight  = -9;
+        t2MVAIsoVTight = -9;
+        t2MVAIsoVVTight = -9;
+        t2IsoCmbLoose   = -9;
+        //t2IsoCmbLoose03 = -9;
+        t2IsoCmbMedium  = -9;
+        //t2IsoCmbMedium03 = -9;
+        t2IsoCmbTight   = -9;
+        //t2IsoCmbTight03 = -9;
+        t2DecayMode = -9;
+        leptonDR_m_t2 = -9;
+        leptonDR_t1_t2 = -9;
     }
 
 
@@ -823,8 +872,8 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     // Check for overlapping Gen Taus
     // with reconstructed gen taus of 3 types
     // and normal gen particles
-    t1_gen_match = -1;
-    t2_gen_match = -1;
+    t1_gen_match = -9;
+    t2_gen_match = -9;
     if (!isData) {
 
         t1_gen_match = getGenMatchNumber( passingTausV.at(0),
@@ -875,8 +924,8 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
         else SS = 1;
     }
     else {
-        m_vis = -1;
-        SS = -1;
+        m_vis = -9;
+        SS = -9;
     }
 
     if (SS == -1) isOS = -1;
@@ -1133,7 +1182,7 @@ HPSTauHLTStudiesAnalyzer::getGenMatchNumber( pat::TauRef& tau,
         edm::Handle<std::vector<reco::GenParticle>> genParticles) {
 
   // Find the closest gen particle to our candidate
-  float gen_match = -1;
+  float gen_match = -9;
   if ( genParticles->size() > 0 ) {
       reco::GenParticle closest = genParticles->at(0);
       float closestDR = 999;
@@ -1198,9 +1247,9 @@ HPSTauHLTStudiesAnalyzer::getGenMatchNumber( pat::TauRef& tau,
 void
 HPSTauHLTStudiesAnalyzer::getL1TauMatch( pat::TauRef& tau,
         edm::Handle<BXVector<l1t::Tau>> l1Taus, float& l1TauMatch, float& l1TauPt, float& l1TauIso ) {
-    l1TauMatch = -1;
-    l1TauPt = -1;
-    l1TauIso = -1;
+    l1TauMatch = -9;
+    l1TauPt = -9;
+    l1TauIso = -9;
     if (l1Taus.isValid()) {
         l1TauMatch = 0;
         //std::cout << "L1 Extras is valid" << std::endl;

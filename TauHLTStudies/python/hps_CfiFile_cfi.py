@@ -8,8 +8,10 @@ hpsTauHLTStudies = cms.EDAnalyzer("HPSTauHLTStudiesAnalyzer",
 
     slimmedTauSrc = cms.InputTag("slimmedTaus"),
     hpsTauSrc = cms.InputTag("hltHpsPFTauProducerSingleTau", "", "TAUHLT"),
-    defaultTauSrc = cms.InputTag("hltPFTausSansRef", "", "TAUHLT"),
-    #defaultTauSrc = cms.InputTag("hltPFTausSansRef"),
+    hpsTauDM = cms.InputTag("hltHpsPFTauDiscriminationByDecayModeFindingNewDMsSingleTau","","TAUHLT"),   
+    #defaultTauSrc = cms.InputTag("hltPFTausSansRef", "", "TAUHLT"),
+    defaultTauSrc = cms.InputTag("hltPFTaus", "", "TAUHLT"),
+    defaultTauDM = cms.InputTag("hltPFTauDiscriminationByDecayModeFindingNewDMsPFTaus","","TAUHLT"),
 
     muonSrc = cms.InputTag("slimmedMuons"),
     electronSrc = cms.InputTag("slimmedElectrons"),

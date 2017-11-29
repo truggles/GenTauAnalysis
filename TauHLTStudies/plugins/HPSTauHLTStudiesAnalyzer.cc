@@ -140,14 +140,14 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
         tIsoCmbLoose, tIsoCmbMedium, tIsoCmbTight,
         leptonDR_t1_t2, leptonDR_m_t1, leptonDR_m_t2,
         mTrigMatch, tTrigMatch, mL1Match, tL1Match,
-        t1_gen_match,tDecayMode,
+        t1_gen_match,tDecayMode, tDMFinding,
         t2Pt, t2Eta, t2Phi, t2MVAIsoVLoose, t2MVAIsoLoose, t2MVAIsoMedium, 
         t2MVAIsoTight, t2MVAIsoVTight, t2MVAIsoVVTight, t2_gen_match,t2DecayMode,
         //t2IsoCmbLoose, t2IsoCmbLoose03, t2IsoCmbMedium, t2IsoCmbMedium03, t2IsoCmbTight, t2IsoCmbTight03,
         t2IsoCmbLoose, t2IsoCmbMedium, t2IsoCmbTight,
         t2TrigMatch,t2L1Match, emptyVertices, failNdof,
-        hpsTauPt, hpsTauEta, hpsTauPhi, hpsTauDM, hpsTauDR,
-        defaultTauPt, defaultTauEta, defaultTauPhi, defaultTauDM, defaultTauDR;
+        hpsTauPt, hpsTauEta, hpsTauPhi, hpsTauDM, hpsTauDMFinding, hpsTauDR,
+        defaultTauPt, defaultTauEta, defaultTauPhi, defaultTauDM, defaultTauDMFinding, defaultTauDR;
       bool foundGenTau, foundGenMuon; 
       std::map<std::string, int*> triggers;
       std::map<std::string, int>::iterator triggerIterator;
@@ -331,16 +331,19 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("tIsoCmbTight",&tIsoCmbTight,"tIsoCmbTight/F");
    //tree->Branch("tIsoCmbTight03",&tIsoCmbTight03,"tIsoCmbTight03/F");
    tree->Branch("tauDM",&tDecayMode,"tauDM/F");
+   tree->Branch("tauDMFinding",&tDMFinding,"tauDMFinding/F");
    tree->Branch("tTrigMatch",&tTrigMatch,"tTrigMatch/F");
    tree->Branch("hpsTauPt",&hpsTauPt,"hpsTauPt/F");
    tree->Branch("hpsTauEta",&hpsTauEta,"hpsTauEta/F");
    tree->Branch("hpsTauPhi",&hpsTauPhi,"hpsTauPhi/F");
    tree->Branch("hpsTauDM",&hpsTauDM,"hpsTauDM/F");
+   tree->Branch("hpsTauDMFinding",&hpsTauDMFinding,"hpsTauDMFinding/F");
    tree->Branch("hpsTauDR",&hpsTauDR,"hpsTauDR/F");
    tree->Branch("defaultTauPt",&defaultTauPt,"defaultTauPt/F");
    tree->Branch("defaultTauEta",&defaultTauEta,"defaultTauEta/F");
    tree->Branch("defaultTauPhi",&defaultTauPhi,"defaultTauPhi/F");
    tree->Branch("defaultTauDM",&defaultTauDM,"defaultTauDM/F");
+   tree->Branch("defaultTauDMFinding",&defaultTauDMFinding,"defaultTauDMFinding/F");
    tree->Branch("defaultTauDR",&defaultTauDR,"defaultTauDR/F");
    tree->Branch("t2Pt",&t2Pt,"t2Pt/F");
    tree->Branch("t2Eta",&t2Eta,"t2Eta/F");
@@ -631,7 +634,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
 
         if (tauCandidate->pt() < 20 || (fabs(tauCandidate->eta()) > 2.1) ||
             fabs(tauCandidate->charge()) != 1 ||
-            tauCandidate->tauID("decayModeFinding") < 0.5 ||
+            tauCandidate->tauID("decayModeFindingNewDMs") < 0.5 ||
             //tauCandidate->tauID("againstElectronLooseMVA6") < 0.5 ||
             tauCandidate->tauID("againstElectronVLooseMVA6") < 0.5 ||
             tauCandidate->tauID("againstMuonLoose3") < 0.5) continue;
@@ -690,6 +693,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     hpsTauEta = -9;
     hpsTauPhi = -9;
     hpsTauDM = -9;
+    hpsTauDMFinding = -9;
     hpsTauDR = -9;
     if (hpsTaus.isValid()) {
         for (size_t iTau = 0; iTau != hpsTaus->size(); ++iTau) {
@@ -701,9 +705,10 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
                 hpsTauPt = hpsTauCandidate->pt();
                 hpsTauEta = hpsTauCandidate->eta();
                 hpsTauPhi = hpsTauCandidate->phi();
+                hpsTauDM = hpsTauCandidate->decayMode();
                 hpsTauDR = deltaR(passingTausV.at(0)->p4(), hpsTauCandidate->p4());
                 if (hpsTauDMs.isValid()) {
-                    hpsTauDM = (*hpsTauDMs)[hpsTauCandidate];
+                    hpsTauDMFinding = (*hpsTauDMs)[hpsTauCandidate];
                 }
                 if (verbose) std::cout << "found hps tau matching slimmed tau:" << std::endl;
                 if (verbose) std::cout << " slimmed pt: " << passingTausV.at(0)->pt() << "      DM: " << passingTausV.at(0)->decayMode() <<  std::endl;
@@ -723,6 +728,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     defaultTauEta = -9;
     defaultTauPhi = -9;
     defaultTauDM = -9;
+    defaultTauDMFinding = -9;
     defaultTauDR = -9;
     if (defaultTaus.isValid()) {
         for (size_t iTau = 0; iTau != defaultTaus->size(); ++iTau) {
@@ -734,9 +740,10 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
                 defaultTauPt = defaultTauCandidate->pt();
                 defaultTauEta = defaultTauCandidate->eta();
                 defaultTauPhi = defaultTauCandidate->phi();
+                defaultTauDM = defaultTauCandidate->decayMode();
                 defaultTauDR = deltaR(passingTausV.at(0)->p4(), defaultTauCandidate->p4());
                 if (defaultTauDMs.isValid()) {
-                    defaultTauDM = (*defaultTauDMs)[defaultTauCandidate];
+                    defaultTauDMFinding = (*defaultTauDMs)[defaultTauCandidate];
                 }
                 if (verbose) std::cout << "found default tau matching slimmed tau:" << std::endl;
                 if (verbose) std::cout << " slimmed pt: " << passingTausV.at(0)->pt() << "      DM: " << passingTausV.at(0)->decayMode() <<  std::endl;
@@ -800,6 +807,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     tIsoCmbTight = passingTausV.at(0)->tauID("byTightCombinedIsolationDeltaBetaCorr3Hits");
     //tIsoCmbTight03 = passingTausV.at(0)->tauID("byTightCombinedIsolationDeltaBetaCorr3HitsdR03");
     tDecayMode = passingTausV.at(0)->decayMode();
+    tDMFinding = passingTausV.at(0)->tauID("decayModeFindingNewDMs");
     if (!doTauTau )
         leptonDR_m_t1 = deltaR( bestMuon, *passingTausV.at(0) );
 

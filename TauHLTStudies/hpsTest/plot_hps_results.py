@@ -3,7 +3,35 @@
 import ROOT
 from array import array
 ROOT.gROOT.SetBatch(True)
-ROOT.gStyle.SetOptStat(0)
+#ROOT.gStyle.SetOptStat(0)
+
+def resComp( c, name, h1, h2 ) :
+    c.Clear()
+    h1.SetLineColor( ROOT.kBlack )
+    h1.SetLineWidth( 2 )
+    h2.SetLineColor( ROOT.kRed )
+    h2.SetLineWidth( 2 )
+    h1.Scale( 1. / h1.Integral() )
+    h2.Scale( 1. / h2.Integral() )
+    h1.Draw()
+    h1.SetMaximum( max(h1.GetMaximum(), h2.GetMaximum()) * 1.2 )
+    h2.Draw('SAMES')
+    ROOT.gPad.Update()
+    s1 = h1.FindObject("stats")
+    s2 = h2.FindObject("stats")
+    y1 = s2.GetY1NDC()
+    y2 = s2.GetY2NDC()
+    yDiff = y2-y1
+    #print "Old coords:",y1,y2
+    s1.SetY1NDC(.3+2*yDiff)
+    s1.SetY2NDC(.3+yDiff)
+    s2.SetY1NDC(.3)
+    s2.SetY2NDC(.3+yDiff)
+    ROOT.gPad.BuildLegend()
+    h1.GetYaxis().SetTitleOffset( h1.GetYaxis().GetTitleOffset() * 1.5 )
+    c.SaveAs( plotBase+name+'.png' )
+    c.Clear()
+
 
 def buildLegend( items, names ) :
     legend = ROOT.TLegend(0.45, 0.73, 0.83, 0.88)
@@ -106,13 +134,14 @@ def saveHists( th2, name ) :
     c.SaveAs( name+'_norm.png' )
 
 
-iFile = ROOT.TFile('tmp2.root','r')
+#iFile = ROOT.TFile('tmp2.root','r')
+iFile = ROOT.TFile('20180114v2_default.root','r')
 iTree = iFile.Get( 'hpsTauHLTStudies/tagAndProbe/Ntuple' )
 
 trigger1 = 'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1'
 trigger2 = 'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1'
 
-plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/jan14/'
+plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/jan14_default/'
 
 c = ROOT.TCanvas( 'c1', 'c1', 600, 600 ) 
 p = ROOT.TPad( 'p1', 'p1', 0, 0, 1, 1 )
@@ -124,11 +153,28 @@ p.cd()
 
 app1 = 'Offline vs HPS'
 app2 = 'Offline vs Default'
-axes = ';(offline p_{T} - online p_{T})/offline p_{T};Events'
-ptRes1 = ROOT.TH1D('Pt Resolution '+app1, 'Pt_Resolution_'+app1.replace(' ','_')+axes, 50, -1, 1.2)
-ptRes2 = ROOT.TH1D('Pt Resolution '+app2, 'Pt_Resolution_'+app2.replace(' ','_')+axes, 50, -1, 1.2)
+app3 = 'Gen Tau vs HPS'
+app4 = 'Gen Tau vs Default'
+axes = ';(offline p_{T} - online p_{T})/offline p_{T};A.U.'
+axesGen = ';(Gen p_{T} - online p_{T})/Gen p_{T};A.U.'
+axesHPSGen = ';(Gen p_{T} - online_{HPS} p_{T})/Gen p_{T}'
+axesDefGen = ';(Gen p_{T} - online_{Default} p_{T})/Gen p_{T}'
+minPtRes = -0.6
+maxPtRes = 0.7
+#ptRes1 = ROOT.TH1D('Pt Resolution '+app1, 'Pt_Resolution_'+app1.replace(' ','_')+axes, 50, minPtRes, maxPtRes )
+#ptRes2 = ROOT.TH1D('Pt Resolution '+app2, 'Pt_Resolution_'+app2.replace(' ','_')+axes, 50, minPtRes, maxPtRes )
+#ptRes3 = ROOT.TH1D('Pt Resolution '+app3, 'Pt_Resolution_'+app3.replace(' ','_')+axes, 50, minPtRes, maxPtRes )
+#ptRes4 = ROOT.TH1D('Pt Resolution '+app4, 'Pt_Resolution_'+app4.replace(' ','_')+axes, 50, minPtRes, maxPtRes )
+ptRes1 = ROOT.TH1D('Pt Resolution '+app1, 'Pt_Resolution_'+app1.replace(' ','_')+axes, 500, minPtRes, maxPtRes )
+ptRes2 = ROOT.TH1D('Pt Resolution '+app2, 'Pt_Resolution_'+app2.replace(' ','_')+axes, 500, minPtRes, maxPtRes )
+ptRes3 = ROOT.TH1D('Pt Resolution '+app3, 'Pt_Resolution_'+app3.replace(' ','_')+axesGen, 500, minPtRes, maxPtRes )
+ptRes4 = ROOT.TH1D('Pt Resolution '+app4, 'Pt_Resolution_'+app4.replace(' ','_')+axesGen, 500, minPtRes, maxPtRes )
+ptRes5 = ROOT.TH1D('Tight Pt Resolution '+app3, 'Pt_Resolution_'+app3.replace(' ','_')+axesGen, 100, minPtRes, maxPtRes )
+ptRes6 = ROOT.TH1D('Tight Pt Resolution '+app4, 'Pt_Resolution_'+app4.replace(' ','_')+axesGen, 100, minPtRes, maxPtRes )
+ptRes2DGenHPS = ROOT.TH2D( 'ptRes2DGenHPS', 'HPS Tau p_{T} Resolution vs. Gen p_{T};Gen p_{T} [GeV]'+axesHPSGen, 11,20,75,50,-.6,.6 )
+ptRes2DGenDef = ROOT.TH2D( 'ptRes2DGenDef', 'HPS Tau p_{T} Resolution vs. Gen p_{T};Gen p_{T} [GeV]'+axesDefGen, 11,20,75,50,-.6,.6 )
 
-drAxes = ';#Delta R( offline - online);Events'
+drAxes = ';#Delta R( offline - online);A.U.'
 drRes1 = ROOT.TH1D('dR Resolution '+app1, 'dR_Resolution_'+app1.replace(' ','_')+drAxes, 50, 0, 0.05)
 drRes2 = ROOT.TH1D('dR Resolution '+app2, 'dR_Resolution_'+app2.replace(' ','_')+drAxes, 50, 0, 0.05)
 
@@ -140,8 +186,12 @@ h_dm_offline_default = make_DM_plot( 'Offline', 'Online HLT Default' )
 h_dm_default_offline = make_DM_plot( 'Online HLT Default', 'Offline' )
 
 ### EFFICIENCY PLOTS ###
-binning = array('d', [20,22.5,25,27.5,30,32.5,35,37.5,40,\
-    42.5,45,47.5,50,55,60,67.5,80,100])
+#binning = array('d', [20,22.5,25,27.5,30,32.5,35,37.5,40,\
+#    42.5,45,47.5,50,60,80,100,140])
+binning = array('d', [20,30,32.5,34,35,36,37,38,40,\
+    42.5,45,50,60,80,100,140])
+#binning = array('d', [20,30,35,40,\
+#    45,50,60,80,100,140])
 
 h_def_denom = ROOT.TH1D( 'def denom', 'Default', len(binning)-1, binning)
 h_def_pass = ROOT.TH1D( 'def pass', 'def pass', len(binning)-1, binning)
@@ -176,22 +226,35 @@ for row in iTree :
     h_dm_offline_default.Fill( offlineCode, defaultCode )
     h_dm_default_offline.Fill( defaultCode, offlineCode )
 
+    ''' Increase min muon pT for matching to Tau35 triggers '''
+    if row.HLT_IsoMu24 < 0.5 : continue
     tPt = row.tauPt
     hpsPt = row.hpsTauPt
     defPt = row.defaultTauPt
+    genTauPt = row.genTauPt
 
-    ptRes1.Fill( (tPt - hpsPt) / tPt )
-    ptRes2.Fill( (tPt - defPt) / tPt )
-    drRes1.Fill( row.hpsTauDR )
-    drRes2.Fill( row.defaultTauDR )
+    # Only compare pT and dR if they are both matched
+    if hpsPt > 0 and defPt > 0 :
+        ptRes1.Fill( (tPt - hpsPt) / tPt )
+        ptRes2.Fill( (tPt - defPt) / tPt )
+        ptRes3.Fill( (genTauPt - hpsPt) / genTauPt )
+        ptRes4.Fill( (genTauPt - defPt) / genTauPt )
+        if genTauPt > 30 and genTauPt < 40 :
+            ptRes5.Fill( (genTauPt - hpsPt) / genTauPt )
+            ptRes6.Fill( (genTauPt - defPt) / genTauPt )
+        ptRes2DGenHPS.Fill( genTauPt, ((genTauPt - hpsPt) / genTauPt) )
+        ptRes2DGenDef.Fill( genTauPt, ((genTauPt - defPt) / genTauPt) )
+
+        drRes1.Fill( row.hpsTauDR )
+        drRes2.Fill( row.defaultTauDR )
 
     ''' Fill efficiencies '''
     h_def_denom.Fill( defPt ) 
     h_hps_denom.Fill( defPt )
     # Check passing for numerator
-    if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1 > 0.5 :
+    if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
         h_def_pass.Fill( defPt )
-    if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1 > 0.5 :
+    if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
         h_hps_pass.Fill( defPt )
 
 print "offlineVsHPS"
@@ -203,30 +266,25 @@ saveHists( h_dm_offline_default, plotBase+'offlineVsDefault' )
 print "DefaultVsOffline"
 saveHists( h_dm_default_offline, plotBase+'defaultVsOffline' )
 
-ptRes1.SetLineColor( ROOT.kBlack )
-ptRes1.SetLineWidth( 2 )
-ptRes2.SetLineColor( ROOT.kRed )
-ptRes2.SetLineWidth( 2 )
-ptRes1.Draw()
-ptRes2.Draw('SAME')
-ROOT.gPad.BuildLegend()
-ptRes1.GetYaxis().SetTitleOffset( ptRes1.GetYaxis().GetTitleOffset() * 1.5 )
-c.SaveAs( plotBase+'ptResolution.png' )
+
+
+resComp( c, 'resolutionPt', ptRes1, ptRes2 )
+resComp( c, 'resolutionPtGen', ptRes3, ptRes4 )
+resComp( c, 'resolutionPtGenPt30to40', ptRes5, ptRes6 )
+resComp( c, 'resolutionDRGen', drRes1, drRes2 )
+
+c.Clear()
+ptRes2DGenHPS.Draw('COLZ')
+c.SaveAs( plotBase+'resolutionPt2D_Gen_HPS.png' )
+c.Clear()
+ptRes2DGenDef.Draw('COLZ')
+c.SaveAs( plotBase+'resolutionPt2D_Gen_Def.png' )
 c.Clear()
 
-drRes1.SetLineColor( ROOT.kBlack )
-drRes1.SetLineWidth( 2 )
-drRes2.SetLineColor( ROOT.kRed )
-drRes2.SetLineWidth( 2 )
-drRes1.Draw()
-drRes2.Draw('SAME')
-ROOT.gPad.BuildLegend()
-drRes1.GetYaxis().SetTitleOffset( drRes1.GetYaxis().GetTitleOffset() * 1.5 )
-c.SaveAs( plotBase+'drResolution.png' )
 
 h_denoms = [h_def_denom, h_hps_denom]
 h_passes = [h_def_pass, h_hps_pass]
-plotEff( c, plotBase, 'Def vs HPS', h_denoms, h_passes )
+plotEff( c, plotBase, 'Def vs HPS fine grain', h_denoms, h_passes )
 
 
 

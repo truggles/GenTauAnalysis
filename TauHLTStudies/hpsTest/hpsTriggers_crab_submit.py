@@ -58,8 +58,9 @@ if __name__ == '__main__':
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k in dataMap.keys() :
-        config.JobType.psetName        = 'hps_test_cfg.py'
-        config.General.requestName = '%s_nov24_hps_v2' % k
+        #config.JobType.psetName        = 'hps_test_cfg.py'
+        config.JobType.psetName        = 'hps_cfg_strebler_v13_hlt.py'
+        config.General.requestName = '%s_jan14_hps_v2' % k
         config.Data.outputDatasetTag   = config.General.requestName
         config.Data.inputDataset = dataMap[ k ][ 'child' ]
         config.Data.secondaryInputDataset = dataMap[ k ][ 'grandparent' ]

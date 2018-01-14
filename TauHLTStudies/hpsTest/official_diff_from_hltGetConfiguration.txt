@@ -1,0 +1,64 @@
+14830c14830
+<         'file:RelVal_Raw_GRun_MC.root',
+---
+>         #'file:root://cms-xrd-global.cern.ch///store/mc/RunIISummer17DRStdmix/GluGluHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/50000/00004488-5EA5-E711-B470-0025901AC3F8.root',
+14861,14866c14861,14866
+< if 'MessageLogger' in process.__dict__:
+<     process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
+<     process.MessageLogger.categories.append('L1GtTrigReport')
+<     process.MessageLogger.categories.append('L1TGlobalSummary')
+<     process.MessageLogger.categories.append('HLTrigReport')
+<     process.MessageLogger.categories.append('FastReport')
+---
+> #if 'MessageLogger' in process.__dict__:
+> #    process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
+> #    process.MessageLogger.categories.append('L1GtTrigReport')
+> #    process.MessageLogger.categories.append('L1TGlobalSummary')
+> #    process.MessageLogger.categories.append('HLTrigReport')
+> #    process.MessageLogger.categories.append('FastReport')
+14872,14876c14872,14876
+< process.dqmOutput = cms.OutputModule("DQMRootOutputModule",
+<     fileName = cms.untracked.string("DQMIO.root")
+< )
+< 
+< process.DQMOutput = cms.EndPath( process.dqmOutput )
+---
+> #process.dqmOutput = cms.OutputModule("DQMRootOutputModule",
+> #    fileName = cms.untracked.string("DQMIO.root")
+> #)
+> #
+> #process.DQMOutput = cms.EndPath( process.dqmOutput )
+14892c14892,14893
+< process = customizeHLTforAll(process,"GRun",_customInfo)
+---
+> #process = customizeHLTforAll(process,"GRun",_customInfo)
+> process = customizeHLTforAll(process,"GRun")
+14900a14902,14929
+> process.Out = cms.OutputModule( "PoolOutputModule",
+>     fileName = cms.untracked.string( "output.root" ),
+>     fastCloning = cms.untracked.bool( False ),
+>     outputCommands = cms.untracked.vstring(
+>                                            "drop *",
+>                                            "keep *_TriggerResults_*_*",
+>                                            "keep *_genParticles_*_*",
+>                                            "keep *_prunedGenParticles_*_*",
+>                                            "keep *_slimmedElectrons_*_*",
+>                                            "keep *_slimmedMuons_*_*",
+>                                            "keep *_slimmedAddPileupInfo_*_*",
+>                                            "keep *_slimmedTaus_*_*",
+>                                            "keep *_slimmedJets_*_*",
+>                                            "keep *_slimmedMETs_*_*",
+>                                            "keep *_offlineSlimmedPrimaryVertices_*_*",
+>                                            "keep *_slimmedPatTrigger_*_*",
+>                                            "keep *_caloStage2Digis_*_*",
+>                                            "keep *_reducedEgamma_*_*",
+>                                            "keep *_offlineBeamSpot_*_*",
+>                                            "keep *_hltHpsPFTauProducerSingleTau_*_*",
+>                                            "keep *_hltHpsSelectedPFTausTrackFinding_*_*",
+>                                            "keep *_*_*_TAUHLT",
+>                                            #"keep *__*_*",
+>     )
+> )
+> 
+> process.end = cms.EndPath( process.Out )
+> 

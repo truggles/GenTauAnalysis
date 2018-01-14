@@ -1,8 +1,50 @@
 #!/usr/bin/env python
 
 import ROOT
+from array import array
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
+
+def buildLegend( items, names ) :
+    legend = ROOT.TLegend(0.45, 0.73, 0.83, 0.88)
+    legend.SetMargin(0.3)
+    legend.SetBorderSize(0)
+    for item, name in zip(items, names) : #range(0, stack.GetStack().GetLast() + 1) :
+        legend.AddEntry( item, name, 'lep')
+    return legend
+
+
+def plotEff( c, plotBase, name, h_denoms, h_passes ) :
+    c.Clear()
+    c.SetGrid()
+
+    colors = [ROOT.kRed, ROOT.kBlue, ROOT.kGreen+1, ROOT.kOrange]
+    mg = ROOT.TMultiGraph()
+    mg.SetTitle( name )
+    legItems = []
+    legNames = []
+    count = 0
+    for denom, passing in zip( h_denoms, h_passes ) :
+
+        g = ROOT.TGraphAsymmErrors( passing, denom )
+        g.SetLineWidth(2)
+        g.SetLineColor(colors[count])
+        mg.Add( g.Clone() )
+        legItems.append( g.Clone() )
+        legNames.append( denom.GetTitle() )
+        count += 1
+
+    mg.Draw('ap')
+    mg.GetXaxis().SetTitle('#tau p_{T} (GeV)')
+    mg.GetYaxis().SetTitle('HLT Efficiency')
+    mg.SetMaximum( 1.3 )
+    mg.SetMinimum( 0. )
+
+    leg = buildLegend( legItems, legNames )
+    leg.Draw()
+    ROOT.gPad.Update()
+    
+    c.SaveAs( plotBase+'eff_'+name.replace(' ','_')+'.png' )
 
 
 
@@ -70,7 +112,7 @@ iTree = iFile.Get( 'hpsTauHLTStudies/tagAndProbe/Ntuple' )
 trigger1 = 'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1'
 trigger2 = 'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1'
 
-plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/nov29/'
+plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/jan14/'
 
 c = ROOT.TCanvas( 'c1', 'c1', 600, 600 ) 
 p = ROOT.TPad( 'p1', 'p1', 0, 0, 1, 1 )
@@ -96,6 +138,15 @@ h_dm_offline_hps = make_DM_plot( 'Offline', 'Online HPS' )
 h_dm_hps_offline = make_DM_plot( 'Online HPS', 'Offline' )
 h_dm_offline_default = make_DM_plot( 'Offline', 'Online HLT Default' )
 h_dm_default_offline = make_DM_plot( 'Online HLT Default', 'Offline' )
+
+### EFFICIENCY PLOTS ###
+binning = array('d', [20,22.5,25,27.5,30,32.5,35,37.5,40,\
+    42.5,45,47.5,50,55,60,67.5,80,100])
+
+h_def_denom = ROOT.TH1D( 'def denom', 'Default', len(binning)-1, binning)
+h_def_pass = ROOT.TH1D( 'def pass', 'def pass', len(binning)-1, binning)
+h_hps_denom = ROOT.TH1D( 'hps denom', 'HPS Tau', len(binning)-1, binning)
+h_hps_pass = ROOT.TH1D( 'hps pass', 'hps pass', len(binning)-1, binning)
 
 for row in iTree :
 
@@ -134,6 +185,15 @@ for row in iTree :
     drRes1.Fill( row.hpsTauDR )
     drRes2.Fill( row.defaultTauDR )
 
+    ''' Fill efficiencies '''
+    h_def_denom.Fill( defPt ) 
+    h_hps_denom.Fill( defPt )
+    # Check passing for numerator
+    if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1 > 0.5 :
+        h_def_pass.Fill( defPt )
+    if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1 > 0.5 :
+        h_hps_pass.Fill( defPt )
+
 print "offlineVsHPS"
 saveHists( h_dm_offline_hps, plotBase+'offlineVsHPS' )
 print "hpsVsOffline"
@@ -164,7 +224,9 @@ ROOT.gPad.BuildLegend()
 drRes1.GetYaxis().SetTitleOffset( drRes1.GetYaxis().GetTitleOffset() * 1.5 )
 c.SaveAs( plotBase+'drResolution.png' )
 
-
+h_denoms = [h_def_denom, h_hps_denom]
+h_passes = [h_def_pass, h_hps_pass]
+plotEff( c, plotBase, 'Def vs HPS', h_denoms, h_passes )
 
 
 

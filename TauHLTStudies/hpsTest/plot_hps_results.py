@@ -2,6 +2,7 @@
 
 import ROOT
 from array import array
+import os
 ROOT.gROOT.SetBatch(True)
 #ROOT.gStyle.SetOptStat(0)
 
@@ -63,7 +64,7 @@ def plotEff( c, plotBase, name, h_denoms, h_passes ) :
         count += 1
 
     mg.Draw('ap')
-    mg.GetXaxis().SetTitle('#tau p_{T} (GeV)')
+    mg.GetXaxis().SetTitle('Gen #tau p_{T} (GeV)')
     mg.GetYaxis().SetTitle('HLT Efficiency')
     mg.SetMaximum( 1.3 )
     mg.SetMinimum( 0. )
@@ -134,14 +135,23 @@ def saveHists( th2, name ) :
     c.SaveAs( name+'_norm.png' )
 
 
+#name = 'ggH125_jan15_ptRes_iso20PerInc'
+#name = 'ggH125_jan15_ptRes'
+#name = 'ggH125_jan14_default'
+name = 'ggH125_jan16_0p5PtAdjIso60'
+#name = 'ggH125_jan16_0p5PtAdjIso40'
+
 #iFile = ROOT.TFile('tmp2.root','r')
-iFile = ROOT.TFile('20180114v2_default.root','r')
+#iFile = ROOT.TFile('20180114v2_default.root','r')
+iFile = ROOT.TFile(name+'.root','r')
+print iFile
 iTree = iFile.Get( 'hpsTauHLTStudies/tagAndProbe/Ntuple' )
 
 trigger1 = 'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1'
 trigger2 = 'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1'
 
-plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/jan14_default/'
+plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'/'
+if not os.path.exists( plotBase ) : os.makedirs( plotBase )
 
 c = ROOT.TCanvas( 'c1', 'c1', 600, 600 ) 
 p = ROOT.TPad( 'p1', 'p1', 0, 0, 1, 1 )
@@ -249,13 +259,13 @@ for row in iTree :
         drRes2.Fill( row.defaultTauDR )
 
     ''' Fill efficiencies '''
-    h_def_denom.Fill( defPt ) 
-    h_hps_denom.Fill( defPt )
+    h_def_denom.Fill( genTauPt ) 
+    h_hps_denom.Fill( genTauPt )
     # Check passing for numerator
     if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
-        h_def_pass.Fill( defPt )
+        h_def_pass.Fill( genTauPt )
     if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
-        h_hps_pass.Fill( defPt )
+        h_hps_pass.Fill( genTauPt )
 
 print "offlineVsHPS"
 saveHists( h_dm_offline_hps, plotBase+'offlineVsHPS' )

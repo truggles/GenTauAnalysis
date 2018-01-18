@@ -785,7 +785,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
 
 
     // Save our best tau and muon variables
-    if (!doTauTau) {
+    if (passingMuons > 0.5) {
         mPt = bestMuon.pt();
         mEta = bestMuon.eta();
         mPhi = bestMuon.phi();

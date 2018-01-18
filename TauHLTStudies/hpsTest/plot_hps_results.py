@@ -8,8 +8,9 @@ ROOT.gROOT.SetBatch(True)
 
 def resComp( c, name, h1, h2 ) :
     c.Clear()
-    h1.SetLineColor( ROOT.kBlack )
+    h1.SetLineColor( ROOT.kBlue )
     h1.SetLineWidth( 2 )
+    h1.SetTitle( 'p_{T} Resolution: Gen p_{T} [30,40]' )
     h2.SetLineColor( ROOT.kRed )
     h2.SetLineWidth( 2 )
     h1.Scale( 1. / h1.Integral() )
@@ -19,7 +20,9 @@ def resComp( c, name, h1, h2 ) :
     h2.Draw('SAMES')
     ROOT.gPad.Update()
     s1 = h1.FindObject("stats")
+    s1.SetLineColor( ROOT.kBlue )
     s2 = h2.FindObject("stats")
+    s2.SetLineColor( ROOT.kRed )
     y1 = s2.GetY1NDC()
     y2 = s2.GetY2NDC()
     yDiff = y2-y1
@@ -28,7 +31,11 @@ def resComp( c, name, h1, h2 ) :
     s1.SetY2NDC(.3+yDiff)
     s2.SetY1NDC(.3)
     s2.SetY2NDC(.3+yDiff)
-    ROOT.gPad.BuildLegend()
+
+    #ROOT.gPad.BuildLegend()
+    leg = buildLegend( [h1, h2], ['HPS', 'Default'] )
+    leg.Draw()
+
     h1.GetYaxis().SetTitleOffset( h1.GetYaxis().GetTitleOffset() * 1.5 )
     c.SaveAs( plotBase+name+'.png' )
     c.Clear()
@@ -65,6 +72,8 @@ def plotEff( c, plotBase, name, h_denoms, h_passes ) :
 
     mg.Draw('ap')
     mg.GetXaxis().SetTitle('Gen #tau p_{T} (GeV)')
+    if 'offline' in name :
+        mg.GetXaxis().SetTitle('Offline #tau p_{T} (GeV)')
     mg.GetYaxis().SetTitle('HLT Efficiency')
     mg.SetMaximum( 1.3 )
     mg.SetMinimum( 0. )
@@ -138,8 +147,9 @@ def saveHists( th2, name ) :
 #name = 'ggH125_jan15_ptRes_iso20PerInc'
 #name = 'ggH125_jan15_ptRes'
 #name = 'ggH125_jan14_default'
-name = 'ggH125_jan16_0p5PtAdjIso60'
+#name = 'ggH125_jan16_0p5PtAdjIso60'
 #name = 'ggH125_jan16_0p5PtAdjIso40'
+name = 'ggH125_jan17_Menu_V6'
 
 #iFile = ROOT.TFile('tmp2.root','r')
 #iFile = ROOT.TFile('20180114v2_default.root','r')
@@ -179,8 +189,8 @@ ptRes1 = ROOT.TH1D('Pt Resolution '+app1, 'Pt_Resolution_'+app1.replace(' ','_')
 ptRes2 = ROOT.TH1D('Pt Resolution '+app2, 'Pt_Resolution_'+app2.replace(' ','_')+axes, 500, minPtRes, maxPtRes )
 ptRes3 = ROOT.TH1D('Pt Resolution '+app3, 'Pt_Resolution_'+app3.replace(' ','_')+axesGen, 500, minPtRes, maxPtRes )
 ptRes4 = ROOT.TH1D('Pt Resolution '+app4, 'Pt_Resolution_'+app4.replace(' ','_')+axesGen, 500, minPtRes, maxPtRes )
-ptRes5 = ROOT.TH1D('Tight Pt Resolution '+app3, 'Pt_Resolution_'+app3.replace(' ','_')+axesGen, 100, minPtRes, maxPtRes )
-ptRes6 = ROOT.TH1D('Tight Pt Resolution '+app4, 'Pt_Resolution_'+app4.replace(' ','_')+axesGen, 100, minPtRes, maxPtRes )
+ptRes5 = ROOT.TH1D('HPS', 'HPS'+axesGen, 100, minPtRes, maxPtRes )
+ptRes6 = ROOT.TH1D('Default', 'Default'+axesGen, 100, minPtRes, maxPtRes )
 ptRes2DGenHPS = ROOT.TH2D( 'ptRes2DGenHPS', 'HPS Tau p_{T} Resolution vs. Gen p_{T};Gen p_{T} [GeV]'+axesHPSGen, 11,20,75,50,-.6,.6 )
 ptRes2DGenDef = ROOT.TH2D( 'ptRes2DGenDef', 'HPS Tau p_{T} Resolution vs. Gen p_{T};Gen p_{T} [GeV]'+axesDefGen, 11,20,75,50,-.6,.6 )
 
@@ -207,6 +217,11 @@ h_def_denom = ROOT.TH1D( 'def denom', 'Default', len(binning)-1, binning)
 h_def_pass = ROOT.TH1D( 'def pass', 'def pass', len(binning)-1, binning)
 h_hps_denom = ROOT.TH1D( 'hps denom', 'HPS Tau', len(binning)-1, binning)
 h_hps_pass = ROOT.TH1D( 'hps pass', 'hps pass', len(binning)-1, binning)
+
+h_def_denom2 = ROOT.TH1D( 'def denom2', 'Default', len(binning)-1, binning)
+h_def_pass2 = ROOT.TH1D( 'def pass2', 'def pass', len(binning)-1, binning)
+h_hps_denom2 = ROOT.TH1D( 'hps denom2', 'HPS Tau', len(binning)-1, binning)
+h_hps_pass2 = ROOT.TH1D( 'hps pass2', 'hps pass', len(binning)-1, binning)
 
 for row in iTree :
 
@@ -261,11 +276,15 @@ for row in iTree :
     ''' Fill efficiencies '''
     h_def_denom.Fill( genTauPt ) 
     h_hps_denom.Fill( genTauPt )
+    h_def_denom2.Fill( tPt ) 
+    h_hps_denom2.Fill( tPt )
     # Check passing for numerator
     if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
         h_def_pass.Fill( genTauPt )
+        h_def_pass2.Fill( tPt )
     if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
         h_hps_pass.Fill( genTauPt )
+        h_hps_pass2.Fill( tPt )
 
 print "offlineVsHPS"
 saveHists( h_dm_offline_hps, plotBase+'offlineVsHPS' )
@@ -295,6 +314,10 @@ c.Clear()
 h_denoms = [h_def_denom, h_hps_denom]
 h_passes = [h_def_pass, h_hps_pass]
 plotEff( c, plotBase, 'Def vs HPS fine grain', h_denoms, h_passes )
+
+h_denoms = [h_def_denom2, h_hps_denom2]
+h_passes = [h_def_pass2, h_hps_pass2]
+plotEff( c, plotBase, 'Def vs HPS fine grain offline pT', h_denoms, h_passes )
 
 
 

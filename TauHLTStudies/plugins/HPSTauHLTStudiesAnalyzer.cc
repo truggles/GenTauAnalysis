@@ -149,8 +149,10 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
         //t2IsoCmbLoose, t2IsoCmbLoose03, t2IsoCmbMedium, t2IsoCmbMedium03, t2IsoCmbTight, t2IsoCmbTight03,
         t2IsoCmbLoose, t2IsoCmbMedium, t2IsoCmbTight,
         t2TrigMatch,t2genPt,t2L1Match, emptyVertices, failNdof,
-        hpsTauPt, hpsTauEta, hpsTauPhi, hpsTauDM, hpsTauDMFinding, hpsTauDR,
-        defaultTauPt, defaultTauEta, defaultTauPhi, defaultTauDM, defaultTauDMFinding, defaultTauDR;
+        hpsTauSize, hpsTauPt, hpsTauEta, hpsTauPhi, hpsTauDM, hpsTauDMFinding, hpsTauDR,
+        hpsTau2Pt, hpsTau2Eta, hpsTau2Phi, hpsTau2DM,
+        defaultTauSize, defaultTauPt, defaultTauEta, defaultTauPhi, defaultTauDM, defaultTauDMFinding, defaultTauDR,
+        defaultTau2Pt, defaultTau2Eta, defaultTau2Phi, defaultTau2DM;
       bool foundGenTau, foundGenMuon; 
       std::map<std::string, int*> triggers;
       std::map<std::string, int>::iterator triggerIterator;
@@ -347,18 +349,28 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("tauDM",&tDecayMode,"tauDM/F");
    tree->Branch("tauDMFinding",&tDMFinding,"tauDMFinding/F");
    tree->Branch("tTrigMatch",&tTrigMatch,"tTrigMatch/F");
+   tree->Branch("hpsTauSize",&hpsTauSize,"hpsTauSize/F");
    tree->Branch("hpsTauPt",&hpsTauPt,"hpsTauPt/F");
    tree->Branch("hpsTauEta",&hpsTauEta,"hpsTauEta/F");
    tree->Branch("hpsTauPhi",&hpsTauPhi,"hpsTauPhi/F");
    tree->Branch("hpsTauDM",&hpsTauDM,"hpsTauDM/F");
    tree->Branch("hpsTauDMFinding",&hpsTauDMFinding,"hpsTauDMFinding/F");
    tree->Branch("hpsTauDR",&hpsTauDR,"hpsTauDR/F");
+   tree->Branch("hpsTau2Pt",&hpsTau2Pt,"hpsTau2Pt/F");
+   tree->Branch("hpsTau2Eta",&hpsTau2Eta,"hpsTau2Eta/F");
+   tree->Branch("hpsTau2Phi",&hpsTau2Phi,"hpsTau2Phi/F");
+   tree->Branch("hpsTau2DM",&hpsTau2DM,"hpsTau2DM/F");
+   tree->Branch("defaultTauSize",&defaultTauSize,"defaultTauSize/F");
    tree->Branch("defaultTauPt",&defaultTauPt,"defaultTauPt/F");
    tree->Branch("defaultTauEta",&defaultTauEta,"defaultTauEta/F");
    tree->Branch("defaultTauPhi",&defaultTauPhi,"defaultTauPhi/F");
    tree->Branch("defaultTauDM",&defaultTauDM,"defaultTauDM/F");
    tree->Branch("defaultTauDMFinding",&defaultTauDMFinding,"defaultTauDMFinding/F");
    tree->Branch("defaultTauDR",&defaultTauDR,"defaultTauDR/F");
+   tree->Branch("defaultTau2Pt",&defaultTau2Pt,"defaultTau2Pt/F");
+   tree->Branch("defaultTau2Eta",&defaultTau2Eta,"defaultTau2Eta/F");
+   tree->Branch("defaultTau2Phi",&defaultTau2Phi,"defaultTau2Phi/F");
+   tree->Branch("defaultTau2DM",&defaultTau2DM,"defaultTau2DM/F");
    tree->Branch("t2Pt",&t2Pt,"t2Pt/F");
    tree->Branch("t2Eta",&t2Eta,"t2Eta/F");
    tree->Branch("t2Phi",&t2Phi,"t2Phi/F");
@@ -700,6 +712,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     edm::Handle<reco::PFTauDiscriminator> hpsTauDMs;
     try {iEvent.getByToken(hpsTauDecayModeToken_, hpsTauDMs);} catch (...) {;}
 
+    hpsTauSize = -9;
     hpsTauPt = -9;
     hpsTauEta = -9;
     hpsTauPhi = -9;
@@ -707,6 +720,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     hpsTauDMFinding = -9;
     hpsTauDR = -9;
     if (hpsTaus.isValid()) {
+        hpsTauSize = hpsTaus->size();
         for (size_t iTau = 0; iTau != hpsTaus->size(); ++iTau) {
 
             reco::PFTauRef hpsTauCandidate(hpsTaus, iTau);
@@ -735,6 +749,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     edm::Handle<reco::PFTauDiscriminator> defaultTauDMs;
     try {iEvent.getByToken(defaultTauDecayModeToken_, defaultTauDMs);} catch (...) {;}
 
+    defaultTauSize = -9;
     defaultTauPt = -9;
     defaultTauEta = -9;
     defaultTauPhi = -9;
@@ -742,6 +757,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     defaultTauDMFinding = -9;
     defaultTauDR = -9;
     if (defaultTaus.isValid()) {
+        defaultTauSize = defaultTaus->size();
         for (size_t iTau = 0; iTau != defaultTaus->size(); ++iTau) {
 
             reco::PFTauRef defaultTauCandidate(defaultTaus, iTau);
@@ -1128,6 +1144,107 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
   // all it has is
   // edm::TriggerResults       "TriggerResults"         ""        "HLT"
   if (isRAW) { // isRAW (only trigger results abailable)
+
+    edm::Handle<std::vector<reco::PFTau>> hpsTaus;
+    try {iEvent.getByToken(hpsTauToken_, hpsTaus);} catch (...) {;}
+    edm::Handle<reco::PFTauDiscriminator> hpsTauDMs;
+    try {iEvent.getByToken(hpsTauDecayModeToken_, hpsTauDMs);} catch (...) {;}
+
+    hpsTauSize = -9;
+    hpsTauPt = -9;
+    hpsTauEta = -9;
+    hpsTauPhi = -9;
+    hpsTauDM = -9;
+    hpsTauDMFinding = -9;
+    hpsTauDR = -9;
+    
+    std::vector<reco::PFTauRef> passingHPSTaus;
+
+    if (hpsTaus.isValid()) {
+        hpsTauSize = hpsTaus->size();
+        for (size_t iTau = 0; iTau != hpsTaus->size(); ++iTau) {
+
+            reco::PFTauRef hpsTauCandidate(hpsTaus, iTau);
+            if (hpsTauCandidate->pt() < 18 || fabs(hpsTauCandidate->eta()) > 2.2) continue;
+            passingHPSTaus.push_back( hpsTauCandidate );
+
+            if (verbose) std::cout << "found hps tau matching slimmed tau:" << std::endl;
+            if (verbose) std::cout << " hps     pt: " << hpsTauPt << "      DM: " << hpsTauDM << std::endl;
+        }
+    }
+
+    std::sort(passingHPSTaus.begin(), passingHPSTaus.end(), [](reco::PFTauRef a, reco::PFTauRef b) {
+        return a->pt() > b->pt();
+    });
+
+    if ( passingHPSTaus.size() > 0 ) {
+        hpsTauPt = passingHPSTaus.at(0)->pt();
+        hpsTauEta = passingHPSTaus.at(0)->eta();
+        hpsTauPhi = passingHPSTaus.at(0)->phi();
+        hpsTauDM = passingHPSTaus.at(0)->decayMode();
+        if (hpsTauDMs.isValid()) {
+            hpsTauDMFinding = (*hpsTauDMs)[passingHPSTaus.at(0)];
+        }
+    }
+    if ( passingHPSTaus.size() > 1 ) {
+        hpsTau2Pt = passingHPSTaus.at(1)->pt();
+        hpsTau2Eta = passingHPSTaus.at(1)->eta();
+        hpsTau2Phi = passingHPSTaus.at(1)->phi();
+        hpsTau2DM = passingHPSTaus.at(1)->decayMode();
+    }
+
+
+    //std::cout << "Finishd hps part" << std::endl;
+
+    edm::Handle<std::vector<reco::PFTau>> defaultTaus;
+    try {iEvent.getByToken(defaultTauToken_, defaultTaus);} catch (...) {;}
+    edm::Handle<reco::PFTauDiscriminator> defaultTauDMs;
+    try {iEvent.getByToken(defaultTauDecayModeToken_, defaultTauDMs);} catch (...) {;}
+
+    defaultTauSize = -9;
+    defaultTauPt = -9;
+    defaultTauEta = -9;
+    defaultTauPhi = -9;
+    defaultTauDM = -9;
+    defaultTauDMFinding = -9;
+    defaultTauDR = -9;
+
+    std::vector<reco::PFTauRef> passingDefaultTaus;
+
+    if (defaultTaus.isValid()) {
+        defaultTauSize = defaultTaus->size();
+        for (size_t iTau = 0; iTau != defaultTaus->size(); ++iTau) {
+
+            reco::PFTauRef defaultTauCandidate(defaultTaus, iTau);
+            if (defaultTauCandidate->pt() < 18 || fabs(defaultTauCandidate->eta()) > 2.2) continue;
+
+            passingDefaultTaus.push_back( defaultTauCandidate );
+
+            if (verbose) std::cout << "found default tau matching slimmed tau:" << std::endl;
+            if (verbose) std::cout << " default     pt: " << defaultTauPt << "      DM: " << defaultTauDM << std::endl;
+        }
+    }
+
+    std::sort(passingDefaultTaus.begin(), passingDefaultTaus.end(), [](reco::PFTauRef a, reco::PFTauRef b) {
+        return a->pt() > b->pt();
+    });
+
+    if ( passingDefaultTaus.size() > 0 ) {
+        defaultTauPt = passingDefaultTaus.at(0)->pt();
+        defaultTauEta = passingDefaultTaus.at(0)->eta();
+        defaultTauPhi = passingDefaultTaus.at(0)->phi();
+        defaultTauDM = passingDefaultTaus.at(0)->decayMode();
+        if (defaultTauDMs.isValid()) {
+            defaultTauDMFinding = (*defaultTauDMs)[passingDefaultTaus.at(0)];
+        }
+    }
+    if ( passingDefaultTaus.size() > 1 ) {
+        defaultTau2Pt = passingDefaultTaus.at(1)->pt();
+        defaultTau2Eta = passingDefaultTaus.at(1)->eta();
+        defaultTau2Phi = passingDefaultTaus.at(1)->phi();
+        defaultTau2DM = passingDefaultTaus.at(1)->decayMode();
+    }
+
     edm::Handle<edm::TriggerResults> triggerResults;   
     iEvent.getByToken(triggerToken_, triggerResults);
     //edm::Handle<pat::TriggerObjectStandAloneCollection> triggerObjects;

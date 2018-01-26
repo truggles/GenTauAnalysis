@@ -13,8 +13,10 @@ def resComp( c, name, h1, h2 ) :
     h1.SetTitle( 'p_{T} Resolution: Gen p_{T} [30,40]' )
     h2.SetLineColor( ROOT.kRed )
     h2.SetLineWidth( 2 )
-    h1.Scale( 1. / h1.Integral() )
-    h2.Scale( 1. / h2.Integral() )
+    if h1.Integral() > 0 :
+        h1.Scale( 1. / h1.Integral() )
+    if h2.Integral() > 0 :
+        h2.Scale( 1. / h2.Integral() )
     h1.Draw()
     h1.SetMaximum( max(h1.GetMaximum(), h2.GetMaximum()) * 1.2 )
     h2.Draw('SAMES')
@@ -77,6 +79,11 @@ def plotEff( c, plotBase, name, h_denoms, h_passes ) :
     mg.GetYaxis().SetTitle('HLT Efficiency')
     mg.SetMaximum( 1.3 )
     mg.SetMinimum( 0. )
+
+    ROOT.gPad.SetLogx()
+    mg.GetXaxis().SetMoreLogLabels()
+    mg.GetXaxis().SetLimits( 20., 500 )
+
 
     leg = buildLegend( legItems, legNames )
     leg.Draw()
@@ -149,7 +156,11 @@ def saveHists( th2, name ) :
 #name = 'ggH125_jan14_default'
 #name = 'ggH125_jan16_0p5PtAdjIso60'
 #name = 'ggH125_jan16_0p5PtAdjIso40'
-name = 'ggH125_jan17_Menu_V6'
+#name = 'ggH125_jan17_Menu_V6'
+#name = 'qqH_strebler'
+#name = 'qqH_20180118v2_TS_Def'
+name = 'qqH125_jan19_Menu_V6'
+#name = 'qqH125_jan23_chrgIso3p7'
 
 #iFile = ROOT.TFile('tmp2.root','r')
 #iFile = ROOT.TFile('20180114v2_default.root','r')
@@ -185,10 +196,10 @@ maxPtRes = 0.7
 #ptRes2 = ROOT.TH1D('Pt Resolution '+app2, 'Pt_Resolution_'+app2.replace(' ','_')+axes, 50, minPtRes, maxPtRes )
 #ptRes3 = ROOT.TH1D('Pt Resolution '+app3, 'Pt_Resolution_'+app3.replace(' ','_')+axes, 50, minPtRes, maxPtRes )
 #ptRes4 = ROOT.TH1D('Pt Resolution '+app4, 'Pt_Resolution_'+app4.replace(' ','_')+axes, 50, minPtRes, maxPtRes )
-ptRes1 = ROOT.TH1D('Pt Resolution '+app1, 'Pt_Resolution_'+app1.replace(' ','_')+axes, 500, minPtRes, maxPtRes )
-ptRes2 = ROOT.TH1D('Pt Resolution '+app2, 'Pt_Resolution_'+app2.replace(' ','_')+axes, 500, minPtRes, maxPtRes )
-ptRes3 = ROOT.TH1D('Pt Resolution '+app3, 'Pt_Resolution_'+app3.replace(' ','_')+axesGen, 500, minPtRes, maxPtRes )
-ptRes4 = ROOT.TH1D('Pt Resolution '+app4, 'Pt_Resolution_'+app4.replace(' ','_')+axesGen, 500, minPtRes, maxPtRes )
+ptRes1 = ROOT.TH1D('HPS', 'Pt_Resolution_'+app1.replace(' ','_')+axes, 100, minPtRes, maxPtRes )
+ptRes2 = ROOT.TH1D('Default', 'Pt_Resolution_'+app2.replace(' ','_')+axes, 100, minPtRes, maxPtRes )
+ptRes3 = ROOT.TH1D('HPS', 'Pt_Resolution_'+app3.replace(' ','_')+axesGen, 100, minPtRes, maxPtRes )
+ptRes4 = ROOT.TH1D('Default', 'Pt_Resolution_'+app4.replace(' ','_')+axesGen, 100, minPtRes, maxPtRes )
 ptRes5 = ROOT.TH1D('HPS', 'HPS'+axesGen, 100, minPtRes, maxPtRes )
 ptRes6 = ROOT.TH1D('Default', 'Default'+axesGen, 100, minPtRes, maxPtRes )
 ptRes2DGenHPS = ROOT.TH2D( 'ptRes2DGenHPS', 'HPS Tau p_{T} Resolution vs. Gen p_{T};Gen p_{T} [GeV]'+axesHPSGen, 11,20,75,50,-.6,.6 )
@@ -208,10 +219,12 @@ h_dm_default_offline = make_DM_plot( 'Online HLT Default', 'Offline' )
 ### EFFICIENCY PLOTS ###
 #binning = array('d', [20,22.5,25,27.5,30,32.5,35,37.5,40,\
 #    42.5,45,47.5,50,60,80,100,140])
-binning = array('d', [20,30,32.5,34,35,36,37,38,40,\
-    42.5,45,50,60,80,100,140])
-#binning = array('d', [20,30,35,40,\
-#    45,50,60,80,100,140])
+
+###binning = array('d', [20,30,32.5,34,35,36,37,38,40,\
+###    42.5,45,50,60,80,100,140])
+
+binning = array('d', [20,25,30,35,40,\
+    45,50,60,80,100,150,200,500])
 
 h_def_denom = ROOT.TH1D( 'def denom', 'Default', len(binning)-1, binning)
 h_def_pass = ROOT.TH1D( 'def pass', 'def pass', len(binning)-1, binning)
@@ -225,19 +238,53 @@ h_hps_pass2 = ROOT.TH1D( 'hps pass2', 'hps pass', len(binning)-1, binning)
 
 for row in iTree :
 
-    # Require trigger fired or good online taus not present
-    if getattr( row, trigger1 ) < 0.5 and getattr( row, trigger2 ) < 0.5 : continue 
+
+    ''' BASIC TAG-AND-PROBE '''
     if row.muonPt < 20 : continue
-    if row.tauPt < 27 : continue
+    if row.tauPt < 20 : continue
     if row.HLT_IsoMu20 < 0.5 : continue
     #if row.mTrigMatch < 0.5 : continue
     if row.passingMuons != 1 : continue
     if row.nVetoMuons != 1 : continue
-    if row.SS == 1 : continue
+    if row.SS != 0 : continue
     if row.passingElectrons != 0 : continue
     if row.nBTag != 0 : continue
     if row.tMVAIsoMedium < 0.5 : continue
     if row.t1_gen_match != 5 : continue
+
+    tPt = row.tauPt
+    hpsPt = row.hpsTauPt
+    defPt = row.defaultTauPt
+    genTauPt = row.genTauPt
+    if genTauPt < 0.1 : genTauPt = 1.
+    if tPt < 0.1 : tPt = 1.
+    if hpsPt < 0.1 : hpsPt = 1.
+    if defPt < 0.1 : defPt = 1.
+
+    ''' Increase min muon pT for matching to Tau35 triggers '''
+    #if row.HLT_IsoMu24 > 0.5 and row.muonPt > 24 :
+    if row.muonPt > 25 :
+        #if row.tMVAIsoTight < 0.5 : continue
+
+        ''' Fill efficiencies '''
+        h_def_denom.Fill( genTauPt ) 
+        h_hps_denom.Fill( genTauPt )
+        h_def_denom2.Fill( tPt ) 
+        h_hps_denom2.Fill( tPt )
+        # Check passing for numerator
+        if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
+            h_def_pass.Fill( genTauPt )
+            h_def_pass2.Fill( tPt )
+        if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
+            h_hps_pass.Fill( genTauPt )
+            h_hps_pass2.Fill( tPt )
+
+
+
+
+    # Require tau trigger fired or good online taus will not be present
+    if getattr( row, trigger1 ) < 0.5 and getattr( row, trigger2 ) < 0.5 : continue 
+    if row.tauPt < 27 : continue
 
     offlineDM = row.tauDM
     hpsDM = row.hpsTauDM
@@ -251,20 +298,13 @@ for row in iTree :
     h_dm_offline_default.Fill( offlineCode, defaultCode )
     h_dm_default_offline.Fill( defaultCode, offlineCode )
 
-    ''' Increase min muon pT for matching to Tau35 triggers '''
-    if row.HLT_IsoMu24 < 0.5 : continue
-    tPt = row.tauPt
-    hpsPt = row.hpsTauPt
-    defPt = row.defaultTauPt
-    genTauPt = row.genTauPt
-
     # Only compare pT and dR if they are both matched
     if hpsPt > 0 and defPt > 0 :
-        ptRes1.Fill( (tPt - hpsPt) / tPt )
-        ptRes2.Fill( (tPt - defPt) / tPt )
         ptRes3.Fill( (genTauPt - hpsPt) / genTauPt )
         ptRes4.Fill( (genTauPt - defPt) / genTauPt )
         if genTauPt > 30 and genTauPt < 40 :
+            ptRes1.Fill( (tPt - hpsPt) / tPt )
+            ptRes2.Fill( (tPt - defPt) / tPt )
             ptRes5.Fill( (genTauPt - hpsPt) / genTauPt )
             ptRes6.Fill( (genTauPt - defPt) / genTauPt )
         ptRes2DGenHPS.Fill( genTauPt, ((genTauPt - hpsPt) / genTauPt) )
@@ -273,18 +313,6 @@ for row in iTree :
         drRes1.Fill( row.hpsTauDR )
         drRes2.Fill( row.defaultTauDR )
 
-    ''' Fill efficiencies '''
-    h_def_denom.Fill( genTauPt ) 
-    h_hps_denom.Fill( genTauPt )
-    h_def_denom2.Fill( tPt ) 
-    h_hps_denom2.Fill( tPt )
-    # Check passing for numerator
-    if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
-        h_def_pass.Fill( genTauPt )
-        h_def_pass2.Fill( tPt )
-    if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
-        h_hps_pass.Fill( genTauPt )
-        h_hps_pass2.Fill( tPt )
 
 print "offlineVsHPS"
 saveHists( h_dm_offline_hps, plotBase+'offlineVsHPS' )
@@ -317,7 +345,11 @@ plotEff( c, plotBase, 'Def vs HPS fine grain', h_denoms, h_passes )
 
 h_denoms = [h_def_denom2, h_hps_denom2]
 h_passes = [h_def_pass2, h_hps_pass2]
-plotEff( c, plotBase, 'Def vs HPS fine grain offline pT', h_denoms, h_passes )
+plotEff( c, plotBase, 'Def vs HPS: offline pT', h_denoms, h_passes )
+
+h_denoms = [h_hps_denom2, h_def_denom2]
+h_passes = [h_hps_pass2, h_def_pass2]
+plotEff( c, plotBase, 'HPS vs Def fine grain offline pT', h_denoms, h_passes )
 
 
 

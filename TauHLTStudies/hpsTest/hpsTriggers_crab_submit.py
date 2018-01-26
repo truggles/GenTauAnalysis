@@ -16,12 +16,14 @@ config.JobType.priority        = 2
 config.Data.splitting          = 'EventAwareLumiBased'
 config.Data.unitsPerJob        = 3000 # events / job when using EventAwareLumiBased
 #config.Data.totalUnits         = 10 # For small tests
+config.Data.publication        = True
+
 config.JobType.numCores        = 4
 
 config.Site.storageSite        = 'T2_US_Wisconsin'
-#config.Site.blacklist          = ['T2_BE_IIHE',] # Needed to remove this to process the VBF H125 sample & HLTPhysics
-config.Site.ignoreGlobalBlacklist = True # Needed to add this to process the VBF H125 sample & HLTPhysics
-#config.Site.whitelist          = ['T2_US_Wisconsin',] # Needed to remove this to process the VBF H125 sample & HLTPhysics
+#config.Site.blacklist          = ['T2_BE_IIHE',] # Needed to remove this to process the VBF H125 sample & HLTPhysics, & DYJets
+config.Site.ignoreGlobalBlacklist = True # Needed to add this to process the VBF H125 sample & HLTPhysics & DYJets
+#config.Site.whitelist          = ['T2_US_Wisconsin',] # Needed to remove this to process the VBF H125 sample & HLTPhysics & DYJets
 
 config.User.voGroup            = 'uscms'
 
@@ -35,12 +37,16 @@ dataMap = OrderedDict()
 #        'child' : '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/MINIAODSIM',
 #        'grandparent' : '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/GEN-SIM-RAW',
 #    }
+dataMap['DYJets'] = {
+        'child' : '/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
+        'grandparent' : '/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
+    }
 
 ### FOR RATE STUDIES ###
-dataMap['hltPhysicsV1'] = {
-        'child' : '/EphemeralHLTPhysics1/Run2017F-PromptReco-v1/MINIAOD',
-        'grandparent' : '/EphemeralHLTPhysics1/Run2017F-v1/RAW',
-    }
+#dataMap['hltPhysicsV1'] = {
+#        'child' : '/EphemeralHLTPhysics1/Run2017F-PromptReco-v1/MINIAOD',
+#        'grandparent' : '/EphemeralHLTPhysics1/Run2017F-v1/RAW',
+#    }
 #dataMap['hltPhysicsV2'] = {
 #        'child' : '/EphemeralHLTPhysics2/Run2017F-PromptReco-v1/MINIAOD',
 #        'grandparent' : '/EphemeralHLTPhysics2/Run2017F-v1/RAW',
@@ -92,22 +98,21 @@ if __name__ == '__main__':
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k in dataMap.keys() :
-        #config.JobType.psetName        = 'hps_test_cfg.py'
-        #config.JobType.psetName        = 'hps_cfg_strebler_v13_hlt.py'
-        config.JobType.psetName        = 'hps_cfg_truggles_V6_hlt.py'
-        config.General.requestName = '%s_jan21_hps_Menu_V6_rate_v3' % k
+        config.General.requestName = '%s_jan26_hps_V7_v2' % k
         config.Data.outputDatasetTag   = config.General.requestName
         if not 'hltPhysics' in k :
+            config.JobType.psetName        = 'hps_cfg_V7_MC.py'
             config.Data.inputDataset = dataMap[ k ][ 'child' ]
             config.Data.secondaryInputDataset = dataMap[ k ][ 'grandparent' ]
         if 'hltPhysics' in k :
             config.Data.inputDataset = dataMap[ k ][ 'grandparent' ]
             config.JobType.maxMemoryMB = 2500
             config.Data.splitting      = 'FileBased'
-            config.Data.unitsPerJob    = 12
-            config.JobType.psetName    = 'hps_cfg_truggles_V6_hlt_DATA.py'
+            config.Data.unitsPerJob    = 8
+            config.JobType.psetName    = 'hps_cfg_V7_DATA.py'
             config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/PromptReco/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
         print 'submitting config:'
         print config
-        submit(config)
+        #submit(config)
+
 

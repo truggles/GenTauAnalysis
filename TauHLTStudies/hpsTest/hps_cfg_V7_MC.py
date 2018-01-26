@@ -1,6 +1,6 @@
-# hltGetConfiguration /users/truggles/HPS_at_HLT/HLT_with_HPS_cmssw9014_Jan17/V6 --full --offline --data --unprescale --process TAUHLT --globaltag 92X_dataRun2_HLT_v7 --setup /dev/CMSSW_9_2_0/GRun
+# hltGetConfiguration /users/truggles/HPS_at_HLT/HLT_with_HPS_cmssw9014_Jan17/V7 --full --offline --mc --unprescale --process TAUHLT --globaltag 92X_upgrade2017_realistic_v12 --setup /dev/CMSSW_9_2_0/GRun
 
-# /users/truggles/HPS_at_HLT/HLT_with_HPS_cmssw9014_Jan17/V6 (CMSSW_9_2_14)
+# /users/truggles/HPS_at_HLT/HLT_with_HPS_cmssw9014_Jan17/V7 (CMSSW_9_2_14)
 
 import FWCore.ParameterSet.Config as cms
 
@@ -8,7 +8,7 @@ process = cms.Process( "TAUHLT" )
 process.load("setup_dev_CMSSW_9_2_0_GRun_cff")
 
 process.HLTConfigVersion = cms.PSet(
-  tableName = cms.string('/users/truggles/HPS_at_HLT/HLT_with_HPS_cmssw9014_Jan17/V6')
+  tableName = cms.string('/users/truggles/HPS_at_HLT/HLT_with_HPS_cmssw9014_Jan17/V7')
 )
 
 process.hltGetConditions = cms.EDAnalyzer( "EventSetupRecordDataGetter",
@@ -14827,7 +14827,7 @@ process.HLTSchedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLT_Is
 
 process.source = cms.Source( "PoolSource",
     fileNames = cms.untracked.vstring(
-        #'file:RelVal_Raw_GRun_DATA.root',
+        #'file:RelVal_Raw_GRun_MC.root',
     ),
     inputCommands = cms.untracked.vstring(
         'keep *'
@@ -14856,7 +14856,7 @@ process.options = cms.untracked.PSet(
 # override the GlobalTag, connection string and pfnPrefix
 if 'GlobalTag' in process.__dict__:
     from Configuration.AlCa.GlobalTag import GlobalTag as customiseGlobalTag
-    process.GlobalTag = customiseGlobalTag(process.GlobalTag, globaltag = '92X_dataRun2_HLT_v7')
+    process.GlobalTag = customiseGlobalTag(process.GlobalTag, globaltag = '92X_upgrade2017_realistic_v12')
 
 #if 'MessageLogger' in process.__dict__:
 #    process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
@@ -14885,9 +14885,9 @@ _customInfo['inputFiles']={}
 _customInfo['inputFiles'][True]  = "file:RelVal_Raw_GRun_DATA.root"
 _customInfo['inputFiles'][False] = "file:RelVal_Raw_GRun_MC.root"
 _customInfo['maxEvents' ]=  100
-_customInfo['globalTag' ]= "92X_dataRun2_HLT_v7"
-_customInfo['inputFile' ]=  ['file:RelVal_Raw_GRun_DATA.root']
-_customInfo['realData'  ]=  True
+_customInfo['globalTag' ]= "92X_upgrade2017_realistic_v12"
+_customInfo['inputFile' ]=  ['file:RelVal_Raw_GRun_MC.root']
+_customInfo['realData'  ]=  False
 from HLTrigger.Configuration.customizeHLTforALL import customizeHLTforAll
 #process = customizeHLTforAll(process,"GRun",_customInfo)
 process = customizeHLTforAll(process,"GRun")
@@ -14926,3 +14926,4 @@ process.Out = cms.OutputModule( "PoolOutputModule",
 )
 
 process.end = cms.EndPath( process.Out )
+

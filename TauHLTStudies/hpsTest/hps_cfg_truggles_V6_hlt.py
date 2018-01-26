@@ -12842,7 +12842,7 @@ process.hltHpsSinglePFTau35TrackPt1Reg = cms.EDFilter( "HLT1PFTau",
 )
 process.hltHpsPFTauMediumAbsoluteChargedIsolationDiscriminatorReg = cms.EDProducer( "PFRecoTauDiscriminationByIsolation",
     PFTauProducer = cms.InputTag( "hltHpsPFTauProducerReg" ),
-    maximumSumPtCut = cms.double( 5.5 ),
+    maximumSumPtCut = cms.double( 3.7 ),
     qualityCuts = cms.PSet( 
       vertexTrackFiltering = cms.bool( False ),
       isolationQualityCuts = cms.PSet( 

@@ -1,3 +1,6 @@
+# HLT Twiki
+https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideGlobalHLT#How_to_run_the_production_HLT_wi
+
 # HPS Study Eff Alignment:
 
 Get py cfg of entire HLT menu.  Do this from lxplus or the timing PCs.

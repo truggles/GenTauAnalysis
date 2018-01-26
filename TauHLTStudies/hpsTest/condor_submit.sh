@@ -18,10 +18,14 @@
 ### INPUT_FILES=qqH_strebler.txt # Didn't work well
 ### DATE=20180119v2_qqH_reqMed
 ### INPUT_FILES=qqH125_jan18_hps_Menu_V6.txt
+### DATE=20180121v2_hltPhysicsAll
+### INPUT_FILES=jan21_hltPhysicsAll.txt
+### DATE=20180123v2_hltPhysicsAll_crgIso3p7
+### INPUT_FILES=jan22_hltPhysicsAll_crgIso3p7.txt
 #########
 
-DATE=20180119v2_qqH_reqMed
-INPUT_FILES=qqH125_jan18_hps_Menu_V6.txt
+DATE=20180123v1_qqH_crgIso3p7
+INPUT_FILES=qqH125_jan22_hps_Menu_V6_crgIso3p7.txt
 
 #farmoutAnalysisJobs \
 #    --output-dir=. \
@@ -31,14 +35,26 @@ INPUT_FILES=qqH125_jan18_hps_Menu_V6.txt
 #    hps_condor_${DATE} $CMSSW_BASE condor_hps_cfg.py
 
 
-DATE=20180121v1_hltPhysics1
-INPUT_FILES=jan21_hltPhysics1.txt
+DATE=20180123v1_hltPhysicsAll
+INPUT_FILES=jan22_hltPhysicsAll_v1.txt
+
+#farmoutAnalysisJobs \
+#    --output-dir=. \
+#    --input-files-per-job=10 \
+#    --input-file-list=condorFileLists/${INPUT_FILES} \
+#    --site-requirements='OpSysAndVer == "SL6"' \
+#    --input-basenames-not-unique \
+#    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA_cfg.py
+#
+DATE=20180126v1_hltPhysicsAll_crgIso3p7
+INPUT_FILES=jan25_hltPhysicsAll_crgIso3p7.txt
 
 farmoutAnalysisJobs \
     --output-dir=. \
-    --input-files-per-job=15 \
+    --input-files-per-job=7 \
     --input-file-list=condorFileLists/${INPUT_FILES} \
     --site-requirements='OpSysAndVer == "SL6"' \
+    --input-basenames-not-unique \
     hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA_cfg.py
 
 

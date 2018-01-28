@@ -13,7 +13,7 @@ doLog = True
 doNvtxComb = True
 
 do2D = False
-do2D = True
+#do2D = True
 
 if do2D :
     doLog = False
@@ -201,7 +201,7 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
     legNames = []
     cnt = 0
     mg = ROOT.TMultiGraph()
-    mg.SetTitle( trigger )
+    mg.SetTitle( hale_triggers[trigger] )
     xMax = 0.
     fits = []
     for i, division in enumerate(divisions) :
@@ -261,7 +261,8 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
         cnt += 1
     mg.Draw('ap')
     #mg.SetMaximum( 1.3 )
-    mg.SetMaximum( 1.05 )
+    #mg.SetMaximum( 1.05 )
+    mg.SetMaximum( 1.15 )
     mg.SetMinimum( 0. )
     if ' - nvtx' in matchList[0] :
         mg.GetXaxis().SetTitle('Num. Reconstructed Vertixes')
@@ -292,7 +293,7 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
 
 for channel in ['mt',] :
 
-    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/jan26_halesFiles/'
+    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/jan28_halesFiles/'
     if not os.path.exists( plotBase ) : os.makedirs( plotBase )
 
     inDir = '/afs/cern.ch/user/h/hsert/public/94XSamples/'
@@ -327,12 +328,30 @@ for channel in ['mt',] :
 
     Divisions = OrderedDict()
 
-    Divisions['All 2017 Data'] = 'RunNumber > 0 && RunNumber <= 306126'
-    Divisions['DYJets'] = 'RunNumber > 0'
+    Divisions['All 2017 Data'] = '(RunNumber > 0)'
+    #Divisions['All 2017 Data phi>2.8 & eta>1.5'] = '(tauPhi > 2.8 && tauEta > 1.5)'
+    #Divisions['All 2017 Data phi>0 & eta>1.5'] = '(tauPhi > 0 && tauEta > 1.5)'
+    #Divisions['All 2017 Data phi>2.8 & eta>0 & eta<1.5'] = '(tauPhi > 2.8 && tauEta > 0 && tauEta < 1.5)'
+    #Divisions['All 2017 Data Not Dead'] = '(tauPhi < 2.8 || tauEta < 1.5)'
+    Divisions['DYJets'] = '(RunNumber > 0)'
+    #Divisions['DYJets phi>2.8 & eta>1.5'] = '(tauPhi > 2.8 && tauEta > 1.5)'
+    #Divisions['DYJets phi>0 & eta>1.5'] = '(tauPhi > 0 && tauEta > 1.5)'
+    #Divisions['DYJets phi>2.8 & eta>0 & eta<1.5'] = '(tauPhi > 2.8 && tauEta > 0 && tauEta < 1.5)'
+    #Divisions['DYJets Not Dead'] = '(tauPhi < 2.8 || tauEta < 1.5)'
+    #Divisions['DYJets'] = '(RunNumber > 0)'
 
     all2017 = ['All 2017 Data','DYJets']
+    all2017LepDead = ['All 2017 Data','All 2017 Data phi>2.8 & eta>1.5',
+        'DYJets','DYJets phi>2.8 & eta>1.5']
+    all2017DiTauDead = ['All 2017 Data','All 2017 Data phi>0 & eta>1.5',
+        'DYJets','DYJets phi>0 & eta>1.5']
+    all2017DiTauDeadBarrel = ['All 2017 Data','All 2017 Data phi>2.8 & eta>0 & eta<1.5',
+        'DYJets','DYJets phi>2.8 & eta>0 & eta<1.5']
 
     if 'All 2017 Data' not in Divisions.keys() : all2017 = []
+    if 'All 2017 Data phi>2.8 & eta>1.5' not in Divisions.keys() : all2017LepDead = []
+    if 'All 2017 Data phi>0 & eta>1.5' not in Divisions.keys() : all2017DiTauDead = []
+    if 'All 2017 Data phi>2.8 & eta>0 & eta<1.5' not in Divisions.keys() : all2017DiTauDeadBarrel = []
 
 
     saveMap = {}
@@ -346,7 +365,8 @@ for channel in ['mt',] :
             effPlots[division] = {}
             effPlots2D[division] = {}
 
-            baselineCut = 'bkgSubANDpuW'
+            baselineCut = Divisions[ division ] 
+            #baselineCut = 'bkgSubANDpuW'
 
 
             cuts = {
@@ -360,8 +380,8 @@ for channel in ['mt',] :
 
             hists = {}
             for name, cut in cuts.iteritems() :
-                print name, cut
-                xCut = '('+cut+')'
+                xCut = 'bkgSubANDpuW * ('+cut+')'
+                print name, xCut
                 if do2D :
                     if 'etau' in trigger : xCut += '*(tauPt > 35)'
                     if 'mutau' in trigger : xCut += '*(tauPt > 32)'
@@ -414,5 +434,21 @@ for channel in ['mt',] :
             effPlots2D['All 2017 Data'].Draw('COLZ TEXT')
             c.SaveAs(plotBase+trigger+'_SF_2D.png')
             c.SaveAs(plotBase+trigger+'_SF_2D.pdf')
+            
+        # Do all data - check dead lep_tau region
+        if all2017LepDead != [] and not do2D :
+            print "All 2017 Data"
+            c.SetName(trigger+'_combined_lepDead')
+            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, all2017LepDead, '' )
+        # Do all data - check dead di-tau region
+        if all2017DiTauDead != [] and not do2D :
+            print "All 2017 Data"
+            c.SetName(trigger+'_combined_tauDead')
+            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, all2017DiTauDead, '' )
+        # Do all data - check dead di-tau region Barrel
+        if all2017DiTauDeadBarrel != [] and not do2D :
+            print "All 2017 Data"
+            c.SetName(trigger+'_combined_tauDeadBarrel')
+            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, all2017DiTauDeadBarrel, '' )
             
 

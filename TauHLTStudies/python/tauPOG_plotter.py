@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
+from collections import OrderedDict
 
-hale_triggers = [
-    'hasHLTetauPath_13',
-    'hasHLTmutauPath_13',
-    'hasHLTditauPath_11or20or21',
-    'hasHLTditauPath_9or10or11',
-]
+hale_triggers = OrderedDict()
+hale_triggers[ 'hasHLTetauPath_13' ] = 'Electron Tau Paths'
+hale_triggers[ 'hasHLTmutauPath_13' ] = 'Muon Tau Paths'
+hale_triggers[ 'hasHLTditauPath_11or20or21' ] = 'di-Tau Paths'
+hale_triggers[ 'hasHLTditauPath_9or10or11' ] = 'di-Tau Paths'
 
 doLog = True
 #doLog = False
@@ -22,7 +22,6 @@ import ROOT
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 from array import array
-from collections import OrderedDict
 from math import sqrt
 import os
 
@@ -58,7 +57,14 @@ def getBinning( name, division ) :
 
 
 def get2DHist( trees, var, cut, name, division, trigger ) :
-    h = ROOT.TH2F( name, name+trigger, 6, -2.1, 2.1, 18, -3.2, 3.2 )
+    xBinning = array('d', [ -2.5, -2.1, -1.5, 0, 1.5, 2.1, 2.5] )
+    #xBinning = array('d', [ -2.1, -1.5, 0, 1.5, 2.1] )
+    yBinning = array('d', [] )
+    for y in range( -32, 33, 4 ) :
+        yBinning.append( y*.1 )
+    print "ybinning:"
+    #h = ROOT.TH2F( name, name+trigger, 6, -2.1, 2.1, 18, -3.2, 3.2 )
+    h = ROOT.TH2F( name, name+trigger, len(xBinning)-1, xBinning, len(yBinning)-1, yBinning )
     doCut = ''
     doCut += cut
 
@@ -69,8 +75,9 @@ def get2DHist( trees, var, cut, name, division, trigger ) :
         trees['singleMu'].Draw( var+' >> '+name, doCut )
 
     print name, h.Integral() #, binning
-    h.GetXaxis().SetTitle('Tau #eta')
-    h.GetYaxis().SetTitle('Tau #phi')
+    h.GetXaxis().SetTitle('Offline Tau #eta')
+    h.GetYaxis().SetTitle('Offline Tau #phi')
+    h.GetZaxis().SetTitle('L1 + HLT Efficiency')
     h.SetDirectory( 0 )
     return h
 
@@ -289,7 +296,7 @@ for channel in ['mt',] :
     if not os.path.exists( plotBase ) : os.makedirs( plotBase )
 
     inDir = '/afs/cern.ch/user/h/hsert/public/94XSamples/'
-    triggers = hale_triggers
+    triggers = hale_triggers.keys()
     dyName = 'NTuple_DYJets_RunIIFall17MiniAOD-RECOSIMstep_94X_mc2017_realistic_v10-v1_14_01_2018_PU_forFit.root'
     dataName = 'NTuple_Data2017BCDEF_17Nov2017-v1_14_01_2018_forFit.root'
     tnpTree = 'TagAndProbe'
@@ -307,8 +314,12 @@ for channel in ['mt',] :
     c = ROOT.TCanvas( 'c1', 'c1', 800, 700 ) 
     p = ROOT.TPad( 'p1', 'p1', 0, 0, 1, 1 )
     p.Draw()
-    ROOT.gPad.SetLeftMargin( ROOT.gPad.GetLeftMargin() * 1.5 )
-    ROOT.gPad.SetRightMargin( ROOT.gPad.GetRightMargin() * 1.5 )
+
+
+    #ROOT.gPad.SetLeftMargin( ROOT.gPad.GetLeftMargin() * 1.5 )
+    #ROOT.gPad.SetRightMargin( ROOT.gPad.GetRightMargin() * 1.5 )
+    ROOT.gPad.SetLeftMargin( .15 )
+    ROOT.gPad.SetRightMargin( .15 )
     p.Draw()
     p.cd()
     
@@ -328,10 +339,12 @@ for channel in ['mt',] :
     for trigger in triggers :
         print "\n\nHLT Trigger: ",trigger
         effPlots = {}
+        effPlots2D = {}
         for division in Divisions :
             binning = getBinning( trigger, division )
             print division
             effPlots[division] = {}
+            effPlots2D[division] = {}
 
             baselineCut = 'bkgSubANDpuW'
 
@@ -361,11 +374,14 @@ for channel in ['mt',] :
             ### If doing 2D, just divide them, plot and return
             if do2D :
                 h = divideTH2( hists['Pass'], hists['All'] )
-                h.SetTitle(trigger)
+                h.SetTitle('%s - %s' % (hale_triggers[trigger], division))
+                ROOT.gPad.SetLeftMargin( .15 )
+                ROOT.gPad.SetRightMargin( .15 )
                 h.Draw('COLZ TEXT')
                 c.SaveAs(plotBase+trigger+'_'+division.replace(' ','_')+'_2D.png')
                 c.SaveAs(plotBase+trigger+'_'+division.replace(' ','_')+'_2D.pdf')
                 c.Clear()
+                effPlots2D[division] = h
                 continue
                 
 
@@ -389,4 +405,14 @@ for channel in ['mt',] :
             c.SetName(trigger+'_combined')
             makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, all2017, '' )
 
+        if all2017 != [] and do2D :
+            c.Clear()
+            effPlots2D['All 2017 Data'].Divide( effPlots2D['DYJets'] )
+            effPlots2D['All 2017 Data'].SetTitle( '%s data/MC SF' % hale_triggers[trigger] )
+            ROOT.gPad.SetLeftMargin( .15 )
+            ROOT.gPad.SetRightMargin( .15 )
+            effPlots2D['All 2017 Data'].Draw('COLZ TEXT')
+            c.SaveAs(plotBase+trigger+'_SF_2D.png')
+            c.SaveAs(plotBase+trigger+'_SF_2D.pdf')
+            
 

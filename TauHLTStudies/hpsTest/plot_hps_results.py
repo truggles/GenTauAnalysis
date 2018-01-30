@@ -76,13 +76,16 @@ def plotEff( c, plotBase, name, h_denoms, h_passes ) :
     mg.GetXaxis().SetTitle('Gen #tau p_{T} (GeV)')
     if 'offline' in name :
         mg.GetXaxis().SetTitle('Offline #tau p_{T} (GeV)')
-    mg.GetYaxis().SetTitle('HLT Efficiency')
+    mg.GetYaxis().SetTitle('L1 + HLT Efficiency')
     mg.SetMaximum( 1.3 )
     mg.SetMinimum( 0. )
 
-    ROOT.gPad.SetLogx()
-    mg.GetXaxis().SetMoreLogLabels()
-    mg.GetXaxis().SetLimits( 20., 500 )
+    if isData :
+        mg.GetXaxis().SetLimits( 20., 100 )
+    else :
+        ROOT.gPad.SetLogx()
+        mg.GetXaxis().SetMoreLogLabels()
+        mg.GetXaxis().SetLimits( 20., 500 )
 
 
     leg = buildLegend( legItems, legNames )
@@ -159,8 +162,16 @@ def saveHists( th2, name ) :
 #name = 'ggH125_jan17_Menu_V6'
 #name = 'qqH_strebler'
 #name = 'qqH_20180118v2_TS_Def'
-name = 'qqH125_jan19_Menu_V6'
+#name = 'qqH125_jan19_Menu_V6'
 #name = 'qqH125_jan23_chrgIso3p7'
+
+#name = 'ggH_V7'
+#name = 'qqH_V7'
+#name = 'dyJets_V7'
+name = 'singleMuons_V7_jan30'
+
+isData = False
+isData = True
 
 #iFile = ROOT.TFile('tmp2.root','r')
 #iFile = ROOT.TFile('20180114v2_default.root','r')
@@ -209,6 +220,8 @@ drAxes = ';#Delta R( offline - online);A.U.'
 drRes1 = ROOT.TH1D('dR Resolution '+app1, 'dR_Resolution_'+app1.replace(' ','_')+drAxes, 50, 0, 0.05)
 drRes2 = ROOT.TH1D('dR Resolution '+app2, 'dR_Resolution_'+app2.replace(' ','_')+drAxes, 50, 0, 0.05)
 
+# nvtx
+nvtx = ROOT.TH1D('nvtx', 'nvtx;nvtx;Events', 40, 0, 80 )
 
 ### 2D PLOTS ###
 h_dm_offline_hps = make_DM_plot( 'Offline', 'Online HPS' )
@@ -223,8 +236,13 @@ h_dm_default_offline = make_DM_plot( 'Online HLT Default', 'Offline' )
 ###binning = array('d', [20,30,32.5,34,35,36,37,38,40,\
 ###    42.5,45,50,60,80,100,140])
 
-binning = array('d', [20,25,30,35,40,\
-    45,50,60,80,100,150,200,500])
+if isData :
+    binning = array('d', [20,25,30,35,40,\
+        45,50,60,80,100])
+else :
+    binning = array('d', [20,25,30,35,40,\
+        45,50,60,80,100,150,200,500])
+
 
 h_def_denom = ROOT.TH1D( 'def denom', 'Default', len(binning)-1, binning)
 h_def_pass = ROOT.TH1D( 'def pass', 'def pass', len(binning)-1, binning)
@@ -236,21 +254,30 @@ h_def_pass2 = ROOT.TH1D( 'def pass2', 'def pass', len(binning)-1, binning)
 h_hps_denom2 = ROOT.TH1D( 'hps denom2', 'HPS Tau', len(binning)-1, binning)
 h_hps_pass2 = ROOT.TH1D( 'hps pass2', 'hps pass', len(binning)-1, binning)
 
+
 for row in iTree :
 
+    nvtx.Fill( row.nvtx )
 
     ''' BASIC TAG-AND-PROBE '''
     if row.muonPt < 20 : continue
     if row.tauPt < 20 : continue
-    if row.HLT_IsoMu20 < 0.5 : continue
+
+    # Tag
+    if isData :
+        if row.HLT_IsoMu27 < 0.5 : continue
+        if row.muonPt < 24 : continue
+    else :
+        if row.HLT_IsoMu20 < 0.5 : continue
+        if row.t1_gen_match != 5 : continue
+        if row.SS != 0 : continue
+
     #if row.mTrigMatch < 0.5 : continue
     if row.passingMuons != 1 : continue
     if row.nVetoMuons != 1 : continue
-    if row.SS != 0 : continue
     if row.passingElectrons != 0 : continue
     if row.nBTag != 0 : continue
     if row.tMVAIsoMedium < 0.5 : continue
-    if row.t1_gen_match != 5 : continue
 
     tPt = row.tauPt
     hpsPt = row.hpsTauPt
@@ -265,19 +292,20 @@ for row in iTree :
     #if row.HLT_IsoMu24 > 0.5 and row.muonPt > 24 :
     if row.muonPt > 25 :
         #if row.tMVAIsoTight < 0.5 : continue
+        weight = 1. if not row.SS else -1.
 
         ''' Fill efficiencies '''
-        h_def_denom.Fill( genTauPt ) 
-        h_hps_denom.Fill( genTauPt )
-        h_def_denom2.Fill( tPt ) 
-        h_hps_denom2.Fill( tPt )
+        h_def_denom.Fill( genTauPt, weight ) 
+        h_hps_denom.Fill( genTauPt, weight )
+        h_def_denom2.Fill( tPt, weight ) 
+        h_hps_denom2.Fill( tPt, weight )
         # Check passing for numerator
         if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
-            h_def_pass.Fill( genTauPt )
-            h_def_pass2.Fill( tPt )
+            h_def_pass.Fill( genTauPt, weight )
+            h_def_pass2.Fill( tPt, weight )
         if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
-            h_hps_pass.Fill( genTauPt )
-            h_hps_pass2.Fill( tPt )
+            h_hps_pass.Fill( genTauPt, weight )
+            h_hps_pass2.Fill( tPt, weight )
 
 
 
@@ -341,16 +369,16 @@ c.Clear()
 
 h_denoms = [h_def_denom, h_hps_denom]
 h_passes = [h_def_pass, h_hps_pass]
-plotEff( c, plotBase, 'Def vs HPS fine grain', h_denoms, h_passes )
+plotEff( c, plotBase, 'Def vs HPS: Gen pT', h_denoms, h_passes )
 
 h_denoms = [h_def_denom2, h_hps_denom2]
 h_passes = [h_def_pass2, h_hps_pass2]
 plotEff( c, plotBase, 'Def vs HPS: offline pT', h_denoms, h_passes )
 
-h_denoms = [h_hps_denom2, h_def_denom2]
-h_passes = [h_hps_pass2, h_def_pass2]
-plotEff( c, plotBase, 'HPS vs Def fine grain offline pT', h_denoms, h_passes )
-
+c.Clear()
+nvtx.Draw()
+ROOT.gPad.SetLogx( 0 )
+c.SaveAs( plotBase+'nvtx.png' )
 
 
 

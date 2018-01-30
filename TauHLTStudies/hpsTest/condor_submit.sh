@@ -24,9 +24,30 @@
 ### INPUT_FILES=jan22_hltPhysicsAll_crgIso3p7.txt
 #########
 
-DATE=20180123v1_qqH_crgIso3p7
-INPUT_FILES=qqH125_jan22_hps_Menu_V6_crgIso3p7.txt
+#DATE=20180129v1_dyj_V7
+#INPUT_FILES=dyJets_V7.txt
+#
+#farmoutAnalysisJobs \
+#    --resubmit-failed-jobs \
+#    --output-dir=. \
+#    --input-files-per-job=30 \
+#    --input-file-list=condorFileLists/${INPUT_FILES} \
+#    --site-requirements='OpSysAndVer == "SL6"' \
+#    hps_condor_${DATE} $CMSSW_BASE condor_hps_cfg.py
 
+#DATE=20180128v1_ggH_V7
+#INPUT_FILES=ggH125_jan28_V7.txt
+#
+#farmoutAnalysisJobs \
+#    --output-dir=. \
+#    --input-files-per-job=15 \
+#    --input-file-list=condorFileLists/${INPUT_FILES} \
+#    --site-requirements='OpSysAndVer == "SL6"' \
+#    hps_condor_${DATE} $CMSSW_BASE condor_hps_cfg.py
+#
+#DATE=20180128v1_qqH_V7
+#INPUT_FILES=qqH125_jan28_V7.txt
+#
 #farmoutAnalysisJobs \
 #    --output-dir=. \
 #    --input-files-per-job=15 \
@@ -35,9 +56,9 @@ INPUT_FILES=qqH125_jan22_hps_Menu_V6_crgIso3p7.txt
 #    hps_condor_${DATE} $CMSSW_BASE condor_hps_cfg.py
 
 
-DATE=20180123v1_hltPhysicsAll
-INPUT_FILES=jan22_hltPhysicsAll_v1.txt
-
+#DATE=20180128v1_hltPhysicsAll_V7
+#INPUT_FILES=jan28_V7_rate.txt
+#
 #farmoutAnalysisJobs \
 #    --output-dir=. \
 #    --input-files-per-job=10 \
@@ -45,18 +66,30 @@ INPUT_FILES=jan22_hltPhysicsAll_v1.txt
 #    --site-requirements='OpSysAndVer == "SL6"' \
 #    --input-basenames-not-unique \
 #    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA_cfg.py
-#
-DATE=20180126v1_hltPhysicsAll_crgIso3p7
-INPUT_FILES=jan25_hltPhysicsAll_crgIso3p7.txt
+
+
+DATE=20180130v2_Tau_V7
+INPUT_FILES=tau_jan30_V7_v9.txt
 
 farmoutAnalysisJobs \
     --output-dir=. \
-    --input-files-per-job=7 \
+    --input-files-per-job=5 \
     --input-file-list=condorFileLists/${INPUT_FILES} \
     --site-requirements='OpSysAndVer == "SL6"' \
     --input-basenames-not-unique \
-    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA_cfg.py
+    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA-RECO_cfg.py
 
+
+DATE=20180130v2_SingleMuon_V7
+INPUT_FILES=singleMuon_jan30_V7_v9.txt
+
+farmoutAnalysisJobs \
+    --output-dir=. \
+    --input-files-per-job=5 \
+    --input-file-list=condorFileLists/${INPUT_FILES} \
+    --site-requirements='OpSysAndVer == "SL6"' \
+    --input-basenames-not-unique \
+    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA-RECO_cfg.py
 
 
 

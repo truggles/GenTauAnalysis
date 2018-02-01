@@ -292,7 +292,7 @@ for row in iTree :
     #if row.HLT_IsoMu24 > 0.5 and row.muonPt > 24 :
     if row.muonPt > 25 :
         #if row.tMVAIsoTight < 0.5 : continue
-        weight = 1. if not row.SS else -1.
+        weight = 1. if row.SS == 0 else -1.
 
         ''' Fill efficiencies '''
         h_def_denom.Fill( genTauPt, weight ) 

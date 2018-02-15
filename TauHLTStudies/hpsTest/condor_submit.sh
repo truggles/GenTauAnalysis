@@ -46,20 +46,20 @@
 #    --input-file-list=condorFileLists/${INPUT_FILES} \
 #    --site-requirements='OpSysAndVer == "SL6"' \
 #    hps_condor_${DATE} $CMSSW_BASE condor_hps_cfg.py
-#
-#DATE=20180128v1_qqH_V7
-#INPUT_FILES=qqH125_jan28_V7.txt
-#
-#farmoutAnalysisJobs \
-#    --output-dir=. \
-#    --input-files-per-job=15 \
-#    --input-file-list=condorFileLists/${INPUT_FILES} \
-#    --site-requirements='OpSysAndVer == "SL6"' \
-#    hps_condor_${DATE} $CMSSW_BASE condor_hps_cfg.py
+
+#XXX DATE=20180213_feb13_v3
+#XXX INPUT_FILES=efficiency_qqH_feb13_v2.txt
+#XXX 
+#XXX farmoutAnalysisJobs \
+#XXX     --output-dir=. \
+#XXX     --input-files-per-job=15 \
+#XXX     --input-file-list=condorFileLists/${INPUT_FILES} \
+#XXX     --site-requirements='OpSysAndVer == "SL6"' \
+#XXX     hps_condor_${DATE} $CMSSW_BASE condor_hps_cfg.py
 
 
-DATE=20180131v1_hltPhysicsAll_strebler_10x
-INPUT_FILES=hltPhysics_strebler_10x.txt
+DATE=20180214_rate_jan13_v9_v1
+INPUT_FILES=rate_jan13_v9.txt
 
 farmoutAnalysisJobs \
     --output-dir=. \

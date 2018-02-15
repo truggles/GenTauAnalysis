@@ -31,10 +31,10 @@ config.User.voGroup            = 'uscms'
 
 dataMap = OrderedDict()
 ### FOR EFFICIENCY & OTHER MC STUDIES ###
-dataMap['qqH125'] = {
-        'child' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
-        'grandparent' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
-    }
+#dataMap['qqH125'] = {
+#        'child' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
+#        'grandparent' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
+#    }
 #dataMap['ggH125'] = {
 #        'child' : '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/MINIAODSIM',
 #        'grandparent' : '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/GEN-SIM-RAW',
@@ -57,18 +57,18 @@ dataMap['hltPhysicsV1'] = {
         'child' : '/EphemeralHLTPhysics1/Run2017F-PromptReco-v1/MINIAOD',
         'grandparent' : '/EphemeralHLTPhysics1/Run2017F-v1/RAW',
     }
-#dataMap['hltPhysicsV2'] = {
-#        'child' : '/EphemeralHLTPhysics2/Run2017F-PromptReco-v1/MINIAOD',
-#        'grandparent' : '/EphemeralHLTPhysics2/Run2017F-v1/RAW',
-#    }
-#dataMap['hltPhysicsV3'] = {
-#        'child' : '/EphemeralHLTPhysics3/Run2017F-PromptReco-v1/MINIAOD',
-#        'grandparent' : '/EphemeralHLTPhysics3/Run2017F-v1/RAW',
-#    }
-#dataMap['hltPhysicsV4'] = {
-#        'child' : '/EphemeralHLTPhysics4/Run2017F-PromptReco-v1/MINIAOD',
-#        'grandparent' : '/EphemeralHLTPhysics4/Run2017F-v1/RAW',
-#    }
+dataMap['hltPhysicsV2'] = {
+        'child' : '/EphemeralHLTPhysics2/Run2017F-PromptReco-v1/MINIAOD',
+        'grandparent' : '/EphemeralHLTPhysics2/Run2017F-v1/RAW',
+    }
+dataMap['hltPhysicsV3'] = {
+        'child' : '/EphemeralHLTPhysics3/Run2017F-PromptReco-v1/MINIAOD',
+        'grandparent' : '/EphemeralHLTPhysics3/Run2017F-v1/RAW',
+    }
+dataMap['hltPhysicsV4'] = {
+        'child' : '/EphemeralHLTPhysics4/Run2017F-PromptReco-v1/MINIAOD',
+        'grandparent' : '/EphemeralHLTPhysics4/Run2017F-v1/RAW',
+    }
 #dataMap['hltPhysicsV5'] = {
 #        'child' : '/EphemeralHLTPhysics5/Run2017F-PromptReco-v1/MINIAOD',
 #        'grandparent' : '/EphemeralHLTPhysics5/Run2017F-v1/RAW',
@@ -123,21 +123,21 @@ if __name__ == '__main__':
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k in dataMap.keys() :
-        config.General.requestName = '%s_hps_10x_feb13_v1' % k
+        config.General.requestName = '%s_hps_10x_feb13_v10' % k
         config.Data.outputDatasetTag   = config.General.requestName
         if not 'hltPhysics' in k and not 'Data' in k :
             config.JobType.psetName        = 'hps_hlt_10x_MC.py'
             config.Data.inputDataset = dataMap[ k ][ 'child' ]
             config.Data.secondaryInputDataset = dataMap[ k ][ 'grandparent' ]
-            config.Data.totalUnits         = 30000 # 1 mil was far too low for efficiency
+            #config.Data.totalUnits         = 30000 # for tests
         elif 'hltPhysics' in k :
             config.Data.inputDataset = dataMap[ k ][ 'grandparent' ]
             config.JobType.maxMemoryMB = 2500
             config.Data.splitting      = 'FileBased'
-            config.Data.unitsPerJob    = 8
+            config.Data.unitsPerJob    = 15
             config.JobType.psetName    = 'hps_hlt_10x_DATA.py'
             config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/PromptReco/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
-            config.Data.totalUnits         = 80 # 1 mil was far too low for efficiency
+            config.Data.totalUnits         = 45 # for small tests
         elif 'MuTauSkim' in k :
             config.Data.splitting          = 'FileBased'
             config.Data.unitsPerJob        = 1 # files when FileBased

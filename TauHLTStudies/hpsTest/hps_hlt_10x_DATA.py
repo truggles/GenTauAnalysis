@@ -1,4 +1,4 @@
-# hltGetConfiguration /users/truggles/HPS_at_HLT/HPS_10_0_0_HLT1/V1 --globaltag 100X_dataRun2_relval_v2 --input root://cms-xrd-global.cern.ch//store/data/Run2017F/HLTPhysics1/RAW/v1/000/306/091/00000/0012FF9E-ECBF-E711-8CE9-02163E019BE6.root --process TAUHLT --full --offline --unprescale --max-events 10 --output none --setup /dev/CMSSW_10_0_0/GRun
+# hltGetConfiguration /users/truggles/HPS_at_HLT/HPS_10_0_0_HLT1/V1 --globaltag 100X_dataRun2_relval_ForTSG_v1 --input root://cms-xrd-global.cern.ch//store/data/Run2017F/HLTPhysics1/RAW/v1/000/306/091/00000/0012FF9E-ECBF-E711-8CE9-02163E019BE6.root --process TAUHLT --full --offline --unprescale --max-events 10 --output none --setup /dev/CMSSW_10_0_0/GRun
 
 # /users/truggles/HPS_at_HLT/HPS_10_0_0_HLT1/V1 (CMSSW_10_0_0_HLT1)
 
@@ -23129,7 +23129,7 @@ process.options = cms.untracked.PSet(
 # override the GlobalTag, connection string and pfnPrefix
 if 'GlobalTag' in process.__dict__:
     from Configuration.AlCa.GlobalTag import GlobalTag as customiseGlobalTag
-    process.GlobalTag = customiseGlobalTag(process.GlobalTag, globaltag = '100X_dataRun2_relval_v2')
+    process.GlobalTag = customiseGlobalTag(process.GlobalTag, globaltag = '100X_dataRun2_relval_ForTSG_v1')
 
 #if 'MessageLogger' in process.__dict__:
 #    process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
@@ -23158,7 +23158,7 @@ _customInfo['inputFiles']={}
 _customInfo['inputFiles'][True]  = "file:RelVal_Raw_GRun_DATA.root"
 _customInfo['inputFiles'][False] = "file:RelVal_Raw_GRun_MC.root"
 _customInfo['maxEvents' ]=  10
-_customInfo['globalTag' ]= "100X_dataRun2_relval_v2"
+_customInfo['globalTag' ]= "100X_dataRun2_relval_ForTSG_v1"
 _customInfo['inputFile' ]=  ['root://cms-xrd-global.cern.ch//store/data/Run2017F/HLTPhysics1/RAW/v1/000/306/091/00000/0012FF9E-ECBF-E711-8CE9-02163E019BE6.root']
 _customInfo['realData'  ]=  True
 from HLTrigger.Configuration.customizeHLTforALL import customizeHLTforAll
@@ -23193,7 +23193,7 @@ process.Out = cms.OutputModule( "PoolOutputModule",
                                            "keep *_offlineBeamSpot_*_*",
                                            "keep *_hltHpsPFTauProducerSingleTau_*_*",
                                            "keep *_hltHpsSelectedPFTausTrackFinding_*_*",
-                                           "keep *_*_*_TAUHLT",
+                                           #"keep *_*_*_TAUHLT",
                                            #"keep *__*_*",
     )
 )

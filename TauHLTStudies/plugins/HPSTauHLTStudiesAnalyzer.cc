@@ -157,7 +157,6 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
       std::map<std::string, int*> triggers;
       std::map<std::string, int>::iterator triggerIterator;
       int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1;
-      int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM;
       int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1;
       //int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1;
       //int HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1;
@@ -174,6 +173,8 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
       //int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1;
       int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1;
       int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1;
+      int HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1;
+      int HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1;
       //int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1;
       //int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1;
       //int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr;
@@ -194,15 +195,18 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
       //int HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
       //int HLT_DoubleLooseChargedIsoPFTau40_Trk1_eta2p1_Reg;
       //int HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg;
+      int HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_Reg;
+      int HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_Reg;
       int HLT_DoubleMediumChargedIsoPFTau35_Trk1_eta2p1_Reg;
       int HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg;
       int HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
       int HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg;
-      //int HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg;
+      int HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg;
+      int HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_eta2p1_Reg;
       int HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg;
       int HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg;
-      //int HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg;
-      //int HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
+      int HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg;
+      int HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg;
       int HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg;
       int HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg;
 };
@@ -252,7 +256,6 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    edm::Service<TFileService> fs;
 
    triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_v"]                   = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1;
-   triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM_v"]                   = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM;
    triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1_v"]                = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1;
    //triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1_v"]           = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1;
    //triggers["HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1_v"]                  = &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1;
@@ -269,6 +272,8 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    //triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1_v"] = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1;
    triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v"]         = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1;
    triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1_v"]         = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1;
+   triggers["HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v"]         = &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1;
+   triggers["HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1_v"]         = &HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1;
    //triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1_v"] = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1;
    //triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1_v"]         = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1;
    //triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_v"]                = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr;
@@ -289,14 +294,18 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    //triggers["HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v"]                   = &HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
    //triggers["HLT_DoubleLooseChargedIsoPFTau40_Trk1_eta2p1_Reg_v"]                           = &HLT_DoubleLooseChargedIsoPFTau40_Trk1_eta2p1_Reg;
    //triggers["HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v"]                  = &HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg;
+   triggers["HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_Reg_v"]                          = &HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_Reg;
+   triggers["HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_Reg_v"]                          = &HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_Reg;
    triggers["HLT_DoubleMediumChargedIsoPFTau35_Trk1_eta2p1_Reg_v"]                          = &HLT_DoubleMediumChargedIsoPFTau35_Trk1_eta2p1_Reg;
    triggers["HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v"]                          = &HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg;
    triggers["HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v"]                  = &HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
    triggers["HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg_v"]                  = &HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg;
-   //triggers["HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg_v"]                          = &HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg;
+   triggers["HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg_v"]                          = &HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg;
+   triggers["HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_eta2p1_Reg_v"]                          = &HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_eta2p1_Reg;
    triggers["HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v"]                   = &HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg;
    triggers["HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_v"]                   = &HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg;
-   //triggers["HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg_v"]                           = &HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg;
+   triggers["HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg_v"]                           = &HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg;
+   triggers["HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v"]                           = &HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg;
    //triggers["HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v"]                   = &HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
    triggers["HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v"]                           = &HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg;
    triggers["HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg_v"]                           = &HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg;
@@ -405,7 +414,6 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("failNdof",&failNdof,"failNdof/F");
 
    tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1",                   &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1,                  "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1/I");
-   tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM",                   &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM,                  "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM/I");
    tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1",                   &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1,                  "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1/I");
    //tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1",           &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1,          "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1/I");
    //tree->Branch("HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1",                  &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1,                 "HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1/I");
@@ -421,7 +429,9 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    //tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1",                &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1,               "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1/I");
    //tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1", &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1,"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1/I");
    tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",         &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1,        "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1/I");
-   tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1",         &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1,        "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1/I");
+   tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1",      &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1,        "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1/I");
+   tree->Branch("HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",          &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1,        "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1/I");
+   tree->Branch("HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1",       &HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1,        "HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1/I");
    //tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1", &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1,"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1/I");
    //tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1",         &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1,        "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1/I");
    //tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr",                &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr,               "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr/I");
@@ -442,14 +452,18 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    //tree->Branch("HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg",                   &HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg,                  "HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg/I");
    //tree->Branch("HLT_DoubleLooseChargedIsoPFTau40_Trk1_eta2p1_Reg",                           &HLT_DoubleLooseChargedIsoPFTau40_Trk1_eta2p1_Reg,                          "HLT_DoubleLooseChargedIsoPFTau40_Trk1_eta2p1_Reg/I");
    //tree->Branch("HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg",                  &HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg,                 "HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg/I");
+   tree->Branch("HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_Reg",                          &HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_Reg,                         "HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_Reg/I");
+   tree->Branch("HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_Reg",                          &HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_Reg,                         "HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleMediumChargedIsoPFTau35_Trk1_eta2p1_Reg",                          &HLT_DoubleMediumChargedIsoPFTau35_Trk1_eta2p1_Reg,                         "HLT_DoubleMediumChargedIsoPFTau35_Trk1_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg",                          &HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg,                         "HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg",                  &HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg,                 "HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg",                  &HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg,                 "HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg/I");
-   //tree->Branch("HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg",                          &HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg,                         "HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg/I");
+   tree->Branch("HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg",                          &HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg,                         "HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg/I");
+   tree->Branch("HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_eta2p1_Reg",                          &HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_eta2p1_Reg,                         "HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg",                   &HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg,                  "HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg",                   &HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg,                  "HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg/I");
-   //tree->Branch("HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg",                           &HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg,                          "HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg/I");
+   tree->Branch("HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg",                           &HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg,                          "HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg/I");
+   tree->Branch("HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg",                           &HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg,                          "HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg/I");
    //tree->Branch("HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg",                   &HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg,                  "HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg",                           &HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg,                          "HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg",                           &HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg,                          "HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg/I");

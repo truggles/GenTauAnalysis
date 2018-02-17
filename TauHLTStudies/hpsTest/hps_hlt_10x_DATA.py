@@ -9394,7 +9394,7 @@ process.hltHpsPFTauTrack = cms.EDFilter( "HLT1PFTau",
 )
 process.hltHpsPFTauLooseAbsoluteChargedIsolationDiscriminator = cms.EDProducer( "PFRecoTauDiscriminationByIsolation",
     PFTauProducer = cms.InputTag( "hltHpsPFTauProducer" ),
-    maximumSumPtCut = cms.double( 3.0 ),
+    maximumSumPtCut = cms.double( 3.9 ),
     qualityCuts = cms.PSet( 
       vertexTrackFiltering = cms.bool( False ),
       isolationQualityCuts = cms.PSet( 
@@ -10014,7 +10014,7 @@ process.hltPreIsoMu20eta2p1TightChargedIsoPFTauHPS27eta2p1CrossL1 = cms.EDFilter
 )
 process.hltHpsPFTauTightAbsoluteChargedIsolationDiscriminator = cms.EDProducer( "PFRecoTauDiscriminationByIsolation",
     PFTauProducer = cms.InputTag( "hltHpsPFTauProducer" ),
-    maximumSumPtCut = cms.double( 2.0 ),
+    maximumSumPtCut = cms.double( 3.2 ),
     qualityCuts = cms.PSet( 
       vertexTrackFiltering = cms.bool( False ),
       isolationQualityCuts = cms.PSet( 
@@ -15436,7 +15436,7 @@ process.hltHpsSinglePFTau35Reg = cms.EDFilter( "HLT1PFTau",
     inputTag = cms.InputTag( "hltHpsPFTauProducerReg" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 34.4 )
+    MinPt = cms.double( 35 )
 )
 process.hltHpsPFTauTrackPt1DiscriminatorReg = cms.EDProducer( "PFRecoTauDiscriminationByLeadingObjectPtCut",
     MinPtLeadingObject = cms.double( 1.0 ),
@@ -15463,7 +15463,7 @@ process.hltHpsSinglePFTau35TrackPt1Reg = cms.EDFilter( "HLT1PFTau",
     inputTag = cms.InputTag( "hltHpsSelectedPFTausTrackPt1Reg" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 34.4 )
+    MinPt = cms.double( 35 )
 )
 process.hltHpsPFTauMediumAbsoluteChargedIsolationDiscriminatorReg = cms.EDProducer( "PFRecoTauDiscriminationByIsolation",
     PFTauProducer = cms.InputTag( "hltHpsPFTauProducerReg" ),
@@ -15688,7 +15688,7 @@ process.hltHpsSelectedPFTau35TrackPt1MediumChargedIsolationL1HLTMatchedReg = cms
     inputTag = cms.InputTag( "hltHpsL1JetsHLTPFTauTrackPt1MediumChargedIsolationMatchReg" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 34.4 )
+    MinPt = cms.double( 35 )
 )
 process.hltHpsOverlapFilterIsoMu24MediumChargedIsoPFTau35MonitoringReg = cms.EDFilter( "HLT2MuonPFTau",
     saveTags = cms.bool( True ),
@@ -15716,7 +15716,7 @@ process.hltPreIsoMu24eta2p1TightChargedIsoPFTauHPS35Trk1eta2p1RegCrossL1 = cms.E
 )
 process.hltHpsPFTauTightAbsoluteChargedIsolationDiscriminatorReg = cms.EDProducer( "PFRecoTauDiscriminationByIsolation",
     PFTauProducer = cms.InputTag( "hltHpsPFTauProducerReg" ),
-    maximumSumPtCut = cms.double( 2.0 ),
+    maximumSumPtCut = cms.double( 3.2 ),
     qualityCuts = cms.PSet( 
       vertexTrackFiltering = cms.bool( False ),
       isolationQualityCuts = cms.PSet( 
@@ -15937,7 +15937,7 @@ process.hltHpsSelectedPFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg = cms.
     inputTag = cms.InputTag( "hltHpsL1JetsHLTPFTauTrackPt1TightChargedIsolationMatchReg" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 34.4 )
+    MinPt = cms.double( 35 )
 )
 process.hltHpsOverlapFilterIsoMu24TightChargedIsoPFTau35MonitoringReg = cms.EDFilter( "HLT2MuonPFTau",
     saveTags = cms.bool( True ),
@@ -16096,7 +16096,7 @@ process.hltHpsSelectedPFTau35TrackPt1MediumChargedIsolationAndTightOOSCPhotonsL1
     inputTag = cms.InputTag( "hltHpsL1JetsHLTPFTauTrackPt1MediumChargedIsolationAndTightOOSCPhotonsMatchReg" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 34.4 )
+    MinPt = cms.double( 35 )
 )
 process.hltHpsOverlapFilterIsoMu24MediumChargedIsoAndTightOOSCPhotonsPFTau35MonitoringReg = cms.EDFilter( "HLT2MuonPFTau",
     saveTags = cms.bool( True ),
@@ -16165,7 +16165,7 @@ process.hltHpsSelectedPFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsL1H
     inputTag = cms.InputTag( "hltHpsL1JetsHLTPFTauTrackPt1TightChargedIsolationAndTightOOSCPhotonsMatchReg" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 34.4 )
+    MinPt = cms.double( 35 )
 )
 process.hltHpsOverlapFilterIsoMu24TightChargedIsoAndTightOOSCPhotonsPFTau35MonitoringReg = cms.EDFilter( "HLT2MuonPFTau",
     saveTags = cms.bool( True ),
@@ -16600,7 +16600,7 @@ process.hltHpsDoublePFTau35Reg = cms.EDFilter( "HLT1PFTau",
     inputTag = cms.InputTag( "hltHpsPFTauProducerReg" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 34.4 )
+    MinPt = cms.double( 35 )
 )
 process.hltHpsDoublePFTau35TrackPt1Reg = cms.EDFilter( "HLT1PFTau",
     saveTags = cms.bool( True ),
@@ -16612,7 +16612,7 @@ process.hltHpsDoublePFTau35TrackPt1Reg = cms.EDFilter( "HLT1PFTau",
     inputTag = cms.InputTag( "hltHpsSelectedPFTausTrackPt1Reg" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 34.4 )
+    MinPt = cms.double( 35 )
 )
 process.hltHpsDoublePFTau35TrackPt1MediumChargedIsolationReg = cms.EDFilter( "HLT1PFTau",
     saveTags = cms.bool( True ),
@@ -16624,7 +16624,7 @@ process.hltHpsDoublePFTau35TrackPt1MediumChargedIsolationReg = cms.EDFilter( "HL
     inputTag = cms.InputTag( "hltHpsSelectedPFTausTrackPt1MediumChargedIsolationReg" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 34.4 )
+    MinPt = cms.double( 35 )
 )
 process.hltHpsL1JetsHLTDoublePFTauTrackPt1MediumChargedIsolationMatchReg = cms.EDProducer( "L1THLTTauMatching",
     JetSrc = cms.InputTag( "hltHpsSelectedPFTausTrackPt1MediumChargedIsolationReg" ),
@@ -16641,13 +16641,13 @@ process.hltHpsDoublePFTau35TrackPt1MediumChargedIsolationL1HLTMatchedReg = cms.E
     inputTag = cms.InputTag( "hltHpsL1JetsHLTDoublePFTauTrackPt1MediumChargedIsolationMatchReg" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 34.4 )
+    MinPt = cms.double( 35 )
 )
 process.hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg = cms.EDFilter( "HLTPFTauPairDzMatchFilter",
     saveTags = cms.bool( True ),
     TriggerType = cms.int32( 84 ),
     JetSrc = cms.InputTag( "hltHpsL1JetsHLTDoublePFTauTrackPt1MediumChargedIsolationMatchReg" ),
-    JetMinPt = cms.double( 34.4 ),
+    JetMinPt = cms.double( 35 ),
     JetMaxDZ = cms.double( 0.2 ),
     JetMinDR = cms.double( 0.5 ),
     JetMaxEta = cms.double( 2.1 )
@@ -16666,7 +16666,7 @@ process.hltHpsDoublePFTau35TrackPt1TightChargedIsolationReg = cms.EDFilter( "HLT
     inputTag = cms.InputTag( "hltHpsSelectedPFTausTrackPt1TightChargedIsolationReg" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 34.4 )
+    MinPt = cms.double( 35 )
 )
 process.hltHpsL1JetsHLTDoublePFTauTrackPt1TightChargedIsolationMatchReg = cms.EDProducer( "L1THLTTauMatching",
     JetSrc = cms.InputTag( "hltHpsSelectedPFTausTrackPt1TightChargedIsolationReg" ),
@@ -16683,13 +16683,13 @@ process.hltHpsDoublePFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg = cms.ED
     inputTag = cms.InputTag( "hltHpsL1JetsHLTDoublePFTauTrackPt1TightChargedIsolationMatchReg" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 34.4 )
+    MinPt = cms.double( 35 )
 )
 process.hltHpsDoublePFTau35TrackPt1TightChargedIsolationDz02Reg = cms.EDFilter( "HLTPFTauPairDzMatchFilter",
     saveTags = cms.bool( True ),
     TriggerType = cms.int32( 84 ),
     JetSrc = cms.InputTag( "hltHpsL1JetsHLTDoublePFTauTrackPt1TightChargedIsolationMatchReg" ),
-    JetMinPt = cms.double( 34.4 ),
+    JetMinPt = cms.double( 35 ),
     JetMaxDZ = cms.double( 0.2 ),
     JetMinDR = cms.double( 0.5 ),
     JetMaxEta = cms.double( 2.1 )
@@ -16708,7 +16708,7 @@ process.hltHpsDoublePFTau35TrackPt1MediumChargedIsolationAndTightOOSCPhotonsReg 
     inputTag = cms.InputTag( "hltHpsSelectedPFTausTrackPt1MediumChargedIsolationAndTightOOSCPhotonsReg" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 34.4 )
+    MinPt = cms.double( 35 )
 )
 process.hltHpsL1JetsHLTDoublePFTauTrackPt1MediumChargedIsolationAndTightOOSCPhotonsMatchReg = cms.EDProducer( "L1THLTTauMatching",
     JetSrc = cms.InputTag( "hltHpsSelectedPFTausTrackPt1MediumChargedIsolationAndTightOOSCPhotonsReg" ),
@@ -16725,7 +16725,7 @@ process.hltHpsDoublePFTau35TrackPt1MediumChargedIsolationAndTightOOSCPhotonsL1HL
     inputTag = cms.InputTag( "hltHpsL1JetsHLTDoublePFTauTrackPt1MediumChargedIsolationAndTightOOSCPhotonsMatchReg" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 34.4 )
+    MinPt = cms.double( 35 )
 )
 process.hltHpsDoublePFTau35TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg = cms.EDFilter( "HLTPFTauPairDzMatchFilter",
     saveTags = cms.bool( True ),
@@ -16750,7 +16750,7 @@ process.hltHpsDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsReg =
     inputTag = cms.InputTag( "hltHpsSelectedPFTausTrackPt1TightChargedIsolationAndTightOOSCPhotonsReg" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 34.4 )
+    MinPt = cms.double( 35 )
 )
 process.hltHpsL1JetsHLTDoublePFTauTrackPt1TightChargedIsolationAndTightOOSCPhotonsMatchReg = cms.EDProducer( "L1THLTTauMatching",
     JetSrc = cms.InputTag( "hltHpsSelectedPFTausTrackPt1TightChargedIsolationAndTightOOSCPhotonsReg" ),
@@ -16767,7 +16767,7 @@ process.hltHpsDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsL1HLT
     inputTag = cms.InputTag( "hltHpsL1JetsHLTDoublePFTauTrackPt1TightChargedIsolationAndTightOOSCPhotonsMatchReg" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 34.4 )
+    MinPt = cms.double( 35 )
 )
 process.hltHpsDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg = cms.EDFilter( "HLTPFTauPairDzMatchFilter",
     saveTags = cms.bool( True ),
@@ -17722,7 +17722,7 @@ process.hltHpsDoublePFTau20TrackPt1Reg = cms.EDFilter( "HLT1PFTau",
 )
 process.hltHpsPFTauLooseAbsoluteChargedIsolationDiscriminatorReg = cms.EDProducer( "PFRecoTauDiscriminationByIsolation",
     PFTauProducer = cms.InputTag( "hltHpsPFTauProducerReg" ),
-    maximumSumPtCut = cms.double( 3.0 ),
+    maximumSumPtCut = cms.double( 3.9 ),
     qualityCuts = cms.PSet( 
       vertexTrackFiltering = cms.bool( False ),
       isolationQualityCuts = cms.PSet( 
@@ -23193,6 +23193,10 @@ process.Out = cms.OutputModule( "PoolOutputModule",
                                            "keep *_offlineBeamSpot_*_*",
                                            "keep *_hltHpsPFTauProducerSingleTau_*_*",
                                            "keep *_hltHpsSelectedPFTausTrackFinding_*_*",
+                                           "keep *_hltPFTaus_*_TAUHLT",
+                                           "keep *_hltPFTausReg_*_TAUHLT",
+                                           "keep *_hltHpsPFTauProducer_*_TAUHLT",
+                                           "keep *_hltHpsPFTauProducerReg_*_TAUHLT",
                                            #"keep *_*_*_TAUHLT",
                                            #"keep *__*_*",
     )

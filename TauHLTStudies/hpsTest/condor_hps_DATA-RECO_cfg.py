@@ -11,7 +11,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring($inputFileNames)
     #fileNames = cms.untracked.vstring(
-    #    'file:/hdfs/store/user/truggles/EphemeralHLTPhysics1/hltPhysicsV1_jan21_hps_Menu_V6_rate_v3xx//180121_170952/0000/output_99.root')
+    #    'file:/hdfs/store/user/truggles/SingleMuon/DataSingleMuonF_hps_10x_feb17_finalCfg/180217_103918/0000/output_10.root')
 )
 
 
@@ -19,7 +19,7 @@ process.source = cms.Source("PoolSource",
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 #process.GlobalTag = GlobalTag(process.GlobalTag, '92X_upgrade2017_realistic_v10')
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc')
+process.GlobalTag = GlobalTag(process.GlobalTag, '100X_dataRun2_relval_ForTSG_v1')
 
 
 #

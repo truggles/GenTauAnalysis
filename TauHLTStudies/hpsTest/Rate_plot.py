@@ -6,8 +6,8 @@ ROOT.gROOT.SetBatch(True)
 
 
 name = 'rate_feb16_v60per'
-name = 'rate_feb15_default'
-name = 'rate_feb16_v60pMT30pL_pTreset'
+#name = 'rate_feb15_default'
+#name = 'rate_feb16_v60pMT30pL_pTreset'
 
 
 plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'/'
@@ -33,7 +33,7 @@ h_loose_vbf = ROOT.TH2D('loose_vbf', 'VBF Loose HLT Acceptance'+axes, 2, -0.5, 1
 h_loose_muTau = ROOT.TH2D('loose_muTau', 'muTau Loose HLT Acceptance'+axes, 2, -0.5, 1.5, 2, -0.5, 1.5 )
 h_tight = ROOT.TH2D('tight', 'di-Tau 35 Tight HLT Acceptance'+axes, 2, -0.5, 1.5, 2, -0.5, 1.5 )
 
-runLumiCut = "RunNumber == 305636 && lumi > 118 && lumi < 528"
+runLumiCut = "RunNumber == 305636 && lumi >= 199 && lumi < 528"
 
 iTree.Draw("HLT_DoubleMediumChargedIsoPFTau35_Trk1_eta2p1_Reg:HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg >> med", runLumiCut, "COLZ TEXT")
 c.SaveAs( plotBase+'di-TauMed.png' )

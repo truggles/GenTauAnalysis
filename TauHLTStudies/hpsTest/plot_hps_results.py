@@ -10,7 +10,10 @@ def resComp( c, name, h1, h2 ) :
     c.Clear()
     h1.SetLineColor( ROOT.kBlue )
     h1.SetLineWidth( 2 )
-    h1.SetTitle( 'p_{T} Resolution: Gen p_{T} [30,40]' )
+    if 'Gen' in h1.GetXaxis().GetTitle() :
+        h1.SetTitle( 'Tau p_{T} Resolution: Gen p_{T} [30,40]' )
+    else :
+        h1.SetTitle( 'Tau p_{T} Resolution' )
     h2.SetLineColor( ROOT.kRed )
     h2.SetLineWidth( 2 )
     if h1.Integral() > 0 :
@@ -44,7 +47,7 @@ def resComp( c, name, h1, h2 ) :
 
 
 def buildLegend( items, names ) :
-    legend = ROOT.TLegend(0.45, 0.73, 0.83, 0.88)
+    legend = ROOT.TLegend(0.5, 0.73, 0.83, 0.88)
     legend.SetMargin(0.3)
     legend.SetBorderSize(0)
     for item, name in zip(items, names) : #range(0, stack.GetStack().GetLast() + 1) :
@@ -153,11 +156,22 @@ def saveHists( th2, name ) :
     normalize2D( th2 )
     c.SaveAs( name+'_norm.png' )
 
-
+# NAME
 name = 'eff_feb13_test'
+name = 'eff_feb15_v90per'
+name = 'eff_feb15_v60per'
+name = 'eff_feb15_v30per'
+name = 'eff_feb16_v60per'
+name = 'feb16_tmp'
+name = 'eff_feb16_v60pMT30pL_pTreset'
+name = 'eff_v2_feb16_v60pMT30pL_pTreset'
+name = 'outputFileName'
+name = 'eff_singleMu_test'
+name = 'eff_feb18'
+name = 'eff_feb18_singleMuon'
 
 isData = False
-#isData = True
+isData = True
 
 iFile = ROOT.TFile(name+'.root','r')
 print iFile
@@ -166,7 +180,7 @@ iTree = iFile.Get( 'hpsTauHLTStudies/tagAndProbe/Ntuple' )
 trigger1 = 'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1'
 trigger2 = 'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1'
 
-plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'/'
+plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'_mVis/'
 if not os.path.exists( plotBase ) : os.makedirs( plotBase )
 
 c = ROOT.TCanvas( 'c1', 'c1', 600, 600 ) 
@@ -191,18 +205,20 @@ maxPtRes = 0.7
 #ptRes2 = ROOT.TH1D('Pt Resolution '+app2, 'Pt_Resolution_'+app2.replace(' ','_')+axes, 50, minPtRes, maxPtRes )
 #ptRes3 = ROOT.TH1D('Pt Resolution '+app3, 'Pt_Resolution_'+app3.replace(' ','_')+axes, 50, minPtRes, maxPtRes )
 #ptRes4 = ROOT.TH1D('Pt Resolution '+app4, 'Pt_Resolution_'+app4.replace(' ','_')+axes, 50, minPtRes, maxPtRes )
-#ptRes1 = ROOT.TH1D('HPS', 'Pt_Resolution_'+app1.replace(' ','_')+axes, 100, minPtRes, maxPtRes )
-#ptRes2 = ROOT.TH1D('Default', 'Pt_Resolution_'+app2.replace(' ','_')+axes, 100, minPtRes, maxPtRes )
-#ptRes3 = ROOT.TH1D('HPS', 'Pt_Resolution_'+app3.replace(' ','_')+axesGen, 100, minPtRes, maxPtRes )
-#ptRes4 = ROOT.TH1D('Default', 'Pt_Resolution_'+app4.replace(' ','_')+axesGen, 100, minPtRes, maxPtRes )
-#ptRes5 = ROOT.TH1D('HPS', 'HPS'+axesGen, 100, minPtRes, maxPtRes )
-#ptRes6 = ROOT.TH1D('Default', 'Default'+axesGen, 100, minPtRes, maxPtRes )
-#ptRes2DGenHPS = ROOT.TH2D( 'ptRes2DGenHPS', 'HPS Tau p_{T} Resolution vs. Gen p_{T};Gen p_{T} [GeV]'+axesHPSGen, 11,20,75,50,-.6,.6 )
-#ptRes2DGenDef = ROOT.TH2D( 'ptRes2DGenDef', 'HPS Tau p_{T} Resolution vs. Gen p_{T};Gen p_{T} [GeV]'+axesDefGen, 11,20,75,50,-.6,.6 )
-#
-#drAxes = ';#Delta R( offline - online);A.U.'
-#drRes1 = ROOT.TH1D('dR Resolution '+app1, 'dR_Resolution_'+app1.replace(' ','_')+drAxes, 50, 0, 0.05)
-#drRes2 = ROOT.TH1D('dR Resolution '+app2, 'dR_Resolution_'+app2.replace(' ','_')+drAxes, 50, 0, 0.05)
+ptRes1 = ROOT.TH1D('HPS', 'Pt_Resolution_'+app1.replace(' ','_')+axes, 100, minPtRes, maxPtRes )
+ptRes2 = ROOT.TH1D('Default', 'Pt_Resolution_'+app2.replace(' ','_')+axes, 100, minPtRes, maxPtRes )
+ptRes3 = ROOT.TH1D('HPS', 'Pt_Resolution_'+app3.replace(' ','_')+axesGen, 100, minPtRes, maxPtRes )
+ptRes4 = ROOT.TH1D('Default', 'Pt_Resolution_'+app4.replace(' ','_')+axesGen, 100, minPtRes, maxPtRes )
+ptRes5 = ROOT.TH1D('HPS', 'HPS'+axesGen, 100, minPtRes, maxPtRes )
+ptRes6 = ROOT.TH1D('Default', 'Default'+axesGen, 100, minPtRes, maxPtRes )
+ptRes7 = ROOT.TH1D('HPS', 'Pt_Resolution_2'+app1.replace(' ','_')+axes, 100, minPtRes, maxPtRes )
+ptRes8 = ROOT.TH1D('Default', 'Pt_Resolution_2'+app2.replace(' ','_')+axes, 100, minPtRes, maxPtRes )
+ptRes2DGenHPS = ROOT.TH2D( 'ptRes2DGenHPS', 'HPS Tau p_{T} Resolution vs. Gen p_{T};Gen p_{T} [GeV]'+axesHPSGen, 11,20,75,50,-.6,.6 )
+ptRes2DGenDef = ROOT.TH2D( 'ptRes2DGenDef', 'HPS Tau p_{T} Resolution vs. Gen p_{T};Gen p_{T} [GeV]'+axesDefGen, 11,20,75,50,-.6,.6 )
+
+drAxes = ';#Delta R( offline - online);A.U.'
+drRes1 = ROOT.TH1D('dR Resolution '+app1, 'dR_Resolution_'+app1.replace(' ','_')+drAxes, 50, 0, 0.05)
+drRes2 = ROOT.TH1D('dR Resolution '+app2, 'dR_Resolution_'+app2.replace(' ','_')+drAxes, 50, 0, 0.05)
 
 # nvtx
 nvtx = ROOT.TH1D('nvtx', 'nvtx;nvtx;Events', 40, 0, 80 )
@@ -243,10 +259,20 @@ h_def_pass_med = ROOT.TH1D( 'def pass_med', 'def pass', len(binning)-1, binning)
 h_hps_denom_med = ROOT.TH1D( 'hps denom_med', 'HPS Tau', len(binning)-1, binning)
 h_hps_pass_med = ROOT.TH1D( 'hps pass_med', 'hps pass', len(binning)-1, binning)
 
+h_def_denom_med_muTau = ROOT.TH1D( 'def denom_med_muTau', 'Default', len(binning)-1, binning)
+h_def_pass_med_muTau = ROOT.TH1D( 'def pass_med_muTau', 'def pass', len(binning)-1, binning)
+h_hps_denom_med_muTau = ROOT.TH1D( 'hps denom_med_muTau', 'HPS Tau', len(binning)-1, binning)
+h_hps_pass_med_muTau = ROOT.TH1D( 'hps pass_med_muTau', 'hps pass', len(binning)-1, binning)
+
 h_def_denom_tight = ROOT.TH1D( 'def denom_tight', 'Default', len(binning)-1, binning)
 h_def_pass_tight = ROOT.TH1D( 'def pass_tight', 'def pass', len(binning)-1, binning)
 h_hps_denom_tight = ROOT.TH1D( 'hps denom_tight', 'HPS Tau', len(binning)-1, binning)
 h_hps_pass_tight = ROOT.TH1D( 'hps pass_tight', 'hps pass', len(binning)-1, binning)
+
+h_def_denom_tight_muTau = ROOT.TH1D( 'def denom_tight_muTau', 'Default', len(binning)-1, binning)
+h_def_pass_tight_muTau = ROOT.TH1D( 'def pass_tight_muTau', 'def pass', len(binning)-1, binning)
+h_hps_denom_tight_muTau = ROOT.TH1D( 'hps denom_tight_muTau', 'HPS Tau', len(binning)-1, binning)
+h_hps_pass_tight_muTau = ROOT.TH1D( 'hps pass_tight_muTau', 'hps pass', len(binning)-1, binning)
 
 
 for row in iTree :
@@ -261,17 +287,21 @@ for row in iTree :
     if isData :
         if row.HLT_IsoMu27 < 0.5 : continue
         if row.muonPt < 24 : continue
+        if row.transMass > 40 : continue
+        if row.m_vis < 40 : continue
+        if row.m_vis > 100 : continue
+        if row.tMVAIsoLoose < 0.5 : continue
     else :
         if row.HLT_IsoMu20 < 0.5 : continue
         if row.t1_gen_match != 5 : continue
         if row.SS != 0 : continue
+        if row.tMVAIsoMedium < 0.5 : continue
 
     #if row.mTrigMatch < 0.5 : continue
     if row.passingMuons != 1 : continue
     if row.nVetoMuons != 1 : continue
     if row.passingElectrons != 0 : continue
     if row.nBTag != 0 : continue
-    if row.tMVAIsoMedium < 0.5 : continue
 
     tPt = row.tauPt
     hpsPt = row.hpsTauPt
@@ -295,8 +325,12 @@ for row in iTree :
         h_hps_denom_loose.Fill( tPt, weight )
         h_def_denom_med.Fill( tPt, weight ) 
         h_hps_denom_med.Fill( tPt, weight )
+        h_def_denom_med_muTau.Fill( tPt, weight ) 
+        h_hps_denom_med_muTau.Fill( tPt, weight )
         h_def_denom_tight.Fill( tPt, weight ) 
         h_hps_denom_tight.Fill( tPt, weight )
+        h_def_denom_tight_muTau.Fill( tPt, weight ) 
+        h_hps_denom_tight_muTau.Fill( tPt, weight )
 
         ''' Check passing for numerator defaul triggers '''
         if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
@@ -306,6 +340,10 @@ for row in iTree :
             h_def_pass_tight.Fill( tPt, weight )
         if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1 > 0.5 :
             h_def_pass_loose.Fill( tPt, weight )
+        if row.HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1 > 0.5 :
+            h_def_pass_med_muTau.Fill( tPt, weight )
+        if row.HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1 > 0.5 :
+            h_def_pass_tight_muTau.Fill( tPt, weight )
         ''' Check passing for numerator HPS triggers '''
         if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
             h_hps_pass_med_gen.Fill( genTauPt, weight )
@@ -314,6 +352,10 @@ for row in iTree :
             h_hps_pass_tight.Fill( tPt, weight )
         if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1 > 0.5 :
             h_hps_pass_loose.Fill( tPt, weight )
+        if row.HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_CrossL1 > 0.5 :
+            h_hps_pass_med_muTau.Fill( tPt, weight )
+        if row.HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_CrossL1 > 0.5 :
+            h_hps_pass_tight_muTau.Fill( tPt, weight )
 
 
 
@@ -335,19 +377,21 @@ for row in iTree :
     h_dm_default_offline.Fill( defaultCode, offlineCode )
 
     # Only compare pT and dR if they are both matched
-    #if hpsPt > 0 and defPt > 0 :
-    #    ptRes3.Fill( (genTauPt - hpsPt) / genTauPt )
-    #    ptRes4.Fill( (genTauPt - defPt) / genTauPt )
-    #    if genTauPt > 30 and genTauPt < 40 :
-    #        ptRes1.Fill( (tPt - hpsPt) / tPt )
-    #        ptRes2.Fill( (tPt - defPt) / tPt )
-    #        ptRes5.Fill( (genTauPt - hpsPt) / genTauPt )
-    #        ptRes6.Fill( (genTauPt - defPt) / genTauPt )
-    #    ptRes2DGenHPS.Fill( genTauPt, ((genTauPt - hpsPt) / genTauPt) )
-    #    ptRes2DGenDef.Fill( genTauPt, ((genTauPt - defPt) / genTauPt) )
+    if hpsPt > 0 and defPt > 0 :
+        ptRes3.Fill( (genTauPt - hpsPt) / genTauPt )
+        ptRes4.Fill( (genTauPt - defPt) / genTauPt )
+        ptRes7.Fill( (tPt - hpsPt) / tPt )
+        ptRes8.Fill( (tPt - defPt) / tPt )
+        if genTauPt > 30 and genTauPt < 40 :
+            ptRes1.Fill( (tPt - hpsPt) / tPt )
+            ptRes2.Fill( (tPt - defPt) / tPt )
+            ptRes5.Fill( (genTauPt - hpsPt) / genTauPt )
+            ptRes6.Fill( (genTauPt - defPt) / genTauPt )
+        ptRes2DGenHPS.Fill( genTauPt, ((genTauPt - hpsPt) / genTauPt) )
+        ptRes2DGenDef.Fill( genTauPt, ((genTauPt - defPt) / genTauPt) )
 
-    #    drRes1.Fill( row.hpsTauDR )
-    #    drRes2.Fill( row.defaultTauDR )
+        drRes1.Fill( row.hpsTauDR )
+        drRes2.Fill( row.defaultTauDR )
 
 
 print "offlineVsHPS"
@@ -361,18 +405,19 @@ saveHists( h_dm_default_offline, plotBase+'defaultVsOffline' )
 
 
 
-#resComp( c, 'resolutionPt', ptRes1, ptRes2 )
-#resComp( c, 'resolutionPtGen', ptRes3, ptRes4 )
-#resComp( c, 'resolutionPtGenPt30to40', ptRes5, ptRes6 )
-#resComp( c, 'resolutionDRGen', drRes1, drRes2 )
-#
-#c.Clear()
-#ptRes2DGenHPS.Draw('COLZ')
-#c.SaveAs( plotBase+'resolutionPt2D_Gen_HPS.png' )
-#c.Clear()
-#ptRes2DGenDef.Draw('COLZ')
-#c.SaveAs( plotBase+'resolutionPt2D_Gen_Def.png' )
-#c.Clear()
+resComp( c, 'resolutionPt', ptRes1, ptRes2 )
+resComp( c, 'resolutionPtOnVsOff', ptRes7, ptRes8 )
+resComp( c, 'resolutionPtGen', ptRes3, ptRes4 )
+resComp( c, 'resolutionPtGenPt30to40', ptRes5, ptRes6 )
+resComp( c, 'resolutionDRGen', drRes1, drRes2 )
+
+c.Clear()
+ptRes2DGenHPS.Draw('COLZ')
+c.SaveAs( plotBase+'resolutionPt2D_Gen_HPS.png' )
+c.Clear()
+ptRes2DGenDef.Draw('COLZ')
+c.SaveAs( plotBase+'resolutionPt2D_Gen_Def.png' )
+c.Clear()
 
 
 h_denoms_med_gen = [h_def_denom_med_gen, h_hps_denom_med_gen]
@@ -387,9 +432,17 @@ h_denoms_med = [h_def_denom_med, h_hps_denom_med]
 h_passes_med = [h_def_pass_med, h_hps_pass_med]
 plotEff( c, plotBase, 'Def vs HPS: Med Iso WP: offline pT', h_denoms_med, h_passes_med )
 
+h_denoms_med_muTau = [h_def_denom_med_muTau, h_hps_denom_med_muTau]
+h_passes_med_muTau = [h_def_pass_med_muTau, h_hps_pass_med_muTau]
+plotEff( c, plotBase, 'Def vs HPS: Med Iso WP MuTauCrossTrig: offline pT', h_denoms_med_muTau, h_passes_med_muTau )
+
 h_denoms_tight = [h_def_denom_tight, h_hps_denom_tight]
 h_passes_tight = [h_def_pass_tight, h_hps_pass_tight]
 plotEff( c, plotBase, 'Def vs HPS: Tight Iso WP: offline pT', h_denoms_tight, h_passes_tight )
+
+h_denoms_tight_muTau = [h_def_denom_tight_muTau, h_hps_denom_tight_muTau]
+h_passes_tight_muTau = [h_def_pass_tight_muTau, h_hps_pass_tight_muTau]
+plotEff( c, plotBase, 'Def vs HPS: Tight Iso WP MuTauCrossTrig: offline pT', h_denoms_tight_muTau, h_passes_tight_muTau )
 
 c.Clear()
 nvtx.Draw()

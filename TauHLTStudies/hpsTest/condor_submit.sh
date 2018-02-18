@@ -26,19 +26,8 @@
 ### INPUT_FILES=jan28_V7_rate.txt
 #########
 
-#DATE=20180129v1_dyj_V7
-#INPUT_FILES=dyJets_V7.txt
-#
-#farmoutAnalysisJobs \
-#    --resubmit-failed-jobs \
-#    --output-dir=. \
-#    --input-files-per-job=30 \
-#    --input-file-list=condorFileLists/${INPUT_FILES} \
-#    --site-requirements='OpSysAndVer == "SL6"' \
-#    hps_condor_${DATE} $CMSSW_BASE condor_hps_cfg.py
-
-#DATE=20180128v1_ggH_V7
-#INPUT_FILES=ggH125_jan28_V7.txt
+#DATE=20180218_feb17_finalCfg
+#INPUT_FILES=eff_feb17_finalCfg.txt
 #
 #farmoutAnalysisJobs \
 #    --output-dir=. \
@@ -47,51 +36,30 @@
 #    --site-requirements='OpSysAndVer == "SL6"' \
 #    hps_condor_${DATE} $CMSSW_BASE condor_hps_cfg.py
 
-#XXX DATE=20180213_feb13_v3
-#XXX INPUT_FILES=efficiency_qqH_feb13_v2.txt
-#XXX 
-#XXX farmoutAnalysisJobs \
-#XXX     --output-dir=. \
-#XXX     --input-files-per-job=15 \
-#XXX     --input-file-list=condorFileLists/${INPUT_FILES} \
-#XXX     --site-requirements='OpSysAndVer == "SL6"' \
-#XXX     hps_condor_${DATE} $CMSSW_BASE condor_hps_cfg.py
 
 
-DATE=20180214_rate_jan13_v9_v1
-INPUT_FILES=rate_jan13_v9.txt
+#DATE=20180218_feb17_all
+#INPUT_FILES=rate_feb17_all.txt
+#
+#farmoutAnalysisJobs \
+#    --output-dir=. \
+#    --input-files-per-job=10 \
+#    --input-file-list=condorFileLists/${INPUT_FILES} \
+#    --site-requirements='OpSysAndVer == "SL6"' \
+#    --input-basenames-not-unique \
+#    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA_cfg.py
+#
+
+DATE=20180218_eff_singleMuon_feb18
+INPUT_FILES=eff_singleMuon_feb18.txt
 
 farmoutAnalysisJobs \
     --output-dir=. \
-    --input-files-per-job=10 \
+    --input-files-per-job=25 \
     --input-file-list=condorFileLists/${INPUT_FILES} \
     --site-requirements='OpSysAndVer == "SL6"' \
     --input-basenames-not-unique \
-    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA_cfg.py
-
-
-#DATE=20180130v2_Tau_V7
-#INPUT_FILES=tau_jan30_V7_v9.txt
-#
-#farmoutAnalysisJobs \
-#    --output-dir=. \
-#    --input-files-per-job=5 \
-#    --input-file-list=condorFileLists/${INPUT_FILES} \
-#    --site-requirements='OpSysAndVer == "SL6"' \
-#    --input-basenames-not-unique \
-#    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA-RECO_cfg.py
-#
-#
-#DATE=20180130v2_SingleMuon_V7
-#INPUT_FILES=singleMuon_jan30_V7_v9.txt
-#
-#farmoutAnalysisJobs \
-#    --output-dir=. \
-#    --input-files-per-job=5 \
-#    --input-file-list=condorFileLists/${INPUT_FILES} \
-#    --site-requirements='OpSysAndVer == "SL6"' \
-#    --input-basenames-not-unique \
-#    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA-RECO_cfg.py
+    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA-RECO_cfg.py
 
 
 

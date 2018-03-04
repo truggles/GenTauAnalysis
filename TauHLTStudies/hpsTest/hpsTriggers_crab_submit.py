@@ -39,6 +39,14 @@ dataMap = OrderedDict()
 #        'child' : '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/MINIAODSIM',
 #        'grandparent' : '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/GEN-SIM-RAW',
 #    }
+#dataMap['Zprime1500'] = {
+#        'child' : '/ZprimeToTauTau_M-1500_TuneCUETP8M1_13TeV-pythia8-tauola/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
+#        'grandparent' : '/ZprimeToTauTau_M-1500_TuneCUETP8M1_13TeV-pythia8-tauola/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
+#    }
+dataMap['DYJetsToLL'] = {
+        'child' : '/DYJetsToLL_M-50_Zpt-150toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
+        'grandparent' : '/DYJetsToLL_M-50_Zpt-150toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
+    }
 #dataMap['DYJets'] = {
 #        'child' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/MINIAODSIM',
 #        'grandparent' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/GEN-SIM-RAW',
@@ -53,22 +61,22 @@ dataMap = OrderedDict()
 #    }
 
 ### FOR RATE STUDIES ###
-dataMap['hltPhysicsV1'] = {
-        'child' : '/EphemeralHLTPhysics1/Run2017F-PromptReco-v1/MINIAOD',
-        'grandparent' : '/EphemeralHLTPhysics1/Run2017F-v1/RAW',
-    }
-dataMap['hltPhysicsV2'] = {
-        'child' : '/EphemeralHLTPhysics2/Run2017F-PromptReco-v1/MINIAOD',
-        'grandparent' : '/EphemeralHLTPhysics2/Run2017F-v1/RAW',
-    }
-dataMap['hltPhysicsV3'] = {
-        'child' : '/EphemeralHLTPhysics3/Run2017F-PromptReco-v1/MINIAOD',
-        'grandparent' : '/EphemeralHLTPhysics3/Run2017F-v1/RAW',
-    }
-dataMap['hltPhysicsV4'] = {
-        'child' : '/EphemeralHLTPhysics4/Run2017F-PromptReco-v1/MINIAOD',
-        'grandparent' : '/EphemeralHLTPhysics4/Run2017F-v1/RAW',
-    }
+#dataMap['hltPhysicsV1'] = {
+#        'child' : '/EphemeralHLTPhysics1/Run2017F-PromptReco-v1/MINIAOD',
+#        'grandparent' : '/EphemeralHLTPhysics1/Run2017F-v1/RAW',
+#    }
+#dataMap['hltPhysicsV2'] = {
+#        'child' : '/EphemeralHLTPhysics2/Run2017F-PromptReco-v1/MINIAOD',
+#        'grandparent' : '/EphemeralHLTPhysics2/Run2017F-v1/RAW',
+#    }
+#dataMap['hltPhysicsV3'] = {
+#        'child' : '/EphemeralHLTPhysics3/Run2017F-PromptReco-v1/MINIAOD',
+#        'grandparent' : '/EphemeralHLTPhysics3/Run2017F-v1/RAW',
+#    }
+#dataMap['hltPhysicsV4'] = {
+#        'child' : '/EphemeralHLTPhysics4/Run2017F-PromptReco-v1/MINIAOD',
+#        'grandparent' : '/EphemeralHLTPhysics4/Run2017F-v1/RAW',
+#    }
 #dataMap['hltPhysicsV5'] = {
 #        'child' : '/EphemeralHLTPhysics5/Run2017F-PromptReco-v1/MINIAOD',
 #        'grandparent' : '/EphemeralHLTPhysics5/Run2017F-v1/RAW',
@@ -103,6 +111,7 @@ dataMap['hltPhysicsV4'] = {
 
 # dasgoclient --query="dataset dataset=/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17*-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/*"
 # dasgoclient --query="dataset dataset=/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17*-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/*"
+# dasgoclient --query="dataset dataset=/*TauTau*/RunIISummer17*-NZSFlatPU28to62_*_upgrade2017_realistic*/*"
 
 if __name__ == '__main__':
 
@@ -123,21 +132,25 @@ if __name__ == '__main__':
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k in dataMap.keys() :
-        config.General.requestName = '%s_hps_10x_feb13_v10' % k
+        config.General.requestName = '%s_hps_10x_march01_v2' % k
         config.Data.outputDatasetTag   = config.General.requestName
         if not 'hltPhysics' in k and not 'Data' in k :
             config.JobType.psetName        = 'hps_hlt_10x_MC.py'
             config.Data.inputDataset = dataMap[ k ][ 'child' ]
             config.Data.secondaryInputDataset = dataMap[ k ][ 'grandparent' ]
+            # ZPrime Test
+            config.JobType.maxMemoryMB     = 2500
+            config.Data.splitting          = 'EventAwareLumiBased'
+            config.Data.unitsPerJob        = 2000 # events / job when using EventAwareLumiBased
             #config.Data.totalUnits         = 30000 # for tests
         elif 'hltPhysics' in k :
             config.Data.inputDataset = dataMap[ k ][ 'grandparent' ]
             config.JobType.maxMemoryMB = 2500
             config.Data.splitting      = 'FileBased'
-            config.Data.unitsPerJob    = 15
+            config.Data.unitsPerJob    = 5
             config.JobType.psetName    = 'hps_hlt_10x_DATA.py'
             config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/PromptReco/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
-            config.Data.totalUnits         = 45 # for small tests
+            #config.Data.totalUnits         = 45 # for small tests
         elif 'MuTauSkim' in k :
             config.Data.splitting          = 'FileBased'
             config.Data.unitsPerJob        = 1 # files when FileBased

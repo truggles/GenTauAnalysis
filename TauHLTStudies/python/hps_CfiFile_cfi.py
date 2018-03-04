@@ -7,10 +7,12 @@ hpsTauHLTStudies = cms.EDAnalyzer("HPSTauHLTStudiesAnalyzer",
     puSrc = cms.InputTag("slimmedAddPileupInfo"),
 
     slimmedTauSrc = cms.InputTag("slimmedTaus"),
-    hpsTauSrc = cms.InputTag("hltHpsPFTauProducerReg", "", "TAUHLT"),
+    #hpsTauSrc = cms.InputTag("hltHpsPFTauProducerReg", "", "TAUHLT"),
+    hpsTauSrc = cms.InputTag("hltHpsPFTauProducer", "", "TAUHLT"),
     hpsTauDM = cms.InputTag("hltHpsPFTauDiscriminationByDecayModeFindingNewDMsSingleTau","","TAUHLT"),   
     #defaultTauSrc = cms.InputTag("hltPFTausSansRef", "", "TAUHLT"),
     defaultTauSrc = cms.InputTag("hltPFTaus", "", "TAUHLT"),
+    #defaultTauSrc = cms.InputTag("hltPFTausReg", "", "TAUHLT"),
     defaultTauDM = cms.InputTag("hltPFTauDiscriminationByDecayModeFindingNewDMsPFTaus","","TAUHLT"),
 
     muonSrc = cms.InputTag("slimmedMuons"),

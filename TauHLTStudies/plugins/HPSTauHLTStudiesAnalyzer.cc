@@ -149,9 +149,10 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
         //t2IsoCmbLoose, t2IsoCmbLoose03, t2IsoCmbMedium, t2IsoCmbMedium03, t2IsoCmbTight, t2IsoCmbTight03,
         t2IsoCmbLoose, t2IsoCmbMedium, t2IsoCmbTight,
         t2TrigMatch,t2genPt,t2L1Match, emptyVertices, failNdof,
-        hpsTauSize, hpsTauPt, hpsTauEta, hpsTauPhi, hpsTauDM, hpsTauDMFinding, hpsTauDR,
+        hpsTauSize, hpsTauPt, hpsTauEta, hpsTauPhi, hpsTauDM, hpsTauDMFinding, hpsTauDR, hpsTauChrgIso, hpsTauDRDefault,
         hpsTau2Pt, hpsTau2Eta, hpsTau2Phi, hpsTau2DM,
-        defaultTauSize, defaultTauPt, defaultTauEta, defaultTauPhi, defaultTauDM, defaultTauDMFinding, defaultTauDR,
+        defaultTauSize, defaultTauPt, defaultTauEta, defaultTauPhi, 
+        defaultTauDM, defaultTauDMFinding, defaultTauDR, defaultTauChrgIso,
         defaultTau2Pt, defaultTau2Eta, defaultTau2Phi, defaultTau2DM;
       bool foundGenTau, foundGenMuon; 
       std::map<std::string, int*> triggers;
@@ -436,6 +437,8 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("hpsTauDM",&hpsTauDM,"hpsTauDM/F");
    tree->Branch("hpsTauDMFinding",&hpsTauDMFinding,"hpsTauDMFinding/F");
    tree->Branch("hpsTauDR",&hpsTauDR,"hpsTauDR/F");
+   tree->Branch("hpsTauChrgIso",&hpsTauChrgIso,"hpsTauChrgIso/F");
+   tree->Branch("hpsTauDRDefault",&hpsTauDRDefault,"hpsTauDRDefault/F");
    tree->Branch("hpsTau2Pt",&hpsTau2Pt,"hpsTau2Pt/F");
    tree->Branch("hpsTau2Eta",&hpsTau2Eta,"hpsTau2Eta/F");
    tree->Branch("hpsTau2Phi",&hpsTau2Phi,"hpsTau2Phi/F");
@@ -447,6 +450,7 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("defaultTauDM",&defaultTauDM,"defaultTauDM/F");
    tree->Branch("defaultTauDMFinding",&defaultTauDMFinding,"defaultTauDMFinding/F");
    tree->Branch("defaultTauDR",&defaultTauDR,"defaultTauDR/F");
+   tree->Branch("defaultTauChrgIso",&defaultTauChrgIso,"defaultTauChrgIso/F");
    tree->Branch("defaultTau2Pt",&defaultTau2Pt,"defaultTau2Pt/F");
    tree->Branch("defaultTau2Eta",&defaultTau2Eta,"defaultTau2Eta/F");
    tree->Branch("defaultTau2Phi",&defaultTau2Phi,"defaultTau2Phi/F");
@@ -1263,8 +1267,14 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
   // Currently Data is in RAW form
   // all it has is
   // edm::TriggerResults       "TriggerResults"         ""        "HLT"
-  if (isRAW) { // isRAW (only trigger results abailable)
+  // And info on the saved default and HPS tau collections
+  if (isRAW) {
 
+    // Because there is no offline tau to match to, we need to apply
+    // a tighter selection criteria here beyond just pT ordering the
+    // taus, use charged iso < 3.9 GeV which is the loosest HPS passing cut
+    // isolationPFChargedHadrCandsPtSum() < 3.9 GeV
+    // make exception if Tau pT > 250 GeV to keep that one in the collection
     edm::Handle<std::vector<reco::PFTau>> hpsTaus;
     try {iEvent.getByToken(hpsTauToken_, hpsTaus);} catch (...) {;}
     edm::Handle<reco::PFTauDiscriminator> hpsTauDMs;
@@ -1277,6 +1287,8 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     hpsTauDM = -9;
     hpsTauDMFinding = -9;
     hpsTauDR = -9;
+    hpsTauChrgIso = -9;
+    hpsTauDRDefault = -9;
     
     std::vector<reco::PFTauRef> passingHPSTaus;
 
@@ -1286,6 +1298,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
 
             reco::PFTauRef hpsTauCandidate(hpsTaus, iTau);
             if (hpsTauCandidate->pt() < 18 || fabs(hpsTauCandidate->eta()) > 2.2) continue;
+            if (hpsTauCandidate->isolationPFChargedHadrCandsPtSum() > 3.9 && hpsTauCandidate->pt() < 250) continue;
             passingHPSTaus.push_back( hpsTauCandidate );
 
             if (verbose) std::cout << "found hps tau matching slimmed tau:" << std::endl;
@@ -1305,6 +1318,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
         if (hpsTauDMs.isValid()) {
             hpsTauDMFinding = (*hpsTauDMs)[passingHPSTaus.at(0)];
         }
+        hpsTauChrgIso = passingHPSTaus.at(0)->isolationPFChargedHadrCandsPtSum();
     }
     if ( passingHPSTaus.size() > 1 ) {
         hpsTau2Pt = passingHPSTaus.at(1)->pt();
@@ -1328,6 +1342,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     defaultTauDM = -9;
     defaultTauDMFinding = -9;
     defaultTauDR = -9;
+    defaultTauChrgIso = -9;
 
     std::vector<reco::PFTauRef> passingDefaultTaus;
 
@@ -1337,6 +1352,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
 
             reco::PFTauRef defaultTauCandidate(defaultTaus, iTau);
             if (defaultTauCandidate->pt() < 18 || fabs(defaultTauCandidate->eta()) > 2.2) continue;
+            if (defaultTauCandidate->isolationPFChargedHadrCandsPtSum() > 3.9 && defaultTauCandidate->pt() < 250) continue;
 
             passingDefaultTaus.push_back( defaultTauCandidate );
 
@@ -1357,12 +1373,18 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
         if (defaultTauDMs.isValid()) {
             defaultTauDMFinding = (*defaultTauDMs)[passingDefaultTaus.at(0)];
         }
+        defaultTauChrgIso = passingDefaultTaus.at(0)->isolationPFChargedHadrCandsPtSum();
     }
     if ( passingDefaultTaus.size() > 1 ) {
         defaultTau2Pt = passingDefaultTaus.at(1)->pt();
         defaultTau2Eta = passingDefaultTaus.at(1)->eta();
         defaultTau2Phi = passingDefaultTaus.at(1)->phi();
         defaultTau2DM = passingDefaultTaus.at(1)->decayMode();
+    }
+
+    // Delta R for the leading HPS and default Tau
+    if ( passingHPSTaus.size() > 0 && passingDefaultTaus.size() > 0 ) {
+        hpsTauDRDefault = deltaR( *passingHPSTaus.at(0), *passingDefaultTaus.at(0) );
     }
 
     edm::Handle<edm::TriggerResults> triggerResults;   

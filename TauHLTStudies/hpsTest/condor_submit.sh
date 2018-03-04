@@ -26,20 +26,22 @@
 ### INPUT_FILES=jan28_V7_rate.txt
 #########
 
-#DATE=20180218_feb17_finalCfg
-#INPUT_FILES=eff_feb17_finalCfg.txt
-#
-#farmoutAnalysisJobs \
-#    --output-dir=. \
-#    --input-files-per-job=15 \
-#    --input-file-list=condorFileLists/${INPUT_FILES} \
-#    --site-requirements='OpSysAndVer == "SL6"' \
-#    hps_condor_${DATE} $CMSSW_BASE condor_hps_cfg.py
+DATE=20180305_mar01_finalCfg_DYtoLL
+INPUT_FILES=eff_feb17_finalCfg.txt
+INPUT_FILES=Zprime1500_mar01.txt
+INPUT_FILES=eff_DYJets_ZBoost_mar03.txt
+
+farmoutAnalysisJobs \
+    --output-dir=. \
+    --input-files-per-job=15 \
+    --input-file-list=condorFileLists/${INPUT_FILES} \
+    --site-requirements='OpSysAndVer == "SL6"' \
+    hps_condor_${DATE} $CMSSW_BASE condor_hps_cfg.py
 
 
 
-#DATE=20180218_feb17_all
-#INPUT_FILES=rate_feb17_all.txt
+#DATE=20180227_feb20_5FullGroups_nonReg
+#INPUT_FILES=rate_feb20_5FullGroups.txt
 #
 #farmoutAnalysisJobs \
 #    --output-dir=. \
@@ -48,18 +50,18 @@
 #    --site-requirements='OpSysAndVer == "SL6"' \
 #    --input-basenames-not-unique \
 #    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA_cfg.py
+
+
+#DATE=20180227_eff_singleMuon_feb18
+#INPUT_FILES=eff_singleMuon_feb18.txt
 #
-
-DATE=20180218_eff_singleMuon_feb18
-INPUT_FILES=eff_singleMuon_feb18.txt
-
-farmoutAnalysisJobs \
-    --output-dir=. \
-    --input-files-per-job=25 \
-    --input-file-list=condorFileLists/${INPUT_FILES} \
-    --site-requirements='OpSysAndVer == "SL6"' \
-    --input-basenames-not-unique \
-    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA-RECO_cfg.py
+#farmoutAnalysisJobs \
+#    --output-dir=. \
+#    --input-files-per-job=25 \
+#    --input-file-list=condorFileLists/${INPUT_FILES} \
+#    --site-requirements='OpSysAndVer == "SL6"' \
+#    --input-basenames-not-unique \
+#    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA-RECO_cfg.py
 
 
 

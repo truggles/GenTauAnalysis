@@ -31,10 +31,10 @@ config.User.voGroup            = 'uscms'
 
 dataMap = OrderedDict()
 ### FOR EFFICIENCY & OTHER MC STUDIES ###
-#dataMap['qqH125'] = {
-#        'child' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
-#        'grandparent' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
-#    }
+dataMap['qqH125'] = {
+        'child' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
+        'grandparent' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
+    }
 #dataMap['ggH125'] = {
 #        'child' : '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/MINIAODSIM',
 #        'grandparent' : '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/GEN-SIM-RAW',
@@ -43,10 +43,10 @@ dataMap = OrderedDict()
 #        'child' : '/ZprimeToTauTau_M-1500_TuneCUETP8M1_13TeV-pythia8-tauola/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
 #        'grandparent' : '/ZprimeToTauTau_M-1500_TuneCUETP8M1_13TeV-pythia8-tauola/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
 #    }
-dataMap['DYJetsToLL'] = {
-        'child' : '/DYJetsToLL_M-50_Zpt-150toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
-        'grandparent' : '/DYJetsToLL_M-50_Zpt-150toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
-    }
+#dataMap['DYJetsToLL'] = {
+#        'child' : '/DYJetsToLL_M-50_Zpt-150toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
+#        'grandparent' : '/DYJetsToLL_M-50_Zpt-150toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
+#    }
 #dataMap['DYJets'] = {
 #        'child' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/MINIAODSIM',
 #        'grandparent' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/GEN-SIM-RAW',
@@ -132,10 +132,10 @@ if __name__ == '__main__':
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k in dataMap.keys() :
-        config.General.requestName = '%s_hps_10x_march01_v2' % k
+        config.General.requestName = '%s_hps_1003_march07_v1' % k
         config.Data.outputDatasetTag   = config.General.requestName
         if not 'hltPhysics' in k and not 'Data' in k :
-            config.JobType.psetName        = 'hps_hlt_10x_MC.py'
+            config.JobType.psetName        = 'hps_hlt_MC_FINAL.py'
             config.Data.inputDataset = dataMap[ k ][ 'child' ]
             config.Data.secondaryInputDataset = dataMap[ k ][ 'grandparent' ]
             # ZPrime Test
@@ -148,7 +148,7 @@ if __name__ == '__main__':
             config.JobType.maxMemoryMB = 2500
             config.Data.splitting      = 'FileBased'
             config.Data.unitsPerJob    = 5
-            config.JobType.psetName    = 'hps_hlt_10x_DATA.py'
+            config.JobType.psetName    = 'hps_hlt_DATA_FINAL.py'
             config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/PromptReco/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
             #config.Data.totalUnits         = 45 # for small tests
         elif 'MuTauSkim' in k :

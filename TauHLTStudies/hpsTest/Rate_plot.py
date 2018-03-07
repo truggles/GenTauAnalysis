@@ -39,7 +39,10 @@ def getRateAndPlot( iTree, plotBase, hpsTrigger, cut, saveName ) :
     p.cd()
     axes = ';HPS-enabled Trigger;Current Trigger'
     h = ROOT.TH2D( saveName, saveName+' HLT Acceptance'+axes, 2, -0.5, 1.5, 2, -0.5, 1.5 )
-    iTree.Draw('%s:%s >> %s' % (hpsTrigger.replace('HPS',''), hpsTrigger, saveName), cut, "COLZ TEXT")
+    if 'HLT_VBF' in hpsTrigger :
+        iTree.Draw('%s:%s >> %s' % (hpsTrigger.replace('HPS','').replace('_Reg',''), hpsTrigger, saveName), cut, "COLZ TEXT")
+    else :
+        iTree.Draw('%s:%s >> %s' % (hpsTrigger.replace('HPS',''), hpsTrigger, saveName), cut, "COLZ TEXT")
     c.SaveAs( plotBase+saveName.replace(' ','_')+'.png' )
     print "%s %i %i %i" % (hpsTrigger.replace('HPS',''), h.GetBinContent(1, 2), h.GetBinContent(2, 1), h.GetBinContent(2, 2) )
     

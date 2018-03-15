@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 
 mt_triggers = [
-   #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1",
+#   "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1",
    #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1",
    #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
    #"HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
 #   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1",
    #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1",
-   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
-   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
-   #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr",
+   #"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
+#   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
+   "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr",
    #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1",
    #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1",
-   "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
-   "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
+   #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",
+   #"HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",
 ]
 
 doLog = True
@@ -70,7 +70,7 @@ def getBinning( name, division ) :
             binning.append( i )
     else :
         binning = array('d', [20,22.5,25,27.5,30,32.5,35,37.5,40,\
-            42.5,45,47.5,50,55,60,67.5,80,100,250])#,400,1000])
+            42.5,45,47.5,50,55,60,65,70,80,100,150,250])#,400,1000])
     return binning
 
 
@@ -158,7 +158,7 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
         doFit = False
         maxi = 60
     
-    colors = [ROOT.kRed, ROOT.kBlue, ROOT.kGreen+1, ROOT.kOrange]
+    colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen+1, ROOT.kOrange, ROOT.kYellow]
     legItems = []
     legNames = []
     cnt = 0
@@ -251,18 +251,19 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
 
 for channel in ['mt',] :
 
-    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/oct11/'
+    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/nov21/'
     if not os.path.exists( plotBase ) : os.makedirs( plotBase )
 
-    inDir = '/data/truggles/oct09v1_TauTAP/'
     triggers = mt_triggers
-    fData = ROOT.TFile(inDir+'SingleMuonTauTAP.root', 'r')
+    inDir = '/data/truggles/nov12_tauTAP_sync/'
+    fData = ROOT.TFile(inDir+'SingleMuonTauTAP_nov09forSyncV_B-E.root', 'r')
     tData = fData.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
     #fggH125 = ROOT.TFile('/data/truggles/hltTaus_oct03v2/GluGluHToTauTau_M125.root', 'r')
     #tggH125 = fggH125.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
     #fqqH125 = ROOT.TFile('/data/truggles/hltTaus_oct03v2/VBFHToTauTau_M125.root', 'r')
     #tqqH125 = fqqH125.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
-    fDYJets = ROOT.TFile(inDir+'DYJetsTauTAP.root', 'r')
+    inDir = '/data/truggles/oct24_tauTAP_sync/'
+    fDYJets = ROOT.TFile(inDir+'DYJets_all_sync_ext1_v4.root', 'r')
     tDYJets = fDYJets.Get('tauMiniAODHLTStudies/tagAndProbe/Ntuple')
     trees = {
         #'ggH125' : tggH125,
@@ -276,8 +277,8 @@ for channel in ['mt',] :
     c = ROOT.TCanvas( 'c1', 'c1', 800, 700 ) 
     p = ROOT.TPad( 'p1', 'p1', 0, 0, 1, 1 )
     p.Draw()
-    ROOT.gPad.SetLeftMargin( ROOT.gPad.GetLeftMargin() * 1.5 )
-    ROOT.gPad.SetRightMargin( ROOT.gPad.GetRightMargin() * 1.5 )
+    ROOT.gPad.SetLeftMargin( ROOT.gPad.GetLeftMargin() * 1.4 )
+    ROOT.gPad.SetRightMargin( ROOT.gPad.GetRightMargin() * 1.2 )
     p.Draw()
     p.cd()
     
@@ -285,22 +286,23 @@ for channel in ['mt',] :
 
     Divisions = OrderedDict()
 
-    Divisions['All 2017 Data - nvtx'] = 'run > 0'
-    #Divisions['ggH125 - nvtx'] = 'run > 0'
-    #Divisions['qqH125 - nvtx'] = 'run > 0'
-    Divisions['DYJets - nvtx'] = 'run > 0'
-    Divisions['RunB - nvtx'] = 'run >= 297020 && run <= 299329'
-    Divisions['RunC - nvtx'] = 'run >= 299337 && run <= 302029'
-    Divisions['RunD - nvtx'] = 'run >= 302030 && run <= 303434'
-    Divisions['RunE - nvtx'] = 'run >= 303435 && run <= 304826'
-    Divisions['All 2017 Data'] = 'run > 0'
-    #Divisions['ggH125'] = 'run > 0'
-    #Divisions['qqH125'] = 'run > 0'
-    Divisions['DYJets'] = 'run > 0'
-    Divisions['RunB'] = 'run >= 297020 && run <= 299329'
-    Divisions['RunC'] = 'run >= 299337 && run <= 302029'
-    Divisions['RunD'] = 'run >= 302030 && run <= 303434'
-    Divisions['RunE'] = 'run >= 303435 && run <= 304826'
+    # Run F starts at 304911
+#    Divisions['All 2017 Data - nvtx'] = 'RunNumber > 0 && RunNumber < 304911'
+#    #Divisions['ggH125 - nvtx'] = 'RunNumber > 0 && RunNumber < 304911'
+#    #Divisions['qqH125 - nvtx'] = 'RunNumber > 0 && RunNumber < 304911'
+#    Divisions['DYJets - nvtx'] = 'RunNumber > 0 && RunNumber < 304911'
+#    Divisions['RunB - nvtx'] = 'RunNumber >= 297020 && RunNumber <= 299329'
+#    Divisions['RunC - nvtx'] = 'RunNumber >= 299337 && RunNumber <= 302029'
+#    Divisions['RunD - nvtx'] = 'RunNumber >= 302030 && RunNumber <= 303434'
+#    Divisions['RunE - nvtx'] = 'RunNumber >= 303435 && RunNumber <= 304826'
+    Divisions['All 2017 Data'] = 'RunNumber > 0 && RunNumber < 304911'
+    #Divisions['ggH125'] = 'RunNumber > 0 && RunNumber < 304911'
+    #Divisions['qqH125'] = 'RunNumber > 0 && RunNumber < 304911'
+    Divisions['DYJets'] = 'RunNumber > 0 && RunNumber < 304911'
+#    Divisions['RunB'] = 'RunNumber >= 297020 && RunNumber <= 299329'
+#    Divisions['RunC'] = 'RunNumber >= 299337 && RunNumber <= 302029'
+#    Divisions['RunD'] = 'RunNumber >= 302030 && RunNumber <= 303434'
+#    Divisions['RunE'] = 'RunNumber >= 303435 && RunNumber <= 304826'
     #Divisions['Medium'] = 'tMVAIsoMedium == 1 && tMVAIsoTight != 1'
     #Divisions['Tight'] = 'tMVAIsoTight == 1 && tMVAIsoVTight != 1'
     #Divisions['VTight'] = 'tMVAIsoVTight == 1'
@@ -308,21 +310,21 @@ for channel in ['mt',] :
     #Divisions['nvtx15to25'] = 'nvtx >= 15 && nvtx < 25'
     #Divisions['nvtx25to35'] = 'nvtx >= 25 && nvtx < 35'
     #Divisions['nvtx35plus'] = 'nvtx >= 35'
-    #Divisions['2017 RunD 0 <= nvtx <= 25'] = 'nvtx >= 0 && nvtx < 25 && run >= 302030 && run <= 303434'
-    #Divisions['2017 RunD nvtx > 25'] = 'nvtx >= 25 && run >= 302030 && run <= 303434'
+    #Divisions['2017 RunD 0 <= nvtx <= 25'] = 'nvtx >= 0 && nvtx < 25 && RunNumber >= 302030 && RunNumber <= 303434'
+    #Divisions['2017 RunD nvtx > 25'] = 'nvtx >= 25 && RunNumber >= 302030 && RunNumber <= 303434'
 
     isolations = ['Medium','Tight','VTight']
-    runs = ['RunB','RunC','RunD','RunE','DYJets']
+    RunNumbers = ['DYJets','RunB','RunC','RunD','RunE']
     nvtxs = ['nvtx0to15','nvtx15to25','nvtx25to35','nvtx35plus',]
     nvtxsRunD = ['2017 RunD 0 <= nvtx <= 25','2017 RunD nvtx > 25',]
     #all2017 = ['All 2017 Data','ggH125','qqH125','DYJets']
-    all2017 = ['All 2017 Data','DYJets']
+    all2017 = ['DYJets','All 2017 Data']
     #all2017nvtx = ['All 2017 Data - nvtx','ggH125 - nvtx','qqH125 - nvtx','DYJets - nvtx']
-    all2017nvtx = ['All 2017 Data - nvtx','DYJets - nvtx']
-    nvtxByRun = ['RunB - nvtx', 'RunC - nvtx', 'RunD - nvtx', 'RunE - nvtx', 'DYJets - nvtx']
+    all2017nvtx = ['DYJets - nvtx','All 2017 Data - nvtx']
+    nvtxByRun = ['DYJets - nvtx', 'RunB - nvtx', 'RunC - nvtx', 'RunD - nvtx', 'RunE - nvtx']
 
     if 'Medium' not in Divisions.keys() : isolations = []
-    if 'RunB' not in Divisions.keys() : runs = []
+    if 'RunB' not in Divisions.keys() : RunNumbers = []
     if 'nvtx0to15' not in Divisions.keys() : nvtxs = []
     if '2017 RunD 0 <= nvtx <= 25' not in Divisions.keys() : nvtxsRunD = []
     if 'All 2017 Data' not in Divisions.keys() : all2017 = []
@@ -341,19 +343,19 @@ for channel in ['mt',] :
             print division
             effPlots[division] = {}
 
-            baselineCut = 'mPt > 24 && tMVAIsoMedium == 1 && HLT_IsoMu24 == 1 && m_vis > 40 && m_vis < 80 && transMass < 30'
+            baselineCut = 'muonPt > 24 && tMVAIsoMedium == 1 && HLT_IsoMu27 == 1 && m_vis > 40 && m_vis < 80 && transMass < 30 && passingMuons == 1 && nVetoMuons == 1 && passingElectrons == 0 && nBTag == 0'
 
             # If 1pt, it wasn't in Run B
             if "Trk30_eta2p1_1pr" in trigger and 'All 2017 Data' in division :
                 # lower is bottom of RunC, top is top of RunD
-                baselineCut += ' && run >= 299337 && run <= 303434'
+                baselineCut += ' && RunNumber >= 299337'
             else :
                 baselineCut += ' && '+Divisions[division]
 
             # For 1pr HLT Paths
             if "Trk30_eta2p1_1pr" in trigger :
-                 baselineCut += ' && tDecayMode < 2'
-                 #baselineCut += ' && tDecayMode == 10'
+                 #baselineCut += ' && tauDM < 2'
+                 baselineCut += ' && tauDM == 1'
 
             cuts = {
                 'SSPass': baselineCut+' && SS == 1 \
@@ -370,12 +372,12 @@ for channel in ['mt',] :
                 print name, cut
                 xCut = '('+cut+')*puweight'
                 if ' - nvtx' in division :
-                    if 'PFTau20' in trigger : xCut += '*(tPt > 20)'
-                    if 'PFTau35' in trigger : xCut += '*(tPt > 35)'
-                    if 'PFTau50' in trigger : xCut += '*(tPt > 50)'
+                    if 'PFTau20' in trigger : xCut += '*(tauPt > 25)'
+                    if 'PFTau35' in trigger : xCut += '*(tauPt > 40)'
+                    if 'PFTau50' in trigger : xCut += '*(tauPt > 55)'
                     hists[ name ] = getHist( trees, 'nvtx', xCut, name, division, trigger )
                 else : # normal hists via tau pt
-                    hists[ name ] = getHist( trees, 'tPt', xCut, name, division, trigger )
+                    hists[ name ] = getHist( trees, 'tauPt', xCut, name, division, trigger )
                 
             ### Do OS - SS
             #groups = ['Pass','Fail','All']
@@ -406,10 +408,10 @@ for channel in ['mt',] :
             c.SetName(trigger+'_allIsos')
             makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, isolations, 'Tau MVA Iso ' )
         # Do Run comparison
-        if runs != [] :
+        if RunNumbers != [] :
             print "Run Comparison"
             c.SetName(trigger+'_allRuns')
-            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, runs, '2017 ' )
+            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, RunNumbers, '2017 ' )
 
         # Do NVTX comparison
         if nvtxs != [] :
@@ -438,7 +440,7 @@ for channel in ['mt',] :
             #    effPlots[0].SetTitle(trigger+all2017nvtx[0]+' - nvtx')
             #    saveMap[trigger+all2017nvtx[0]] = effPlots[0]
 
-        # Do NVTX comparison by run
+        # Do NVTX comparison by RunNumber
         if all2017nvtx != [] :
             print "All 2017 Data By Run NVTX"
             c.SetName(trigger+'_nvtxByRun')

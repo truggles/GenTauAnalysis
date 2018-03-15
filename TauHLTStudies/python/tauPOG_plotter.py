@@ -5,7 +5,6 @@ from collections import OrderedDict
 hale_triggers = OrderedDict()
 hale_triggers[ 'hasHLTetauPath_13' ] = 'Electron Tau Paths'
 hale_triggers[ 'hasHLTmutauPath_13' ] = 'Muon Tau Paths'
-hale_triggers[ 'hasHLTditauPath_11or20or21' ] = 'di-Tau Paths'
 hale_triggers[ 'hasHLTditauPath_9or10or11' ] = 'di-Tau Paths'
 
 doLog = True
@@ -95,7 +94,9 @@ def getHist( trees, var, cut, name, division, trigger ) :
     else :
         trees['singleMu'].Draw( var+' >> '+name, doCut )
 
-    print name, h.Integral() #, binning
+    err1 = ROOT.Double(0)
+    h.IntegralAndError( 0, h.GetNbinsX(), err1 )
+    print name, h.Integral(), err1 #, binning
     h.GetXaxis().SetTitle('Offline #tau p_{T} (GeV)')
     h.GetYaxis().SetTitle('Number of Events')
     h.SetDirectory( 0 )
@@ -196,7 +197,7 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
     
     #colors = [ROOT.kRed, ROOT.kBlue, ROOT.kGreen+1, ROOT.kOrange, ROOT.kCyan]
     #colors = [ROOT.kBlue, ROOT.kRed, ROOT.kGreen+1, ROOT.kOrange, ROOT.kCyan]
-    colors = [ROOT.kBlue, ROOT.kRed, ROOT.kBlack, ROOT.kGreen+1, ROOT.kOrange+3, ROOT.kSpring-7]
+    colors = [ROOT.kBlue, ROOT.kRed, ROOT.kBlack, ROOT.kGreen+1, ROOT.kOrange+2, ROOT.kMagenta]
     legItems = []
     legNames = []
     cnt = 0
@@ -214,7 +215,8 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
         effPlots[division].SetLineColor( colors[cnt] )
         effPlots[division].SetLineWidth( 1 )
         effPlots[division].SetMarkerSize( 1 )
-        effPlots[division].SetMarkerStyle( 20+cnt )
+        #effPlots[division].SetMarkerStyle( 20+cnt )
+        effPlots[division].SetMarkerStyle( 20 )
         effPlots[division].SetMarkerColor( colors[cnt] )
         #effPlots[division].SetMarkerColor( cnt+1 )
         if doLog :
@@ -293,7 +295,7 @@ def makeFinalEfficiencyPlot( c, trigger, divisions, effPlots, matchList, legendA
 
 for channel in ['mt',] :
 
-    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/jan28_halesFiles/'
+    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/jan29_halesFilesX/'
     if not os.path.exists( plotBase ) : os.makedirs( plotBase )
 
     inDir = '/afs/cern.ch/user/h/hsert/public/94XSamples/'
@@ -328,17 +330,22 @@ for channel in ['mt',] :
 
     Divisions = OrderedDict()
 
-    Divisions['All 2017 Data'] = '(RunNumber > 0)'
+    Divisions['All 2017 Data'] = '(1.)'
     #Divisions['All 2017 Data phi>2.8 & eta>1.5'] = '(tauPhi > 2.8 && tauEta > 1.5)'
     #Divisions['All 2017 Data phi>0 & eta>1.5'] = '(tauPhi > 0 && tauEta > 1.5)'
-    #Divisions['All 2017 Data phi>2.8 & eta>0 & eta<1.5'] = '(tauPhi > 2.8 && tauEta > 0 && tauEta < 1.5)'
+    Divisions['2017 Data: phi>2.8 & eta>0 & eta<1.5'] = '(tauPhi > 2.8 && tauEta > 0 && abs(tauEta) < 1.5)'
+    Divisions['2017 Data: Barrel !(phi>2.8 & eta>0)'] = '( !(tauPhi > 2.8 && tauEta > 0) && abs(tauEta) < 1.5)'
+    Divisions['2017 Data: End Cap'] = '(abs(tauEta) > 1.5)'
     #Divisions['All 2017 Data Not Dead'] = '(tauPhi < 2.8 || tauEta < 1.5)'
-    Divisions['DYJets'] = '(RunNumber > 0)'
+    #Divisions['DYJets'] = '(RunNumber > 0)'
     #Divisions['DYJets phi>2.8 & eta>1.5'] = '(tauPhi > 2.8 && tauEta > 1.5)'
     #Divisions['DYJets phi>0 & eta>1.5'] = '(tauPhi > 0 && tauEta > 1.5)'
     #Divisions['DYJets phi>2.8 & eta>0 & eta<1.5'] = '(tauPhi > 2.8 && tauEta > 0 && tauEta < 1.5)'
     #Divisions['DYJets Not Dead'] = '(tauPhi < 2.8 || tauEta < 1.5)'
-    #Divisions['DYJets'] = '(RunNumber > 0)'
+    Divisions['DYJets'] = '(RunNumber > 0)'
+    Divisions['DYJets: phi>2.8 & eta>0 & eta<1.5'] = '(tauPhi > 2.8 && tauEta > 0 && abs(tauEta) < 1.5)'
+    Divisions['DYJets: Barrel !(phi>2.8 & eta>0)'] = '( !(tauPhi > 2.8 && tauEta > 0) && abs(tauEta) < 1.5)'
+    Divisions['DYJets: End Cap'] = '(abs(tauEta) > 1.5)'
 
     all2017 = ['All 2017 Data','DYJets']
     all2017LepDead = ['All 2017 Data','All 2017 Data phi>2.8 & eta>1.5',
@@ -347,11 +354,20 @@ for channel in ['mt',] :
         'DYJets','DYJets phi>0 & eta>1.5']
     all2017DiTauDeadBarrel = ['All 2017 Data','All 2017 Data phi>2.8 & eta>0 & eta<1.5',
         'DYJets','DYJets phi>2.8 & eta>0 & eta<1.5']
+    proposedMthd = [
+        '2017 Data: phi>2.8 & eta>0 & eta<1.5',
+        '2017 Data: Barrel !(phi>2.8 & eta>0)',
+        '2017 Data: End Cap',
+        'DYJets: phi>2.8 & eta>0 & eta<1.5',
+        'DYJets: Barrel !(phi>2.8 & eta>0)',
+        'DYJets: End Cap',
+    ]
 
     if 'All 2017 Data' not in Divisions.keys() : all2017 = []
     if 'All 2017 Data phi>2.8 & eta>1.5' not in Divisions.keys() : all2017LepDead = []
     if 'All 2017 Data phi>0 & eta>1.5' not in Divisions.keys() : all2017DiTauDead = []
     if 'All 2017 Data phi>2.8 & eta>0 & eta<1.5' not in Divisions.keys() : all2017DiTauDeadBarrel = []
+    if '2017 Data: Barrel !(phi>2.8 & eta>0)' not in Divisions.keys() : proposedMthd = []
 
 
     saveMap = {}
@@ -388,6 +404,9 @@ for channel in ['mt',] :
                     if 'ditau' in trigger : xCut += '*(tauPt > 40)'
                     hists[ name ] = get2DHist( trees, 'tauPhi:tauEta', xCut, name, division, trigger )
                 else : # normal hists via tau pt
+                    #if 'etau' in trigger : xCut += '*(tauPt > 35)'
+                    #if 'mutau' in trigger : xCut += '*(tauPt > 32)'
+                    #if 'ditau' in trigger : xCut += '*(tauPt > 40)'
                     hists[ name ] = getHist( trees, 'tauPt', xCut, name, division, trigger )
                 
 
@@ -450,5 +469,10 @@ for channel in ['mt',] :
             print "All 2017 Data"
             c.SetName(trigger+'_combined_tauDeadBarrel')
             makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, all2017DiTauDeadBarrel, '' )
+        # Proposed method
+        if proposedMthd != [] and not do2D :
+            print "All 2017 Data"
+            c.SetName(trigger+'_combined_proposedMthd')
+            makeFinalEfficiencyPlot( c, trigger, Divisions, effPlots, proposedMthd, '' )
             
 

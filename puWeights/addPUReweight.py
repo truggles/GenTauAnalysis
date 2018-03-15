@@ -67,12 +67,12 @@ if '__main__' in __name__ :
 
         tName = 'tauMiniAODHLTStudies/tagAndProbe/Ntuple'
         dName = 'tauMiniAODHLTStudies/tagAndProbe'
-        base = '/data/truggles/tauTrigger_nov23forSyncV1/'
+        base = '/data/truggles/tauTrigger_nov28forSyncV1/'
         addPuWeight( puDict, base+'DYJetsTauTAP.root', dName, tName )
         ###addPuWeight( puDict, base+'GluGluHToTauTau_M125.root', dName, tName )
         ###addPuWeight( puDict, base+'VBFHToTauTau_M125.root', dName, tName )
         isData = True
-        addPuWeight( puDict, base+'SingleMuonTauTAP_nov23forSyncV1.root', dName, tName, isData )
+        addPuWeight( puDict, base+'SingleMuonTauTAP_nov28forSyncV1.root', dName, tName, isData )
 
 
 

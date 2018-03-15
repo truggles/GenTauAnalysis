@@ -20,9 +20,9 @@ import copy
 mm_triggers = {
 #    # PROBE : [TAG,OtherCuts]
 #    # NAME : [TAG,PROBE,PlotBy/ProbeBy]
-   "HLT_Mu24" : ["(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "((l1Match_HLT_IsoMu24 > 0.5 || l1Match_HLT_IsoTkMu24 > 0.5) && l1Pt > 27)", "l1Match_",27],
+   "HLT_Mu24" : ["(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "((l1Match_HLT_IsoMu24 > 0.5 || l1Match_HLT_IsoTkMu24 > 0.5) && l1Pt > 20)", "l1Match_",25],
    #"HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_Part" : ["(l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL > 0.5 && l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL > 0.5)", "(l1Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5 && l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)","",0],
-   "HLT_Mu17_TrkIsoVVL" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5 && l1Pt > 20)", "(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "l2Match_",19],
+   "HLT_Mu17_TrkIsoVVL" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5 && l1Pt > 20)", "(l2Match_HLT_Mu17_TrkIsoVVL > 0.5)", "l2Match_",18],
    "HLT_Mu8_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5 && l1Pt > 20)", "(l2Match_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ > 0.5 || l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)","l2Match_",10],
 
    #XXX Don'tUse#"HLT_TkMu8_TrkIsoVVL_and_DZ" : ["(l1Match_HLT_Mu17_TrkIsoVVL > 0.5)", "(l2Match_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ > 0.5)","l2Match_"],
@@ -32,11 +32,11 @@ mm_triggers = {
 }
 
 ee_triggers = {
-   "HLT_Ele27_WPTight_Gsf" : ["(l2Match_HLT_Ele27_WPTight_Gsf > 0.5)", "(l1Match_HLT_Ele27_WPTight_Gsf > 0.5)", "l1Match_",32],
+   "HLT_Ele27_WPTight_Gsf" : ["(l2Match_HLT_Ele27_WPTight_Gsf > 0.5)", "(l1Match_HLT_Ele27_WPTight_Gsf > 0.5)", "l1Match_",28],
    #"HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_Match" : ["(l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5 && l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5 && l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5)", "",27.5],
-   "HLT_Ele23_CaloIdL_TrackIdL_IsoVL" : ["(l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5 && l2Pt > 30)", "(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "l1Match_",27.5],
+   "HLT_Ele23_CaloIdL_TrackIdL_IsoVL" : ["(l2Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5 && l2Pt > 21)", "(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5)", "l1Match_",24],
    #"HLT_Ele12_CaloIdL_TrackIdL_IsoVL_leadingLepTagPtReq" : ["(l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5 && l1Pt > 25)", "(l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "l2Match_",17.5],
-   "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_and_DZ" : ["(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5 && l1Pt > 30)", "(l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5)", "l2Match_",17.5],
+   "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_and_DZ" : ["(l1Match_HLT_Ele23_CaloIdL_TrackIdL_IsoVL > 0.5 && l1Pt > 25)", "(l2Match_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ > 0.5)", "l2Match_",13],
 
 
    #XXX Don'tUse#"HLT_Ele12_CaloIdL_TrackIdL_IsoVL" : ["(l2Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "(l1Match_HLT_Ele12_CaloIdL_TrackIdL_IsoVL > 0.5)", "l1Match_"],
@@ -98,17 +98,17 @@ def get2DBinningX( name, trigger ) :
     #binning = array('d', [10,12.5,15,17.5,20,22.5,25,27.5,30,32.5,35,37.5,40,\
     #    42.5,45,47.5,50,55,60,67.5,80,100,250])#,400,1000])
     if trigger == "HLT_Ele27_WPTight_Gsf" :
-        binning = array('d', [28,30,32,36,40,45,50,60,80,100,200])
+        binning = array('d', [26,28,30,32,36,40,45,50,60,80,100,200])
     elif trigger == "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_and_DZ" :
-        binning = array('d', [15,17.5,20,25,35,50,200])
+        binning = array('d', [10,13,15,17.5,20,25,35,50,200])
     elif trigger == "HLT_Ele23_CaloIdL_TrackIdL_IsoVL" :
-        binning = array('d', [25,27.5,32.5,40,50,60,80,100,200])
+        binning = array('d', [22,24,27.5,32.5,40,50,60,80,100,200])
     elif trigger == "HLT_Mu8_and_DZ" :
         binning = array('d', [7,8,9,10,15,20,30,50,80,200])
     elif trigger == "HLT_Mu24" :
-        binning = array('d', [25,27,31,35,40,60,80,100,200])
+        binning = array('d', [23,25,27,31,35,40,60,80,100,200])
     elif trigger == "HLT_Mu17_TrkIsoVVL" :
-        binning = array('d', [17,19,23,27.5,35,40,50,70,200])
+        binning = array('d', [15,17,18,23,27.5,35,40,50,70,200])
     else :
         binning = array('d', [10,12.5,15,17.5,20,22.5,25,27.5,30,35,40,\
             50,60,80,200])
@@ -393,13 +393,13 @@ def makeFinalEfficiencyPlot( fOut, c, trigger, divisions, effPlots, matchList, l
     del leg
     c.Clear()
 
-fOut = ROOT.TFile('triggerSFs2.root','RECREATE')
+fOut = ROOT.TFile('triggerSFs3.root','RECREATE')
 
 for channel in ['ee','mm',] :
 #for channel in ['mm',] :
 #for channel in ['ee',] :
 
-    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/zhTrigEff_nov10v4_eta/'
+    plotBase='/afs/cern.ch/user/t/truggles/www/HLT_Studies/zhTrigEff_march15_final/'
 
     if channel == 'ee' :
         triggers = ee_triggers.keys()

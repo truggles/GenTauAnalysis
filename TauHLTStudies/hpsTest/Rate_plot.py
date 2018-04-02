@@ -17,6 +17,7 @@ name = 'rate_feb25_cut'
 name = 'rate_feb25'
 name = 'rate_feb27'
 name = 'rate_feb27_nonReg'
+name = 'rate_april02_cut'
 
 
 plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'/'
@@ -60,7 +61,7 @@ runLumiCut = "RunNumber == 305636 && lumi >= 199 && lumi < 528"
 # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauTrigger#Trigger_table_for_2017
 
 trigMap = {
-    #'di-Tau35_Medium' : 'HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg',
+    'di-Tau35_Medium' : 'HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg',
     #'di-Tau35_Tight' : 'HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg',
     #'di-Tau35_Medium_TightID' : 'HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg',
     #'di-Tau35_Tight_TightID' : 'HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg',
@@ -68,13 +69,13 @@ trigMap = {
     #'di-Tau40_Tight' : 'HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg',
     #'di-Tau40_Medium_TightID' : 'HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg',
     #'di-Tau40_Tight_TightID' : 'HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg',
-    #'mu20Tau27_Loose' : 'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1',
+    'mu20Tau27_Loose' : 'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1',
     #'mu20Tau27_Medium' : 'HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_CrossL1',
     #'mu20Tau27_Tight' : 'HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_CrossL1',
     #'mu20Tau27_Loose_TightID' : 'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1',
     #'mu20Tau27_Medium_TightID' : 'HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1',
     #'mu20Tau27_Tight_TightID' : 'HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1',
-    #'vbf_Loose' : 'HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_Reg',
+    'vbf_Loose' : 'HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_Reg',
     #'vbf_Medium' : 'HLT_VBF_DoubleMediumChargedIsoPFTauHPS20_Trk1_eta2p1_Reg',
     #'vbf_Tight' : 'HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_Reg',
     #'Tau50Med_1pr' : 'HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr',
@@ -87,14 +88,14 @@ trigMap = {
     #'mon_di-Tau35_Medium_TightID' : 'HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1',
     #'mon_di-Tau35_Tight_TightID' : 'HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1',
 
-    #'singleTau50_Medium_1pr' : 'HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr',
+    'singleTau50_Medium_1pr' : 'HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr',
 
     #'tau50_MET90' : 'HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET90',
     #'tau50_MET100' : 'HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET100',
     #'tau50_MET110' : 'HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET110',
     #'tau50_MET130' : 'HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET130',
 
-    #'Elec24_Tau30_Loose' : 'HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_CrossL1',
+    'Elec24_Tau30_Loose' : 'HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_CrossL1',
     #'Elec24_Tau30_Loose_tightID' : 'HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1',
     #'Elec24_Tau30_Medium' : 'HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTauHPS30_eta2p1_CrossL1',
     #'Elec24_Tau30_Medium_tightID' : 'HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1',

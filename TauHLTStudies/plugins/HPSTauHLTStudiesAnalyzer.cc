@@ -51,6 +51,9 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "DataFormats/Math/interface/deltaR.h"
+// L2p5 Tau Studies
+#include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/JetReco/interface/CaloJet.h"
 
 // Trigger stuff...
 #include "DataFormats/Common/interface/TriggerResults.h"
@@ -124,6 +127,10 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
 
       edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseIdMapTag_;
 
+      // L2.5 Tau Studies
+      edm::EDGetTokenT<std::vector<reco::CaloJet>> l2p5TauJetToken_;
+      edm::EDGetTokenT<std::vector<reco::Vertex>> l2p5VerticesToken_;
+      edm::EDGetTokenT<std::vector<reco::Track>> l2p5TracksToken_;
 
       // l1 extras
       //edm::EDGetTokenT<edm::TriggerResults> triggerToken_;
@@ -286,7 +293,11 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
     triggerObjectsToken_(consumes<pat::TriggerObjectStandAloneCollection>(iConfig.getParameter<edm::InputTag>("triggerObjectsSrc"))),
     stage2TauToken_(consumes<BXVector<l1t::Tau>>(iConfig.getParameter<edm::InputTag>("stage2TauSrc"))),
     genToken_(consumes<std::vector<reco::GenParticle>>(iConfig.getParameter<edm::InputTag>("genSrc"))),
-    eleLooseIdMapTag_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap")))
+    eleLooseIdMapTag_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"))),
+
+    l2p5TauJetToken_(consumes<std::vector<reco::CaloJet>>(iConfig.getParameter<edm::InputTag>("l2p5TauJet"))),
+    l2p5VerticesToken_(consumes<std::vector<reco::Vertex>>(iConfig.getParameter<edm::InputTag>("l2p5Vertex"))),
+    l2p5TracksToken_(consumes<std::vector<reco::Track>>(iConfig.getParameter<edm::InputTag>("l2p5Tracks")))
 {
    //now do what ever initialization is needed
    //usesResource("TFileService");
@@ -1121,6 +1132,102 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
             }
         }
     }
+
+
+
+    // L2.5 Tau Studies
+    edm::Handle<std::vector<reco::CaloJet>> l2p5Taus;
+    try {iEvent.getByToken(l2p5TauJetToken_, l2p5Taus);} catch (...) {;}
+    edm::Handle<std::vector<reco::Vertex>> l2p5Vertices;
+    try {iEvent.getByToken(l2p5VerticesToken_, l2p5Vertices);} catch (...) {;}
+    edm::Handle<std::vector<reco::Track>> l2p5Tracks;
+    try {iEvent.getByToken(l2p5TracksToken_, l2p5Tracks);} catch (...) {;}
+
+    // Find Pixel based PV
+    // Do this same way as cms.EDProducer( "L2TauPixelIsoTagProducer")
+    // https://github.com/cms-sw/cmssw/blob/master/RecoTauTag/HLTProducers/src/L2TauPixelIsoTagProducer.cc#L72
+    const reco::Vertex *pv = nullptr;
+    if (l2p5Vertices.isValid()) {
+        //for (size_t iVert = 0; iVert != l2p5Vertices->size(); ++iVert) {
+        //    reco::VertexRef vertexRef(l2p5Vertices, iVert);
+        //    std::cout << "vertexRef: " << iVert << " (x,y,z): " << vertexRef->position() << std::endl;
+        //    std::cout << "vertexRef: " << iVert << " p4: " << vertexRef->p4() << std::endl;
+        //    std::cout << "vertexRef: " << iVert << " pt: " << vertexRef->p4().pt() << std::endl;
+        //    if (vertexRef->p4().pt() > pv.p4().pt()) pv = *vertexRef;
+        //}
+        for(const auto & v : *(l2p5Vertices.product()) ) {
+            if(!v.isValid() || v.isFake()) continue;
+            pv = &v;
+            break;
+        }
+    }
+
+    // Currently mimicing default values for hltL2TauPixelIsoTagProducerL1TauSeeded
+    // EDProducer( "L2TauPixelIsoTagProducer")
+    // search for it in
+    // https://github.com/truggles/THRAnalysis/blob/hps_at_hlt_10X/TauHLTStudies/hpsTest/hps_hlt_MC_FINAL.py
+    // The currently set maximum value for pixel iso is 4.5, see
+    // hltL2TauIsoFilterL1TauSeeded
+    float m_trackMinPt = 0.9;
+    float m_trackMinNHits = 3;
+    float m_trackMaxNChi2 = 1000;
+    float m_trackMaxDxy = 0.2;
+    float m_isoCone2Min = 0.15;
+    float m_isoCone2Max = 0.4;
+    if (l2p5Taus.isValid() && l2p5Tracks.isValid() && pv && l2p5Taus->size()>0) {
+
+        // If primary vertex exists, calculate jets' isolation:
+        for (size_t iTau = 0; iTau != l2p5Taus->size(); ++iTau) {
+            reco::CaloJetRef caloTauRef(l2p5Taus, iTau);
+            // re-calculate caloTau eta in PV:
+            float caloTau_eta = reco::Jet::physicsEta(pv->z(), caloTauRef->eta());
+            float caloTau_phi = caloTauRef->phi();
+  
+            // to calculate isolation, use only tracks that were assigned to the vertex
+            float iso = 0.f;
+            for(vector<reco::TrackBaseRef>::const_iterator tr = pv->tracks_begin(); tr != pv->tracks_end(); ++tr) {
+            //for (size_t iTrack = 0; iTrack != l2p5Tracks->size(); ++iTrack) {
+                //reco::TrackRef trackRef(l2p5Tracks, iTrack);
+                if ((*tr)->pt() < m_trackMinPt) continue;
+                if ((*tr)->numberOfValidHits() < m_trackMinNHits) continue;
+                if ((*tr)->normalizedChi2() > m_trackMaxNChi2) continue;
+                //if (std::abs( (*tr)->dxy(*bs) ) > m_trackMaxDxy) continue;
+  
+                float dr2 = deltaR2 (caloTau_eta, caloTau_phi, (*tr)->eta(), (*tr)->phi());
+  
+                // sum pT based isolation
+                if (dr2 >= m_isoCone2Min && dr2 <= m_isoCone2Max) iso += (*tr)->pt();
+            }
+            std::cout << "CaloJetRef pt: " << caloTauRef->pt() << " iso sum: " << iso << std::endl;
+        }
+
+        //for (size_t iTau = 0; iTau != l2p5Taus->size(); ++iTau) {
+        //    reco::CaloJetRef caloTauRef(l2p5Taus, iTau);
+        //    std::cout << "CaloJetRef: " << iTau << " pt: " << caloTauRef->pt() << std::endl;
+        //    // Loop over all tracks and check DR with tau
+        //    // TO DO, check if these tracks are all associated with PV
+        //    float iso_sum = 0.0;
+        //    if (l2p5Tracks.isValid()) {
+        //        for (size_t iTrack = 0; iTrack != l2p5Tracks->size(); ++iTrack) {
+        //            reco::TrackRef trackRef(l2p5Tracks, iTrack);
+        //            // Default track cleaning
+        //            if (trackRef->pt()<0.9) continue;
+        //            if (trackRef->numberOfValidHits()<3) continue;
+        //            if (trackRef->chi2() < 1000) continue;
+        //            // dxy < 0.2 to consider
+        //            //if ( TMath::Sqrt( (trackRef->pt()<0.9) continue;
+        //            float drTrack = deltaR( *caloTauRef, *trackRef );
+        //            if (drTrack < 0.5) {
+        //                iso_sum += trackRef->pt();
+        //                std::cout << "trackRef: " << iTrack << " dr: " << drTrack << " pt: " << trackRef->pt() << std::endl;
+        //            }
+        //        }
+        //    std::cout << "CaloJetRef: " << iTau << " pt: " << caloTauRef->pt() << " iso sum: " << iso_sum << std::endl;
+        //    }
+        //}
+    }
+    
+
 
 
     //// Do trigger object matching

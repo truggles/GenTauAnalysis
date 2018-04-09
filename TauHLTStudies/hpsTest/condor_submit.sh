@@ -26,10 +26,8 @@
 ### INPUT_FILES=jan28_V7_rate.txt
 #########
 
-DATE=20180305_mar01_finalCfg_DYtoLL
-INPUT_FILES=eff_feb17_finalCfg.txt
-INPUT_FILES=Zprime1500_mar01.txt
-INPUT_FILES=eff_DYJets_ZBoost_mar03.txt
+DATE=20180402_mar07_1003_eff
+INPUT_FILES=qqH125_1003_march07.txt
 
 farmoutAnalysisJobs \
     --output-dir=. \
@@ -40,16 +38,16 @@ farmoutAnalysisJobs \
 
 
 
-#DATE=20180227_feb20_5FullGroups_nonReg
-#INPUT_FILES=rate_feb20_5FullGroups.txt
-#
-#farmoutAnalysisJobs \
-#    --output-dir=. \
-#    --input-files-per-job=10 \
-#    --input-file-list=condorFileLists/${INPUT_FILES} \
-#    --site-requirements='OpSysAndVer == "SL6"' \
-#    --input-basenames-not-unique \
-#    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA_cfg.py
+DATE=20180402_mar07_1003_rate
+INPUT_FILES=rate_1003_march07.txt
+
+farmoutAnalysisJobs \
+    --output-dir=. \
+    --input-files-per-job=10 \
+    --input-file-list=condorFileLists/${INPUT_FILES} \
+    --site-requirements='OpSysAndVer == "SL6"' \
+    --input-basenames-not-unique \
+    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA_cfg.py
 
 
 #DATE=20180227_eff_singleMuon_feb18

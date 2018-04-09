@@ -54,6 +54,7 @@
 // L2p5 Tau Studies
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/JetReco/interface/CaloJet.h"
+#include "DataFormats/BeamSpot/interface/BeamSpot.h"
 
 // Trigger stuff...
 #include "DataFormats/Common/interface/TriggerResults.h"
@@ -131,6 +132,7 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
       edm::EDGetTokenT<std::vector<reco::CaloJet>> l2p5TauJetToken_;
       edm::EDGetTokenT<std::vector<reco::Vertex>> l2p5VerticesToken_;
       edm::EDGetTokenT<std::vector<reco::Track>> l2p5TracksToken_;
+      edm::EDGetTokenT<reco::BeamSpot> hltBeamSpotToken_;
 
       // l1 extras
       //edm::EDGetTokenT<edm::TriggerResults> triggerToken_;
@@ -297,7 +299,8 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
 
     l2p5TauJetToken_(consumes<std::vector<reco::CaloJet>>(iConfig.getParameter<edm::InputTag>("l2p5TauJet"))),
     l2p5VerticesToken_(consumes<std::vector<reco::Vertex>>(iConfig.getParameter<edm::InputTag>("l2p5Vertex"))),
-    l2p5TracksToken_(consumes<std::vector<reco::Track>>(iConfig.getParameter<edm::InputTag>("l2p5Tracks")))
+    l2p5TracksToken_(consumes<std::vector<reco::Track>>(iConfig.getParameter<edm::InputTag>("l2p5Tracks"))),
+    hltBeamSpotToken_(consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamSpot")))
 {
    //now do what ever initialization is needed
    //usesResource("TFileService");
@@ -1142,6 +1145,8 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     try {iEvent.getByToken(l2p5VerticesToken_, l2p5Vertices);} catch (...) {;}
     edm::Handle<std::vector<reco::Track>> l2p5Tracks;
     try {iEvent.getByToken(l2p5TracksToken_, l2p5Tracks);} catch (...) {;}
+    edm::Handle<reco::BeamSpot> hltBeamSpot;
+    try {iEvent.getByToken(hltBeamSpotToken_, hltBeamSpot);} catch (...) {;}
 
     // Find Pixel based PV
     // Do this same way as cms.EDProducer( "L2TauPixelIsoTagProducer")
@@ -1174,7 +1179,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     float m_trackMaxDxy = 0.2;
     float m_isoCone2Min = 0.15;
     float m_isoCone2Max = 0.4;
-    if (l2p5Taus.isValid() && l2p5Tracks.isValid() && pv && l2p5Taus->size()>0) {
+    if (l2p5Taus.isValid() && l2p5Tracks.isValid() && hltBeamSpot.isValid() && pv && l2p5Taus->size()>0) {
 
         // If primary vertex exists, calculate jets' isolation:
         for (size_t iTau = 0; iTau != l2p5Taus->size(); ++iTau) {
@@ -1191,7 +1196,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
                 if ((*tr)->pt() < m_trackMinPt) continue;
                 if ((*tr)->numberOfValidHits() < m_trackMinNHits) continue;
                 if ((*tr)->normalizedChi2() > m_trackMaxNChi2) continue;
-                //if (std::abs( (*tr)->dxy(*bs) ) > m_trackMaxDxy) continue;
+                if (std::abs( (*tr)->dxy(*hltBeamSpot) ) > m_trackMaxDxy) continue;
   
                 float dr2 = deltaR2 (caloTau_eta, caloTau_phi, (*tr)->eta(), (*tr)->phi());
   

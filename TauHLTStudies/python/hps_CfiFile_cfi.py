@@ -29,4 +29,5 @@ hpsTauHLTStudies = cms.EDAnalyzer("HPSTauHLTStudiesAnalyzer",
     l2p5TauJet = cms.InputTag("hltL2TauJetsL1TauSeeded", "", "MYHLT"),
     l2p5Vertex = cms.InputTag("hltPixelVerticesRegL1TauSeeded", "", "MYHLT"),
     l2p5Tracks = cms.InputTag("hltPixelTracksMergedRegL1TauSeeded", "", "MYHLT"),
+    beamSpot = cms.InputTag("hltOnlineBeamSpot", "", "MYHLT"),
 )

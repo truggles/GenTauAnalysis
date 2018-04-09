@@ -132,7 +132,7 @@ if __name__ == '__main__':
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k in dataMap.keys() :
-        config.General.requestName = '%s_hps_1003_march07_v1' % k
+        config.General.requestName = '%s_L2p5_1003_april09_v3' % k
         config.Data.outputDatasetTag   = config.General.requestName
         if not 'hltPhysics' in k and not 'Data' in k :
             config.JobType.psetName        = 'hps_hlt_MC_FINAL.py'
@@ -142,7 +142,7 @@ if __name__ == '__main__':
             config.JobType.maxMemoryMB     = 2500
             config.Data.splitting          = 'EventAwareLumiBased'
             config.Data.unitsPerJob        = 2000 # events / job when using EventAwareLumiBased
-            #config.Data.totalUnits         = 30000 # for tests
+            #config.Data.totalUnits         = 10000 # for tests
         elif 'hltPhysics' in k :
             config.Data.inputDataset = dataMap[ k ][ 'grandparent' ]
             config.JobType.maxMemoryMB = 2500

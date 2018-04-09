@@ -1,10 +1,10 @@
-# hltGetConfiguration /users/tstreble/CMSSW_10_0_3/HLT_Tau_HPS_integr/V23 --globaltag 94X_mc2017_realistic_TSG_2017_12_19_13_49_40 --input root://cms-xrd-global.cern.ch//store/mc/RunIISummer17DRStdmix/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/70000/F87B3F2F-C6A4-E711-8BFA-0CC47A4D7646.root --mc --process TAUHLT --full --offline --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2017DtUnpacking --unprescale --max-events 10 --output none --setup /dev/CMSSW_10_0_0/GRun --l1-emulator uGT --l1 L1Menu_Collisions2017_v4
+# hltGetConfiguration /users/tstreble/CMSSW_10_0_3/HLT_Tau_HPS_integr/V23 --globaltag 94X_mc2017_realistic_TSG_2017_12_19_13_49_40 --input root://cms-xrd-global.cern.ch//store/mc/RunIISummer17DRStdmix/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/70000/F87B3F2F-C6A4-E711-8BFA-0CC47A4D7646.root --mc --process MYHLT --full --offline --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2017DtUnpacking --unprescale --max-events 10 --output none --setup /dev/CMSSW_10_0_0/GRun --l1-emulator uGT --l1 L1Menu_Collisions2017_v4
 
 # /users/tstreble/CMSSW_10_0_3/HLT_Tau_HPS_integr/V23 (CMSSW_10_0_3)
 
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process( "TAUHLT" )
+process = cms.Process( "MYHLT" )
 process.load("setup_dev_CMSSW_10_0_0_GRun_cff")
 
 process.HLTConfigVersion = cms.PSet(
@@ -23041,14 +23041,23 @@ process.Out = cms.OutputModule( "PoolOutputModule",
                                            "keep *_offlineBeamSpot_*_*",
                                            "keep *_hltHpsPFTauProducerSingleTau_*_*",
                                            "keep *_hltHpsSelectedPFTausTrackFinding_*_*",
-                                           "keep *_hltPFTaus_*_TAUHLT",
-                                           "keep *_hltPFTausReg_*_TAUHLT",
-                                           "keep *_hltHpsPFTauProducer_*_TAUHLT",
-                                           "keep *_hltHpsPFTauProducerReg_*_TAUHLT",
-                                           #"keep *_*_*_TAUHLT",
+                                           "keep *_hltPFTaus_*_MYHLT",
+                                           "keep *_hltPFTausReg_*_MYHLT",
+                                           "keep *_hltHpsPFTauProducer_*_MYHLT",
+                                           "keep *_hltHpsPFTauProducerReg_*_MYHLT",
+
+                                           "keep *_hltL2TausForPixelIsolation_*_MYHLT",
+                                           "keep *_hltL2TauPixelIsoTagProducer_*_MYHLT",
+
+                                           "keep *_hltOnlineBeamSpot_*_MYHLT",
+                                           "keep *_hltPixelTracksMergedRegL1TauSeeded_*_MYHLT",
+                                           "keep *_hltPixelVerticesRegL1TauSeeded_*_MYHLT",
+                                           "keep *_hltL2TausForPixelIsolationL1TauSeeded_*_MYHLT",
+                                           "keep *_hltL2TauJetsL1TauSeeded_*_MYHLT",
+                                           "keep *_hltL2TauJetsIsoL1TauSeeded_*_MYHLT",
+                                           #"keep *_*_*_MYHLT",
                                            #"keep *__*_*",
     )
 )
 
 process.end = cms.EndPath( process.Out )
-

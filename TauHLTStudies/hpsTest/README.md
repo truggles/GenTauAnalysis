@@ -14,6 +14,14 @@ git cms-checkdeps -A -a
 scram b -j 6
 ```
 
+# Checking out this code
+
+    git clone -b hlt_l2p5_tracks git@github.com:truggles/THRAnalysis.git
+
+# Basic running this code
+
+    cd THRAnalysis/TauHLTStudies/hpsTest/
+    cmsRun LOCAL_condor_hps_cfg.py # for a basic analyzer
 
 # For L2p5 Tau Studies
 

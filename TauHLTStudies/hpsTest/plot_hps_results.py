@@ -79,6 +79,7 @@ def plotEff( c, plotBase, name, h_denoms, h_passes ) :
     mg.GetXaxis().SetTitle('Gen #tau p_{T} (GeV)')
     if 'offline' in name :
         mg.GetXaxis().SetTitle('Offline #tau p_{T} (GeV)')
+    mg.GetXaxis().SetTitleOffset( mg.GetXaxis().GetTitleOffset() * 1.3 )
     mg.GetYaxis().SetTitle('L1 + HLT Efficiency')
     mg.SetMaximum( 1.3 )
     mg.SetMinimum( 0. )
@@ -99,6 +100,7 @@ def plotEff( c, plotBase, name, h_denoms, h_passes ) :
     ROOT.gPad.Update()
     
     c.SaveAs( plotBase+'eff_'+name.replace(':','').replace(' ','_')+'.png' )
+    c.SaveAs( plotBase+'eff_'+name.replace(':','').replace(' ','_')+'.pdf' )
 
 
 
@@ -178,6 +180,8 @@ name = 'eff_feb18_singleMuon'
 #name = 'eff_qqH_feb27_nonReg'
 #name = 'eff_Zprime1500_mar02'
 #name = 'eff_DYToLL_mar03'
+name = 'eff_april02'
+name = 'eff_feb27x'
 
 isData = False
 #isData = True
@@ -362,6 +366,7 @@ for row in iTree :
         if row.tMVAIsoLoose < 0.5 : continue
     else :
         if row.HLT_IsoMu20 < 0.5 : continue
+        #if row.muonPt < 25 : continue
         if row.t1_gen_match != 5 : continue
         #if row.t1_gen_match > 4 : continue
         #if row.t1_gen_match < 6 : continue
@@ -554,63 +559,63 @@ c.Clear()
 
 h_denoms_med_gen = [h_def_denom_med_gen, h_hps_denom_med_gen]
 h_passes_med_gen = [h_def_pass_med_gen, h_hps_pass_med_gen]
-plotEff( c, plotBase, 'Def vs HPS: Med Iso WP: Gen pT', h_denoms_med_gen, h_passes_med_gen )
+plotEff( c, plotBase, 'Med Iso WP: Gen pT', h_denoms_med_gen, h_passes_med_gen )
 
 h_denoms_loose = [h_def_denom_loose, h_hps_denom_loose]
 h_passes_loose = [h_def_pass_loose, h_hps_pass_loose]
-plotEff( c, plotBase, 'Def vs HPS: Loose Iso WP: offline pT', h_denoms_loose, h_passes_loose )
+plotEff( c, plotBase, 'Loose Iso WP: offline pT', h_denoms_loose, h_passes_loose )
 
 h_denoms_loose_TightID = [h_def_denom_loose_TightID, h_hps_denom_loose_TightID]
 h_passes_loose_TightID = [h_def_pass_loose_TightID, h_hps_pass_loose_TightID]
-plotEff( c, plotBase, 'Def vs HPS: Loose Iso TightID WP: offline pT', h_denoms_loose_TightID, h_passes_loose_TightID )
+plotEff( c, plotBase, 'Loose Iso TightID WP: offline pT', h_denoms_loose_TightID, h_passes_loose_TightID )
 
 h_denoms_med = [h_def_denom_med, h_hps_denom_med]
 h_passes_med = [h_def_pass_med, h_hps_pass_med]
-plotEff( c, plotBase, 'Def vs HPS: Med Iso WP: offline pT', h_denoms_med, h_passes_med )
+plotEff( c, plotBase, 'Med Iso WP: offline pT', h_denoms_med, h_passes_med )
 
 h_denoms_med_muTau = [h_def_denom_med_muTau, h_hps_denom_med_muTau]
 h_passes_med_muTau = [h_def_pass_med_muTau, h_hps_pass_med_muTau]
-plotEff( c, plotBase, 'Def vs HPS: Med Iso WP MuTauCrossTrig: offline pT', h_denoms_med_muTau, h_passes_med_muTau )
+plotEff( c, plotBase, 'Med Iso WP MuTauCrossTrig: offline pT', h_denoms_med_muTau, h_passes_med_muTau )
 
 h_denoms_med_muTau_TightID = [h_def_denom_med_muTau_TightID, h_hps_denom_med_muTau_TightID]
 h_passes_med_muTau_TightID = [h_def_pass_med_muTau_TightID, h_hps_pass_med_muTau_TightID]
-plotEff( c, plotBase, 'Def vs HPS: Med Iso TightID WP MuTauCrossTrig: offline pT', h_denoms_med_muTau_TightID, h_passes_med_muTau_TightID )
+plotEff( c, plotBase, 'Med Iso TightID WP MuTauCrossTrig: offline pT', h_denoms_med_muTau_TightID, h_passes_med_muTau_TightID )
 
 h_denoms_tight = [h_def_denom_tight, h_hps_denom_tight]
 h_passes_tight = [h_def_pass_tight, h_hps_pass_tight]
-plotEff( c, plotBase, 'Def vs HPS: Tight Iso WP: offline pT', h_denoms_tight, h_passes_tight )
+plotEff( c, plotBase, 'Tight Iso WP: offline pT', h_denoms_tight, h_passes_tight )
 
 h_denoms_tight_muTau = [h_def_denom_tight_muTau, h_hps_denom_tight_muTau]
 h_passes_tight_muTau = [h_def_pass_tight_muTau, h_hps_pass_tight_muTau]
-plotEff( c, plotBase, 'Def vs HPS: Tight Iso WP MuTauCrossTrig: offline pT', h_denoms_tight_muTau, h_passes_tight_muTau )
+plotEff( c, plotBase, 'Tight Iso WP MuTauCrossTrig: offline pT', h_denoms_tight_muTau, h_passes_tight_muTau )
 
 h_denoms_tight_muTau_TightID = [h_def_denom_tight_muTau_TightID, h_hps_denom_tight_muTau_TightID]
 h_passes_tight_muTau_TightID = [h_def_pass_tight_muTau_TightID, h_hps_pass_tight_muTau_TightID]
-plotEff( c, plotBase, 'Def vs HPS: Tight Iso TightID WP MuTauCrossTrig: offline pT', h_denoms_tight_muTau_TightID, h_passes_tight_muTau_TightID )
+plotEff( c, plotBase, 'Tight Iso TightID WP MuTauCrossTrig: offline pT', h_denoms_tight_muTau_TightID, h_passes_tight_muTau_TightID )
 
 h_denoms_med_muTau50_1pr_dm01 = [h_def_denom_med_muTau50_1pr_dm01, h_hps_denom_med_muTau50_1pr_dm01]
 h_passes_med_muTau50_1pr_dm01 = [h_def_pass_med_muTau50_1pr_dm01, h_hps_pass_med_muTau50_1pr_dm01]
-plotEff( c, plotBase, 'Def vs HPS: Med Iso WP MuTau50 1Prong DM 0or1: offline pT', h_denoms_med_muTau50_1pr_dm01, h_passes_med_muTau50_1pr_dm01 )
+plotEff( c, plotBase, 'Med Iso WP MuTau50 1Prong DM 0or1: offline pT', h_denoms_med_muTau50_1pr_dm01, h_passes_med_muTau50_1pr_dm01 )
 
 h_denoms_med_muTau50_1pr = [h_def_denom_med_muTau50_1pr, h_hps_denom_med_muTau50_1pr]
 h_passes_med_muTau50_1pr = [h_def_pass_med_muTau50_1pr, h_hps_pass_med_muTau50_1pr]
-plotEff( c, plotBase, 'Def vs HPS: Med Iso WP MuTau50 1Prong: offline pT', h_denoms_med_muTau50_1pr, h_passes_med_muTau50_1pr )
+plotEff( c, plotBase, 'Med Iso WP MuTau50 1Prong: offline pT', h_denoms_med_muTau50_1pr, h_passes_med_muTau50_1pr )
 
 h_denoms_med_muTau180 = [h_def_denom_med_muTau180, h_hps_denom_med_muTau180]
 h_passes_med_muTau180 = [h_def_pass_med_muTau180, h_hps_pass_med_muTau180]
-plotEff( c, plotBase, 'Def vs HPS: Med Iso WP Tau180: offline pT', h_denoms_med_muTau180, h_passes_med_muTau180 )
+plotEff( c, plotBase, 'Med Iso WP Tau180: offline pT', h_denoms_med_muTau180, h_passes_med_muTau180 )
 
 h_denoms_med_muTau180_dm01 = [h_def_denom_med_muTau180_dm01, h_hps_denom_med_muTau180_dm01]
 h_passes_med_muTau180_dm01 = [h_def_pass_med_muTau180_dm01, h_hps_pass_med_muTau180_dm01]
-plotEff( c, plotBase, 'Def vs HPS: Med Iso WP Tau180 DM 0or1: offline pT', h_denoms_med_muTau180_dm01, h_passes_med_muTau180_dm01 )
+plotEff( c, plotBase, 'Med Iso WP Tau180 DM 0or1: offline pT', h_denoms_med_muTau180_dm01, h_passes_med_muTau180_dm01 )
 
 h_denoms_med_muTau180_1pr = [h_def_denom_med_muTau180_1pr, h_hps_denom_med_muTau180_1pr]
 h_passes_med_muTau180_1pr = [h_def_pass_med_muTau180_1pr, h_hps_pass_med_muTau180_1pr]
-plotEff( c, plotBase, 'Def vs HPS: Med Iso WP Tau180 1Prong: offline pT', h_denoms_med_muTau180_1pr, h_passes_med_muTau180_1pr )
+plotEff( c, plotBase, 'Med Iso WP Tau180 1Prong: offline pT', h_denoms_med_muTau180_1pr, h_passes_med_muTau180_1pr )
 
 h_denoms_med_muTau180_1pr_dm01 = [h_def_denom_med_muTau180_1pr_dm01, h_hps_denom_med_muTau180_1pr_dm01]
 h_passes_med_muTau180_1pr_dm01 = [h_def_pass_med_muTau180_1pr_dm01, h_hps_pass_med_muTau180_1pr_dm01]
-plotEff( c, plotBase, 'Def vs HPS: Med Iso WP Tau180 1Prong DM 0or1: offline pT', h_denoms_med_muTau180_1pr_dm01, h_passes_med_muTau180_1pr_dm01 )
+plotEff( c, plotBase, 'Med Iso WP Tau180 1Prong DM 0or1: offline pT', h_denoms_med_muTau180_1pr_dm01, h_passes_med_muTau180_1pr_dm01 )
 
 c.Clear()
 nvtx.Draw()

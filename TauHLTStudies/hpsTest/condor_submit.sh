@@ -26,8 +26,10 @@
 ### INPUT_FILES=jan28_V7_rate.txt
 #########
 
-DATE=20180402_mar07_1003_eff
-INPUT_FILES=qqH125_1003_march07.txt
+#DATE=20180402_mar07_1003_eff
+#INPUT_FILES=qqH125_1003_march07.txt
+DATE=20180425_apr25_L2p5
+INPUT_FILES=qqH125_L2p5_april09_test.txt
 
 farmoutAnalysisJobs \
     --output-dir=. \
@@ -38,16 +40,16 @@ farmoutAnalysisJobs \
 
 
 
-DATE=20180402_mar07_1003_rate
-INPUT_FILES=rate_1003_march07.txt
-
-farmoutAnalysisJobs \
-    --output-dir=. \
-    --input-files-per-job=10 \
-    --input-file-list=condorFileLists/${INPUT_FILES} \
-    --site-requirements='OpSysAndVer == "SL6"' \
-    --input-basenames-not-unique \
-    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA_cfg.py
+#DATE=20180402_mar07_1003_rate
+#INPUT_FILES=rate_1003_march07.txt
+#
+#farmoutAnalysisJobs \
+#    --output-dir=. \
+#    --input-files-per-job=10 \
+#    --input-file-list=condorFileLists/${INPUT_FILES} \
+#    --site-requirements='OpSysAndVer == "SL6"' \
+#    --input-basenames-not-unique \
+#    hps_condor_${DATE} $CMSSW_BASE condor_hps_DATA_cfg.py
 
 
 #DATE=20180227_eff_singleMuon_feb18

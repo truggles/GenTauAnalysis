@@ -23046,15 +23046,22 @@ process.Out = cms.OutputModule( "PoolOutputModule",
                                            "keep *_hltHpsPFTauProducer_*_MYHLT",
                                            "keep *_hltHpsPFTauProducerReg_*_MYHLT",
 
-                                           "keep *_hltL2TausForPixelIsolation_*_MYHLT",
-                                           "keep *_hltL2TauPixelIsoTagProducer_*_MYHLT",
-
+                                           # L2.5 Taus
                                            "keep *_hltOnlineBeamSpot_*_MYHLT",
+                                           # L1Seeded
                                            "keep *_hltPixelTracksMergedRegL1TauSeeded_*_MYHLT",
                                            "keep *_hltPixelVerticesRegL1TauSeeded_*_MYHLT",
                                            "keep *_hltL2TausForPixelIsolationL1TauSeeded_*_MYHLT",
                                            "keep *_hltL2TauJetsL1TauSeeded_*_MYHLT",
                                            "keep *_hltL2TauJetsIsoL1TauSeeded_*_MYHLT",
+                                           "keep *_hltL2TauPixelIsoTagProducerL1TauSeeded_*_MYHLT",
+
+                                           "keep *_hltPixelTracksMergedRegForTau_*_MYHLT",
+                                           "keep *_hltPixelVerticesRegForTau_*_MYHLT",
+                                           "keep *_hltL2TausForPixelIsolation_*_MYHLT",
+                                           "keep *_hltL2TauJets_*_MYHLT",
+                                           "keep *_hltL2TauJetsIso_*_MYHLT",
+                                           "keep *_hltL2TauPixelIsoTagProducer_*_MYHLT",
                                            #"keep *_*_*_MYHLT",
                                            #"keep *__*_*",
     )

@@ -130,6 +130,8 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
 
       // L2.5 Tau Studies
       edm::EDGetTokenT<std::vector<reco::CaloJet>> l2p5TauJetToken_;
+      edm::EDGetTokenT<reco::JetTagCollection> l2p5TauJetIsoToken_;
+      edm::EDGetTokenT<reco::JetTagCollection> l2p5TauJetIsoOfflineToken_;
       edm::EDGetTokenT<std::vector<reco::Vertex>> l2p5VerticesToken_;
       edm::EDGetTokenT<std::vector<reco::Track>> l2p5TracksToken_;
       edm::EDGetTokenT<reco::BeamSpot> hltBeamSpotToken_;
@@ -160,6 +162,7 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
         t2TrigMatch,t2genPt,t2L1Match, emptyVertices, failNdof,
         hpsTauSize, hpsTauPt, hpsTauEta, hpsTauPhi, hpsTauDM, hpsTauDMFinding, hpsTauDR, hpsTauChrgIso, hpsTauDRDefault,
         hpsTau2Pt, hpsTau2Eta, hpsTau2Phi, hpsTau2DM,
+        l2p5TauSize, l2p5TauPt, l2p5TauEta, l2p5TauPhi, l2p5TauDR, l2p5TauOnlineIso, l2p5TauOfflineIso, l2p5TauOfflineIso2,
         defaultTauSize, defaultTauPt, defaultTauEta, defaultTauPhi, 
         defaultTauDM, defaultTauDMFinding, defaultTauDR, defaultTauChrgIso,
         defaultTau2Pt, defaultTau2Eta, defaultTau2Phi, defaultTau2DM;
@@ -298,6 +301,8 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
     eleLooseIdMapTag_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"))),
 
     l2p5TauJetToken_(consumes<std::vector<reco::CaloJet>>(iConfig.getParameter<edm::InputTag>("l2p5TauJet"))),
+    l2p5TauJetIsoToken_(consumes<reco::JetTagCollection>(iConfig.getParameter<edm::InputTag>("l2p5TauJetIso"))),
+    l2p5TauJetIsoOfflineToken_(consumes<reco::JetTagCollection>(iConfig.getParameter<edm::InputTag>("l2p5IsoOffline"))),
     l2p5VerticesToken_(consumes<std::vector<reco::Vertex>>(iConfig.getParameter<edm::InputTag>("l2p5Vertex"))),
     l2p5TracksToken_(consumes<std::vector<reco::Track>>(iConfig.getParameter<edm::InputTag>("l2p5Tracks"))),
     hltBeamSpotToken_(consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamSpot")))
@@ -469,6 +474,14 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("defaultTau2Eta",&defaultTau2Eta,"defaultTau2Eta/F");
    tree->Branch("defaultTau2Phi",&defaultTau2Phi,"defaultTau2Phi/F");
    tree->Branch("defaultTau2DM",&defaultTau2DM,"defaultTau2DM/F");
+   tree->Branch("l2p5TauSize",&l2p5TauSize,"l2p5TauSize/F");
+   tree->Branch("l2p5TauPt",&l2p5TauPt,"l2p5TauPt/F");
+   tree->Branch("l2p5TauEta",&l2p5TauEta,"l2p5TauEta/F");
+   tree->Branch("l2p5TauPhi",&l2p5TauPhi,"l2p5TauPhi/F");
+   tree->Branch("l2p5TauDR",&l2p5TauDR,"l2p5TauDR/F");
+   tree->Branch("l2p5TauOnlineIso",&l2p5TauOnlineIso,"l2p5TauOnlineIso/F");
+   tree->Branch("l2p5TauOfflineIso",&l2p5TauOfflineIso,"l2p5TauOfflineIso/F");
+   tree->Branch("l2p5TauOfflineIso2",&l2p5TauOfflineIso2,"l2p5TauOfflineIso2/F");
    tree->Branch("t2Pt",&t2Pt,"t2Pt/F");
    tree->Branch("t2Eta",&t2Eta,"t2Eta/F");
    tree->Branch("t2Phi",&t2Phi,"t2Phi/F");
@@ -1141,6 +1154,10 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     // L2.5 Tau Studies
     edm::Handle<std::vector<reco::CaloJet>> l2p5Taus;
     try {iEvent.getByToken(l2p5TauJetToken_, l2p5Taus);} catch (...) {;}
+    edm::Handle<reco::JetTagCollection> l2p5TausIso;
+    try {iEvent.getByToken(l2p5TauJetIsoToken_, l2p5TausIso);} catch (...) {;}
+    edm::Handle<reco::JetTagCollection> l2p5TausIsoOffline;
+    try {iEvent.getByToken(l2p5TauJetIsoOfflineToken_, l2p5TausIsoOffline);} catch (...) {;}
     edm::Handle<std::vector<reco::Vertex>> l2p5Vertices;
     try {iEvent.getByToken(l2p5VerticesToken_, l2p5Vertices);} catch (...) {;}
     edm::Handle<std::vector<reco::Track>> l2p5Tracks;
@@ -1173,63 +1190,83 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     // https://github.com/truggles/THRAnalysis/blob/hps_at_hlt_10X/TauHLTStudies/hpsTest/hps_hlt_MC_FINAL.py
     // The currently set maximum value for pixel iso is 4.5, see
     // hltL2TauIsoFilterL1TauSeeded
-    float m_trackMinPt = 0.9;
-    float m_trackMinNHits = 3;
-    float m_trackMaxNChi2 = 1000;
-    float m_trackMaxDxy = 0.2;
-    float m_isoCone2Min = 0.15;
-    float m_isoCone2Max = 0.4;
+    double m_trackMinPt = 0.9;
+    int m_trackMinNHits = 3;
+    double m_trackMaxNChi2 = 1000.;
+    double m_trackMaxDxy = 0.2;
+    double m_isoCone2Min = 0.15;
+    double m_isoCone2Max = 0.4;
+    l2p5TauSize = -1.;
+    l2p5TauPt = -1.;
+    l2p5TauEta = -1.;
+    l2p5TauPhi = -1.;
+    l2p5TauDR = -1.;
+    l2p5TauOnlineIso = -1.f;
+    l2p5TauOfflineIso = -1.f;
+    l2p5TauOfflineIso2 = -1.f;
     if (l2p5Taus.isValid() && l2p5Tracks.isValid() && hltBeamSpot.isValid() && pv && l2p5Taus->size()>0) {
 
+        l2p5TauSize = l2p5Taus->size();
         // If primary vertex exists, calculate jets' isolation:
         for (size_t iTau = 0; iTau != l2p5Taus->size(); ++iTau) {
             reco::CaloJetRef caloTauRef(l2p5Taus, iTau);
             // re-calculate caloTau eta in PV:
             float caloTau_eta = reco::Jet::physicsEta(pv->z(), caloTauRef->eta());
             float caloTau_phi = caloTauRef->phi();
-  
-            // to calculate isolation, use only tracks that were assigned to the vertex
-            float iso = 0.f;
-            for(vector<reco::TrackBaseRef>::const_iterator tr = pv->tracks_begin(); tr != pv->tracks_end(); ++tr) {
-            //for (size_t iTrack = 0; iTrack != l2p5Tracks->size(); ++iTrack) {
-                //reco::TrackRef trackRef(l2p5Tracks, iTrack);
-                if ((*tr)->pt() < m_trackMinPt) continue;
-                if ((*tr)->numberOfValidHits() < m_trackMinNHits) continue;
-                if ((*tr)->normalizedChi2() > m_trackMaxNChi2) continue;
-                if (std::abs( (*tr)->dxy(*hltBeamSpot) ) > m_trackMaxDxy) continue;
-  
-                float dr2 = deltaR2 (caloTau_eta, caloTau_phi, (*tr)->eta(), (*tr)->phi());
-  
-                // sum pT based isolation
-                if (dr2 >= m_isoCone2Min && dr2 <= m_isoCone2Max) iso += (*tr)->pt();
-            }
-            std::cout << "CaloJetRef pt: " << caloTauRef->pt() << " iso sum: " << iso << std::endl;
-        }
 
-        //for (size_t iTau = 0; iTau != l2p5Taus->size(); ++iTau) {
-        //    reco::CaloJetRef caloTauRef(l2p5Taus, iTau);
-        //    std::cout << "CaloJetRef: " << iTau << " pt: " << caloTauRef->pt() << std::endl;
-        //    // Loop over all tracks and check DR with tau
-        //    // TO DO, check if these tracks are all associated with PV
-        //    float iso_sum = 0.0;
-        //    if (l2p5Tracks.isValid()) {
-        //        for (size_t iTrack = 0; iTrack != l2p5Tracks->size(); ++iTrack) {
-        //            reco::TrackRef trackRef(l2p5Tracks, iTrack);
-        //            // Default track cleaning
-        //            if (trackRef->pt()<0.9) continue;
-        //            if (trackRef->numberOfValidHits()<3) continue;
-        //            if (trackRef->chi2() < 1000) continue;
-        //            // dxy < 0.2 to consider
-        //            //if ( TMath::Sqrt( (trackRef->pt()<0.9) continue;
-        //            float drTrack = deltaR( *caloTauRef, *trackRef );
-        //            if (drTrack < 0.5) {
-        //                iso_sum += trackRef->pt();
-        //                std::cout << "trackRef: " << iTrack << " dr: " << drTrack << " pt: " << trackRef->pt() << std::endl;
-        //            }
-        //        }
-        //    std::cout << "CaloJetRef: " << iTau << " pt: " << caloTauRef->pt() << " iso sum: " << iso_sum << std::endl;
-        //    }
-        //}
+            // Need to clean a little with pT and eta cuts
+            if (caloTauRef->pt() < 20) continue;
+            if (fabs(caloTauRef->eta()) > 2.5) continue;
+  
+            // Check if L2p5 is matched to the highest pT offline tau
+            float tmp_dr = reco::deltaR(caloTau_eta,caloTau_phi,passingTausV.at(0)->eta(),passingTausV.at(0)->phi());
+            if (tmp_dr < 0.3 ) {
+
+                // to calculate isolation, use only tracks that were assigned to the vertex
+                float iso = 0.f;
+                for(vector<reco::TrackBaseRef>::const_iterator tr = pv->tracks_begin(); tr != pv->tracks_end(); ++tr) {
+                    if ((*tr)->pt() < m_trackMinPt) continue;
+                    if ((*tr)->numberOfValidHits() < m_trackMinNHits) continue;
+                    if ((*tr)->normalizedChi2() > m_trackMaxNChi2) continue;
+                    if (std::abs( (*tr)->dxy(*hltBeamSpot) ) > m_trackMaxDxy) continue;
+  
+                    float dr2 = deltaR2 (caloTau_eta, caloTau_phi, (*tr)->eta(), (*tr)->phi());
+  
+                    // sum pT based isolation
+                    if (dr2 >= m_isoCone2Min && dr2 <= m_isoCone2Max) iso += (*tr)->pt();
+                }
+                // Compare with online produced isolation value to check we do this correct
+                // Copying access methods from here:
+                //   https://github.com/cms-sw/cmssw/blob/master/DQMOffline/Trigger/plugins/BTVHLTOfflineSource.cc#L169-L173
+                float online_iso = -1.f;
+                if (l2p5TausIso.isValid()) {
+                    for (auto const & iterIso : *l2p5TausIso){
+                        float iso_dr = reco::deltaR(iterIso.first->eta(),iterIso.first->phi(),caloTau_eta,caloTau_phi);
+                        if (iso_dr<0.05) {
+                            online_iso = iterIso.second;
+                        }
+                    }
+                }
+                float iso_offline2 = -1.f;
+                if (l2p5TausIsoOffline.isValid()) {
+                    for (auto const & iterIso : *l2p5TausIsoOffline){
+                        float iso_dr = reco::deltaR(iterIso.first->eta(),iterIso.first->phi(),caloTau_eta,caloTau_phi);
+                        if (iso_dr<0.05) {
+                            iso_offline2 = iterIso.second;
+                        }
+                    }
+                }
+                std::cout << "CaloJetRef pt: " << caloTauRef->pt() << " iso online: " << online_iso << " iso offline: " << iso << " iso offline2: " << iso_offline2 << std::endl;
+                l2p5TauPt = caloTauRef->pt();
+                l2p5TauEta = caloTau_eta;
+                l2p5TauPhi = caloTau_phi;
+                l2p5TauDR = tmp_dr;
+                l2p5TauOnlineIso = online_iso;
+                l2p5TauOfflineIso = iso;
+                l2p5TauOfflineIso2 = iso_offline2;
+                break;
+            }
+        }
     }
     
 

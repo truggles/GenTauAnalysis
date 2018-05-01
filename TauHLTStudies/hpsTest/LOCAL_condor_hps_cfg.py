@@ -1,7 +1,13 @@
 
 import FWCore.ParameterSet.Config as cms
+import FWCore.ParameterSet.VarParsing as VarParsing
+
 
 process = cms.Process("LOCALHPS")
+
+process.options = cms.untracked.PSet(
+    SkipEvent = cms.untracked.vstring('ProductNotFound')
+)
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
@@ -12,7 +18,9 @@ process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
         #'file:/hdfs/store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_hps_1003_april09_test_v1/180409_072416/0000/output_8.root'
         #'file:/hdfs/store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_hps_1003_april09_test_v2/180409_152132/0000/output_9.root'
-        'file:root://cmsxrootd.fnal.gov//store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_hps_1003_april09_test_v2/180409_152132/0000/output_9.root'
+        #'file:root://cmsxrootd.fnal.gov//store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_L2p5_1003_april09_v3/180409_195545/0003/output_3000.root'
+        'file:root://cmsxrootd.fnal.gov//store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_L2p5_1003_may01_v1/180501_070223/0000/output_1.root',
+        #'file:/hdfs/store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_L2p5_1003_may01_v1/180501_070223/0000/output_4.root',
     )
 )
 
@@ -84,6 +92,8 @@ process.tauGenJetsSelectorMuons = cms.EDFilter("TauGenJetDecayModeSelector",
 )
 
 
+# Try to redo L2p5 iso calculation offline
+process.load("THRAnalysis.TauHLTStudies.hltL2TauPixelIsoTagProducer_cfi")
 
 
 process.load("THRAnalysis.TauHLTStudies.hps_CfiFile_cfi")
@@ -104,6 +114,7 @@ process.p = cms.Path(
             process.tauGenJetsSelectorAllHadrons*
             process.tauGenJetsSelectorElectrons*
             process.tauGenJetsSelectorMuons*
+            process.hltL2TauPixelIsoTagProducer*
             process.hpsTauHLTStudies)
 
 #print process.dumpPython()

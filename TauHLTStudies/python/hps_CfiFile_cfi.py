@@ -32,4 +32,6 @@ hpsTauHLTStudies = cms.EDAnalyzer("HPSTauHLTStudiesAnalyzer",
     l2p5Tracks = cms.InputTag("hltPixelTracksMergedRegL1TauSeeded", "", "MYHLT"),
     beamSpot = cms.InputTag("hltOnlineBeamSpot", "", "MYHLT"),
     l2p5IsoOffline = cms.InputTag("hltL2TauPixelIsoTagProducer","","LOCALHPS"),
+    l2p5IsoOfflineNew1 = cms.InputTag("newHltL2TauPixelIsoTagProducer","","LOCALHPS"),
+    l2p5IsoOfflineNew2 = cms.InputTag("new2HltL2TauPixelIsoTagProducer","","LOCALHPS"),
 )

@@ -132,6 +132,8 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
       edm::EDGetTokenT<std::vector<reco::CaloJet>> l2p5TauJetToken_;
       edm::EDGetTokenT<reco::JetTagCollection> l2p5TauJetIsoToken_;
       edm::EDGetTokenT<reco::JetTagCollection> l2p5TauJetIsoOfflineToken_;
+      edm::EDGetTokenT<reco::JetTagCollection> l2p5TauJetIsoOfflineNew1Token_;
+      edm::EDGetTokenT<reco::JetTagCollection> l2p5TauJetIsoOfflineNew2Token_;
       edm::EDGetTokenT<std::vector<reco::Vertex>> l2p5VerticesToken_;
       edm::EDGetTokenT<std::vector<reco::Track>> l2p5TracksToken_;
       edm::EDGetTokenT<reco::BeamSpot> hltBeamSpotToken_;
@@ -163,6 +165,7 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
         hpsTauSize, hpsTauPt, hpsTauEta, hpsTauPhi, hpsTauDM, hpsTauDMFinding, hpsTauDR, hpsTauChrgIso, hpsTauDRDefault,
         hpsTau2Pt, hpsTau2Eta, hpsTau2Phi, hpsTau2DM,
         l2p5TauSize, l2p5TauPt, l2p5TauEta, l2p5TauPhi, l2p5TauDR, l2p5TauOnlineIso, l2p5TauOfflineIso, l2p5TauOfflineIso2,
+        l2p5TauOfflineIsoNew1, l2p5TauOfflineIsoNew2,
         defaultTauSize, defaultTauPt, defaultTauEta, defaultTauPhi, 
         defaultTauDM, defaultTauDMFinding, defaultTauDR, defaultTauChrgIso,
         defaultTau2Pt, defaultTau2Eta, defaultTau2Phi, defaultTau2DM;
@@ -303,6 +306,8 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
     l2p5TauJetToken_(consumes<std::vector<reco::CaloJet>>(iConfig.getParameter<edm::InputTag>("l2p5TauJet"))),
     l2p5TauJetIsoToken_(consumes<reco::JetTagCollection>(iConfig.getParameter<edm::InputTag>("l2p5TauJetIso"))),
     l2p5TauJetIsoOfflineToken_(consumes<reco::JetTagCollection>(iConfig.getParameter<edm::InputTag>("l2p5IsoOffline"))),
+    l2p5TauJetIsoOfflineNew1Token_(consumes<reco::JetTagCollection>(iConfig.getParameter<edm::InputTag>("l2p5IsoOfflineNew1"))),
+    l2p5TauJetIsoOfflineNew2Token_(consumes<reco::JetTagCollection>(iConfig.getParameter<edm::InputTag>("l2p5IsoOfflineNew2"))),
     l2p5VerticesToken_(consumes<std::vector<reco::Vertex>>(iConfig.getParameter<edm::InputTag>("l2p5Vertex"))),
     l2p5TracksToken_(consumes<std::vector<reco::Track>>(iConfig.getParameter<edm::InputTag>("l2p5Tracks"))),
     hltBeamSpotToken_(consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamSpot")))
@@ -482,6 +487,8 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("l2p5TauOnlineIso",&l2p5TauOnlineIso,"l2p5TauOnlineIso/F");
    tree->Branch("l2p5TauOfflineIso",&l2p5TauOfflineIso,"l2p5TauOfflineIso/F");
    tree->Branch("l2p5TauOfflineIso2",&l2p5TauOfflineIso2,"l2p5TauOfflineIso2/F");
+   tree->Branch("l2p5TauOfflineIsoNew1",&l2p5TauOfflineIsoNew1,"l2p5TauOfflineIsoNew1/F");
+   tree->Branch("l2p5TauOfflineIsoNew2",&l2p5TauOfflineIsoNew2,"l2p5TauOfflineIsoNew2/F");
    tree->Branch("t2Pt",&t2Pt,"t2Pt/F");
    tree->Branch("t2Eta",&t2Eta,"t2Eta/F");
    tree->Branch("t2Phi",&t2Phi,"t2Phi/F");
@@ -1158,6 +1165,10 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     try {iEvent.getByToken(l2p5TauJetIsoToken_, l2p5TausIso);} catch (...) {;}
     edm::Handle<reco::JetTagCollection> l2p5TausIsoOffline;
     try {iEvent.getByToken(l2p5TauJetIsoOfflineToken_, l2p5TausIsoOffline);} catch (...) {;}
+    edm::Handle<reco::JetTagCollection> l2p5TausIsoOfflineNew1;
+    try {iEvent.getByToken(l2p5TauJetIsoOfflineNew1Token_, l2p5TausIsoOfflineNew1);} catch (...) {;}
+    edm::Handle<reco::JetTagCollection> l2p5TausIsoOfflineNew2;
+    try {iEvent.getByToken(l2p5TauJetIsoOfflineNew2Token_, l2p5TausIsoOfflineNew2);} catch (...) {;}
     edm::Handle<std::vector<reco::Vertex>> l2p5Vertices;
     try {iEvent.getByToken(l2p5VerticesToken_, l2p5Vertices);} catch (...) {;}
     edm::Handle<std::vector<reco::Track>> l2p5Tracks;
@@ -1256,6 +1267,24 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
                         }
                     }
                 }
+                float iso_offlineNew1 = -1.f;
+                if (l2p5TausIsoOfflineNew1.isValid()) {
+                    for (auto const & iterIso : *l2p5TausIsoOfflineNew1){
+                        float iso_dr = reco::deltaR(iterIso.first->eta(),iterIso.first->phi(),caloTau_eta,caloTau_phi);
+                        if (iso_dr<0.05) {
+                            iso_offlineNew1 = iterIso.second;
+                        }
+                    }
+                }
+                float iso_offlineNew2 = -1.f;
+                if (l2p5TausIsoOfflineNew2.isValid()) {
+                    for (auto const & iterIso : *l2p5TausIsoOfflineNew2){
+                        float iso_dr = reco::deltaR(iterIso.first->eta(),iterIso.first->phi(),caloTau_eta,caloTau_phi);
+                        if (iso_dr<0.05) {
+                            iso_offlineNew2 = iterIso.second;
+                        }
+                    }
+                }
                 std::cout << "CaloJetRef pt: " << caloTauRef->pt() << " iso online: " << online_iso << " iso offline: " << iso << " iso offline2: " << iso_offline2 << std::endl;
                 l2p5TauPt = caloTauRef->pt();
                 l2p5TauEta = caloTau_eta;
@@ -1264,6 +1293,8 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
                 l2p5TauOnlineIso = online_iso;
                 l2p5TauOfflineIso = iso;
                 l2p5TauOfflineIso2 = iso_offline2;
+                l2p5TauOfflineIsoNew1 = iso_offlineNew1;
+                l2p5TauOfflineIsoNew2 = iso_offlineNew2;
                 break;
             }
         }

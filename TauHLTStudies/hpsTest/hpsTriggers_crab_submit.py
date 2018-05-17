@@ -31,10 +31,14 @@ config.User.voGroup            = 'uscms'
 
 dataMap = OrderedDict()
 ### FOR EFFICIENCY & OTHER MC STUDIES ###
-dataMap['qqH125'] = {
-        'child' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
-        'grandparent' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
+dataMap['ttbar'] = {
+        'child' : '/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v2/MINIAODSIM',
+        'grandparent' : '/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v2/GEN-SIM-RAW',
     }
+#dataMap['qqH125'] = {
+#        'child' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
+#        'grandparent' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
+#    }
 #dataMap['ggH125'] = {
 #        'child' : '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/MINIAODSIM',
 #        'grandparent' : '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/GEN-SIM-RAW',
@@ -132,16 +136,20 @@ if __name__ == '__main__':
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k in dataMap.keys() :
-        config.General.requestName = '%s_L2p5_1003_april09_v3' % k
+        config.General.requestName = '%s_L2p5Taus_1003_may16_v2' % k
         config.Data.outputDatasetTag   = config.General.requestName
         if not 'hltPhysics' in k and not 'Data' in k :
-            config.JobType.psetName        = 'hps_hlt_MC_FINAL.py'
+            #config.JobType.psetName        = 'hps_hlt_MC_FINAL.py'
+            config.JobType.psetName        = 'hps_hlt_MC_L2p5.py'
             config.Data.inputDataset = dataMap[ k ][ 'child' ]
             config.Data.secondaryInputDataset = dataMap[ k ][ 'grandparent' ]
             # ZPrime Test
             config.JobType.maxMemoryMB     = 2500
             config.Data.splitting          = 'EventAwareLumiBased'
             config.Data.unitsPerJob        = 2000 # events / job when using EventAwareLumiBased
+            config.Data.unitsPerJob        = 500 # for ttbar
+            config.Data.totalUnits         = 1000000 # for ttbar
+            #config.Data.unitsPerJob        = 500 # for tests
             #config.Data.totalUnits         = 10000 # for tests
         elif 'hltPhysics' in k :
             config.Data.inputDataset = dataMap[ k ][ 'grandparent' ]

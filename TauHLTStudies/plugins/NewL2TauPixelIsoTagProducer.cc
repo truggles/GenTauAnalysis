@@ -138,7 +138,7 @@ void NewL2TauPixelIsoTagProducer::produce(edm::StreamID sid, edm::Event& ev, con
         if ((*tr)->numberOfValidHits() < m_trackMinNHits) continue;
         if ((*tr)->normalizedChi2() > m_trackMaxNChi2) continue;
         if (std::abs( (*tr)->dxy(*bs) ) > m_trackMaxDxy) continue;
-        if (std::abs( (*tr)->dz(bs->position()) ) > m_trackPVMaxDZ) continue;
+        if (std::abs( (*tr)->dz(pv->position()) ) > m_trackPVMaxDZ) continue;
 
         float dr2 = deltaR2 (jet_eta, jet_phi, (*tr)->eta(), (*tr)->phi());
 

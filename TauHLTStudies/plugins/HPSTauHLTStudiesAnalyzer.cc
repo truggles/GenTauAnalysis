@@ -1215,6 +1215,8 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     l2p5TauOnlineIso = -1.f;
     l2p5TauOfflineIso = -1.f;
     l2p5TauOfflineIso2 = -1.f;
+    l2p5TauOfflineIsoNew1 = -1.f;
+    l2p5TauOfflineIsoNew2 = -1.f;
     if (l2p5Taus.isValid() && l2p5Tracks.isValid() && hltBeamSpot.isValid() && pv && l2p5Taus->size()>0) {
 
         l2p5TauSize = l2p5Taus->size();

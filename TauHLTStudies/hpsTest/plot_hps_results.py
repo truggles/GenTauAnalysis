@@ -6,6 +6,19 @@ import os
 ROOT.gROOT.SetBatch(True)
 #ROOT.gStyle.SetOptStat(0)
 
+
+#runLumiMap = {
+#315357 :
+#    [44,831],
+#315361 :
+#    [40,619],
+#315363 :
+#    [0,136],
+#315366 :
+#    [10,750],
+#}
+
+
 def resComp( c, name, h1, h2 ) :
     c.Clear()
     h1.SetLineColor( ROOT.kBlue )
@@ -46,8 +59,11 @@ def resComp( c, name, h1, h2 ) :
     c.Clear()
 
 
-def buildLegend( items, names ) :
-    legend = ROOT.TLegend(0.5, 0.73, 0.83, 0.88)
+def buildLegend( items, names, big=False ) :
+    if not big :
+        legend = ROOT.TLegend(0.5, 0.73, 0.83, 0.88)
+    else :
+        legend = ROOT.TLegend(0.35, 0.73, 0.83, 0.88)
     legend.SetMargin(0.3)
     legend.SetBorderSize(0)
     for item, name in zip(items, names) : #range(0, stack.GetStack().GetLast() + 1) :
@@ -64,6 +80,12 @@ def plotEff( c, plotBase, name, h_denoms, h_passes ) :
     mg.SetTitle( name )
     legItems = []
     legNames = []
+    if 'di-Tau Efficiency' in name :
+        for h in h_denoms :
+            if h.GetTitle() == 'Cone-Based' :
+                h.SetTitle( 'Cone-Based: All Fully Enabled' ) 
+            if h.GetTitle() == 'HPS Tau' :
+                h.SetTitle( 'HPS Tau: pT 35, Med. Iso. WP' ) 
     count = 0
     for denom, passing in zip( h_denoms, h_passes ) :
 
@@ -85,7 +107,7 @@ def plotEff( c, plotBase, name, h_denoms, h_passes ) :
     mg.SetMinimum( 0. )
 
     if isData :
-        mg.GetXaxis().SetLimits( 20., 100 )
+        mg.GetXaxis().SetLimits( 20., 150 )
     else :
         ROOT.gPad.SetLogx()
         mg.GetXaxis().SetMoreLogLabels()
@@ -95,9 +117,18 @@ def plotEff( c, plotBase, name, h_denoms, h_passes ) :
     
 
 
-    leg = buildLegend( legItems, legNames )
+    if 'di-Tau Efficiency' in name :
+        leg = buildLegend( legItems, legNames, True )
+    else :
+        leg = buildLegend( legItems, legNames )
     leg.Draw()
     ROOT.gPad.Update()
+
+    lumi = ROOT.TText(.7,1.05,"X fb^{-1} (13 TeV)")
+    lumi.SetTextSize(0.03)
+    #lumi.DrawTextNDC(.7,.96,"%.1f / fb (13 TeV)" % cmsLumi )
+    lumi.DrawTextNDC(.75,.92,"2018 (13 TeV)")
+    #lumi.DrawTextNDC(.15,.65,"2018, Collision Runs 315357, 315361, 315363, 315366" )
     
     c.SaveAs( plotBase+'eff_'+name.replace(':','').replace(' ','_')+'.png' )
     c.SaveAs( plotBase+'eff_'+name.replace(':','').replace(' ','_')+'.pdf' )
@@ -182,11 +213,17 @@ name = 'eff_feb18_singleMuon'
 #name = 'eff_DYToLL_mar03'
 name = 'eff_april02'
 name = 'eff_feb27x'
+name = 'muTau_promptReco_May03'
+name = 'singleMuon_may27'
+name = 'singleMuon_may28'
+name = 'outfile_10'
+name = 'singleMuon_may29'
 
 isData = False
-#isData = True
+isData = True
 
-iFile = ROOT.TFile(name+'.root','r')
+
+iFile = ROOT.TFile('/data/truggles/'+name+'.root','r')
 print iFile
 iTree = iFile.Get( 'hpsTauHLTStudies/tagAndProbe/Ntuple' )
 
@@ -195,7 +232,7 @@ trigger2 = 'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1'
 #trigger1 = 'HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr'
 #trigger2 = 'HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr'
 
-plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'/'
+plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'v1/'
 #plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'_GenJet/'
 #plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'_GenEorMu/'
 if not os.path.exists( plotBase ) : os.makedirs( plotBase )
@@ -241,19 +278,19 @@ drRes2 = ROOT.TH1D('dR Resolution '+app2, 'dR_Resolution_'+app2.replace(' ','_')
 nvtx = ROOT.TH1D('nvtx', 'nvtx;nvtx;Events', 40, 0, 80 )
 
 ### 2D PLOTS ###
-h_dm_offline_hps = make_DM_plot( 'Offline', 'Online HPS' )
-
-h_dm_hps_offline = make_DM_plot( 'Online HPS', 'Offline' )
-h_dm_hps_offline30to80 = make_DM_plot( 'Online HPS pt30to80', 'Offline' )
-h_dm_hps_offline80to150 = make_DM_plot( 'Online HPS pt80to150', 'Offline' )
-h_dm_hps_offline150plus = make_DM_plot( 'Online HPS pt150plus', 'Offline' )
-
-h_dm_offline_default = make_DM_plot( 'Offline', 'Online HLT Cone-Based' )
-h_dm_default_offline = make_DM_plot( 'Online HLT Cone-Based', 'Offline' )
-h_dm_hps_conebased = make_DM_plot( 'Online HPS', 'Online Cone-based' )
-h_dm_hps_conebased30to80 = make_DM_plot( 'Online HPS pt30to80', 'Online Cone-based' )
-h_dm_hps_conebased80to150 = make_DM_plot( 'Online HPS pt80to150', 'Online Cone-based' )
-h_dm_hps_conebased150plus = make_DM_plot( 'Online HPS pt150plus', 'Online Cone-based' )
+#h_dm_offline_hps = make_DM_plot( 'Offline', 'Online HPS' )
+#
+#h_dm_hps_offline = make_DM_plot( 'Online HPS', 'Offline' )
+#h_dm_hps_offline30to80 = make_DM_plot( 'Online HPS pt30to80', 'Offline' )
+#h_dm_hps_offline80to150 = make_DM_plot( 'Online HPS pt80to150', 'Offline' )
+#h_dm_hps_offline150plus = make_DM_plot( 'Online HPS pt150plus', 'Offline' )
+#
+#h_dm_offline_default = make_DM_plot( 'Offline', 'Online HLT Cone-Based' )
+#h_dm_default_offline = make_DM_plot( 'Online HLT Cone-Based', 'Offline' )
+#h_dm_hps_conebased = make_DM_plot( 'Online HPS', 'Online Cone-based' )
+#h_dm_hps_conebased30to80 = make_DM_plot( 'Online HPS pt30to80', 'Online Cone-based' )
+#h_dm_hps_conebased80to150 = make_DM_plot( 'Online HPS pt80to150', 'Online Cone-based' )
+#h_dm_hps_conebased150plus = make_DM_plot( 'Online HPS pt150plus', 'Online Cone-based' )
 
 ### EFFICIENCY PLOTS ###
 #binning = array('d', [20,22.5,25,27.5,30,32.5,35,37.5,40,\
@@ -264,7 +301,7 @@ h_dm_hps_conebased150plus = make_DM_plot( 'Online HPS pt150plus', 'Online Cone-b
 
 if isData :
     binning = array('d', [20,25,30,35,40,\
-        45,50,60,80,100])
+        45,50,60,80,100,150])
 else :
     binning = array('d', [20,25,30,35,40,\
         45,50,60,80,100,150,200,500])
@@ -272,20 +309,25 @@ else :
 highPtBinning = array('d', [100,150,175,200,300,400,500,750])
 
 
-h_def_denom_med_gen = ROOT.TH1D( 'def denom_med_gen', 'Cone-Based', len(binning)-1, binning)
-h_def_pass_med_gen = ROOT.TH1D( 'def pass_med_gen', 'def pass', len(binning)-1, binning)
-h_hps_denom_med_gen = ROOT.TH1D( 'hps denom_med_gen', 'HPS Tau', len(binning)-1, binning)
-h_hps_pass_med_gen = ROOT.TH1D( 'hps pass_med_gen', 'hps pass', len(binning)-1, binning)
+h_def_denom_medDiTauFull = ROOT.TH1D( 'def denom_medDiTauFull', 'Cone-Based', len(binning)-1, binning)
+h_def_pass_medDiTauFull = ROOT.TH1D( 'def pass_medDiTauFull', 'def pass', len(binning)-1, binning)
+h_def_denom_medDiTauAll = ROOT.TH1D( 'def denom_medDiTauAll', 'Cone-Based', len(binning)-1, binning)
+h_def_pass_medDiTauAll = ROOT.TH1D( 'def pass_medDiTauAll', 'def pass', len(binning)-1, binning)
+
+#h_def_denom_med_gen = ROOT.TH1D( 'def denom_med_gen', 'Cone-Based', len(binning)-1, binning)
+#h_def_pass_med_gen = ROOT.TH1D( 'def pass_med_gen', 'def pass', len(binning)-1, binning)
+#h_hps_denom_med_gen = ROOT.TH1D( 'hps denom_med_gen', 'HPS Tau', len(binning)-1, binning)
+#h_hps_pass_med_gen = ROOT.TH1D( 'hps pass_med_gen', 'hps pass', len(binning)-1, binning)
 
 h_def_denom_loose = ROOT.TH1D( 'def denom_loose', 'Cone-Based', len(binning)-1, binning)
 h_def_pass_loose = ROOT.TH1D( 'def pass_loose', 'def pass', len(binning)-1, binning)
 h_hps_denom_loose = ROOT.TH1D( 'hps denom_loose', 'HPS Tau', len(binning)-1, binning)
 h_hps_pass_loose = ROOT.TH1D( 'hps pass_loose', 'hps pass', len(binning)-1, binning)
 
-h_def_denom_loose_TightID = ROOT.TH1D( 'def denom_loose_TightID', 'Cone-Based', len(binning)-1, binning)
-h_def_pass_loose_TightID = ROOT.TH1D( 'def pass_loose_TightID', 'def pass', len(binning)-1, binning)
-h_hps_denom_loose_TightID = ROOT.TH1D( 'hps denom_loose_TightID', 'HPS Tau', len(binning)-1, binning)
-h_hps_pass_loose_TightID = ROOT.TH1D( 'hps pass_loose_TightID', 'hps pass', len(binning)-1, binning)
+#h_def_denom_loose_TightID = ROOT.TH1D( 'def denom_loose_TightID', 'Cone-Based', len(binning)-1, binning)
+#h_def_pass_loose_TightID = ROOT.TH1D( 'def pass_loose_TightID', 'def pass', len(binning)-1, binning)
+#h_hps_denom_loose_TightID = ROOT.TH1D( 'hps denom_loose_TightID', 'HPS Tau', len(binning)-1, binning)
+#h_hps_pass_loose_TightID = ROOT.TH1D( 'hps pass_loose_TightID', 'hps pass', len(binning)-1, binning)
 
 h_def_denom_med = ROOT.TH1D( 'def denom_med', 'Cone-Based', len(binning)-1, binning)
 h_def_pass_med = ROOT.TH1D( 'def pass_med', 'def pass', len(binning)-1, binning)
@@ -297,10 +339,10 @@ h_def_pass_med_muTau = ROOT.TH1D( 'def pass_med_muTau', 'def pass', len(binning)
 h_hps_denom_med_muTau = ROOT.TH1D( 'hps denom_med_muTau', 'HPS Tau', len(binning)-1, binning)
 h_hps_pass_med_muTau = ROOT.TH1D( 'hps pass_med_muTau', 'hps pass', len(binning)-1, binning)
 
-h_def_denom_med_muTau_TightID = ROOT.TH1D( 'def denom_med_muTau_TightID', 'Cone-Based', len(binning)-1, binning)
-h_def_pass_med_muTau_TightID = ROOT.TH1D( 'def pass_med_muTau_TightID', 'def pass', len(binning)-1, binning)
-h_hps_denom_med_muTau_TightID = ROOT.TH1D( 'hps denom_med_muTau_TightID', 'HPS Tau', len(binning)-1, binning)
-h_hps_pass_med_muTau_TightID = ROOT.TH1D( 'hps pass_med_muTau_TightID', 'hps pass', len(binning)-1, binning)
+#h_def_denom_med_muTau_TightID = ROOT.TH1D( 'def denom_med_muTau_TightID', 'Cone-Based', len(binning)-1, binning)
+#h_def_pass_med_muTau_TightID = ROOT.TH1D( 'def pass_med_muTau_TightID', 'def pass', len(binning)-1, binning)
+#h_hps_denom_med_muTau_TightID = ROOT.TH1D( 'hps denom_med_muTau_TightID', 'HPS Tau', len(binning)-1, binning)
+#h_hps_pass_med_muTau_TightID = ROOT.TH1D( 'hps pass_med_muTau_TightID', 'hps pass', len(binning)-1, binning)
 
 h_def_denom_tight = ROOT.TH1D( 'def denom_tight', 'Cone-Based', len(binning)-1, binning)
 h_def_pass_tight = ROOT.TH1D( 'def pass_tight', 'def pass', len(binning)-1, binning)
@@ -312,40 +354,40 @@ h_def_pass_tight_muTau = ROOT.TH1D( 'def pass_tight_muTau', 'def pass', len(binn
 h_hps_denom_tight_muTau = ROOT.TH1D( 'hps denom_tight_muTau', 'HPS Tau', len(binning)-1, binning)
 h_hps_pass_tight_muTau = ROOT.TH1D( 'hps pass_tight_muTau', 'hps pass', len(binning)-1, binning)
 
-h_def_denom_tight_muTau_TightID = ROOT.TH1D( 'def denom_tight_muTau_TightID', 'Cone-Based', len(binning)-1, binning)
-h_def_pass_tight_muTau_TightID = ROOT.TH1D( 'def pass_tight_muTau_TightID', 'def pass', len(binning)-1, binning)
-h_hps_denom_tight_muTau_TightID = ROOT.TH1D( 'hps denom_tight_muTau_TightID', 'HPS Tau', len(binning)-1, binning)
-h_hps_pass_tight_muTau_TightID = ROOT.TH1D( 'hps pass_tight_muTau_TightID', 'hps pass', len(binning)-1, binning)
-
-h_def_denom_med_muTau50_1pr_dm01 = ROOT.TH1D( 'def denom_med_muTau50_1pr_dm01', 'Cone-Based', len(binning)-1, binning)
-h_def_pass_med_muTau50_1pr_dm01 = ROOT.TH1D( 'def pass_med_muTau50_1pr_dm01', 'def pass', len(binning)-1, binning)
-h_hps_denom_med_muTau50_1pr_dm01 = ROOT.TH1D( 'hps denom_med_muTau50_1pr_dm01', 'HPS Tau', len(binning)-1, binning)
-h_hps_pass_med_muTau50_1pr_dm01 = ROOT.TH1D( 'hps pass_med_muTau50_1pr_dm01', 'hps pass', len(binning)-1, binning)
-
-h_def_denom_med_muTau50_1pr = ROOT.TH1D( 'def denom_med_muTau50_1pr', 'Cone-Based', len(binning)-1, binning)
-h_def_pass_med_muTau50_1pr = ROOT.TH1D( 'def pass_med_muTau50_1pr', 'def pass', len(binning)-1, binning)
-h_hps_denom_med_muTau50_1pr = ROOT.TH1D( 'hps denom_med_muTau50_1pr', 'HPS Tau', len(binning)-1, binning)
-h_hps_pass_med_muTau50_1pr = ROOT.TH1D( 'hps pass_med_muTau50_1pr', 'hps pass', len(binning)-1, binning)
-
-h_def_denom_med_muTau180 = ROOT.TH1D( 'def denom_med_muTau180', 'Cone-Based', len(highPtBinning)-1, highPtBinning)
-h_def_pass_med_muTau180 = ROOT.TH1D( 'def pass_med_muTau180', 'def pass', len(highPtBinning)-1, highPtBinning)
-h_hps_denom_med_muTau180 = ROOT.TH1D( 'hps denom_med_muTau180', 'HPS Tau', len(highPtBinning)-1, highPtBinning)
-h_hps_pass_med_muTau180 = ROOT.TH1D( 'hps pass_med_muTau180', 'hps pass', len(highPtBinning)-1, highPtBinning)
-
-h_def_denom_med_muTau180_dm01 = ROOT.TH1D( 'def denom_med_muTau180_dm01', 'Cone-Based', len(highPtBinning)-1, highPtBinning)
-h_def_pass_med_muTau180_dm01 = ROOT.TH1D( 'def pass_med_muTau180_dm01', 'def pass', len(highPtBinning)-1, highPtBinning)
-h_hps_denom_med_muTau180_dm01 = ROOT.TH1D( 'hps denom_med_muTau180_dm01', 'HPS Tau', len(highPtBinning)-1, highPtBinning)
-h_hps_pass_med_muTau180_dm01 = ROOT.TH1D( 'hps pass_med_muTau180_dm01', 'hps pass', len(highPtBinning)-1, highPtBinning)
-
-h_def_denom_med_muTau180_1pr = ROOT.TH1D( 'def denom_med_muTau180_1pr', 'Cone-Based', len(highPtBinning)-1, highPtBinning)
-h_def_pass_med_muTau180_1pr = ROOT.TH1D( 'def pass_med_muTau180_1pr', 'def pass', len(highPtBinning)-1, highPtBinning)
-h_hps_denom_med_muTau180_1pr = ROOT.TH1D( 'hps denom_med_muTau180_1pr', 'HPS Tau', len(highPtBinning)-1, highPtBinning)
-h_hps_pass_med_muTau180_1pr = ROOT.TH1D( 'hps pass_med_muTau180_1pr', 'hps pass', len(highPtBinning)-1, highPtBinning)
-
-h_def_denom_med_muTau180_1pr_dm01 = ROOT.TH1D( 'def denom_med_muTau180_1pr_dm01', 'Cone-Based', len(highPtBinning)-1, highPtBinning)
-h_def_pass_med_muTau180_1pr_dm01 = ROOT.TH1D( 'def pass_med_muTau180_1pr_dm01', 'def pass', len(highPtBinning)-1, highPtBinning)
-h_hps_denom_med_muTau180_1pr_dm01 = ROOT.TH1D( 'hps denom_med_muTau180_1pr_dm01', 'HPS Tau', len(highPtBinning)-1, highPtBinning)
-h_hps_pass_med_muTau180_1pr_dm01 = ROOT.TH1D( 'hps pass_med_muTau180_1pr_dm01', 'hps pass', len(highPtBinning)-1, highPtBinning)
+#h_def_denom_tight_muTau_TightID = ROOT.TH1D( 'def denom_tight_muTau_TightID', 'Cone-Based', len(binning)-1, binning)
+#h_def_pass_tight_muTau_TightID = ROOT.TH1D( 'def pass_tight_muTau_TightID', 'def pass', len(binning)-1, binning)
+#h_hps_denom_tight_muTau_TightID = ROOT.TH1D( 'hps denom_tight_muTau_TightID', 'HPS Tau', len(binning)-1, binning)
+#h_hps_pass_tight_muTau_TightID = ROOT.TH1D( 'hps pass_tight_muTau_TightID', 'hps pass', len(binning)-1, binning)
+#
+#h_def_denom_med_muTau50_1pr_dm01 = ROOT.TH1D( 'def denom_med_muTau50_1pr_dm01', 'Cone-Based', len(binning)-1, binning)
+#h_def_pass_med_muTau50_1pr_dm01 = ROOT.TH1D( 'def pass_med_muTau50_1pr_dm01', 'def pass', len(binning)-1, binning)
+#h_hps_denom_med_muTau50_1pr_dm01 = ROOT.TH1D( 'hps denom_med_muTau50_1pr_dm01', 'HPS Tau', len(binning)-1, binning)
+#h_hps_pass_med_muTau50_1pr_dm01 = ROOT.TH1D( 'hps pass_med_muTau50_1pr_dm01', 'hps pass', len(binning)-1, binning)
+#
+#h_def_denom_med_muTau50_1pr = ROOT.TH1D( 'def denom_med_muTau50_1pr', 'Cone-Based', len(binning)-1, binning)
+#h_def_pass_med_muTau50_1pr = ROOT.TH1D( 'def pass_med_muTau50_1pr', 'def pass', len(binning)-1, binning)
+#h_hps_denom_med_muTau50_1pr = ROOT.TH1D( 'hps denom_med_muTau50_1pr', 'HPS Tau', len(binning)-1, binning)
+#h_hps_pass_med_muTau50_1pr = ROOT.TH1D( 'hps pass_med_muTau50_1pr', 'hps pass', len(binning)-1, binning)
+#
+#h_def_denom_med_muTau180 = ROOT.TH1D( 'def denom_med_muTau180', 'Cone-Based', len(highPtBinning)-1, highPtBinning)
+#h_def_pass_med_muTau180 = ROOT.TH1D( 'def pass_med_muTau180', 'def pass', len(highPtBinning)-1, highPtBinning)
+#h_hps_denom_med_muTau180 = ROOT.TH1D( 'hps denom_med_muTau180', 'HPS Tau', len(highPtBinning)-1, highPtBinning)
+#h_hps_pass_med_muTau180 = ROOT.TH1D( 'hps pass_med_muTau180', 'hps pass', len(highPtBinning)-1, highPtBinning)
+#
+#h_def_denom_med_muTau180_dm01 = ROOT.TH1D( 'def denom_med_muTau180_dm01', 'Cone-Based', len(highPtBinning)-1, highPtBinning)
+#h_def_pass_med_muTau180_dm01 = ROOT.TH1D( 'def pass_med_muTau180_dm01', 'def pass', len(highPtBinning)-1, highPtBinning)
+#h_hps_denom_med_muTau180_dm01 = ROOT.TH1D( 'hps denom_med_muTau180_dm01', 'HPS Tau', len(highPtBinning)-1, highPtBinning)
+#h_hps_pass_med_muTau180_dm01 = ROOT.TH1D( 'hps pass_med_muTau180_dm01', 'hps pass', len(highPtBinning)-1, highPtBinning)
+#
+#h_def_denom_med_muTau180_1pr = ROOT.TH1D( 'def denom_med_muTau180_1pr', 'Cone-Based', len(highPtBinning)-1, highPtBinning)
+#h_def_pass_med_muTau180_1pr = ROOT.TH1D( 'def pass_med_muTau180_1pr', 'def pass', len(highPtBinning)-1, highPtBinning)
+#h_hps_denom_med_muTau180_1pr = ROOT.TH1D( 'hps denom_med_muTau180_1pr', 'HPS Tau', len(highPtBinning)-1, highPtBinning)
+#h_hps_pass_med_muTau180_1pr = ROOT.TH1D( 'hps pass_med_muTau180_1pr', 'hps pass', len(highPtBinning)-1, highPtBinning)
+#
+#h_def_denom_med_muTau180_1pr_dm01 = ROOT.TH1D( 'def denom_med_muTau180_1pr_dm01', 'Cone-Based', len(highPtBinning)-1, highPtBinning)
+#h_def_pass_med_muTau180_1pr_dm01 = ROOT.TH1D( 'def pass_med_muTau180_1pr_dm01', 'def pass', len(highPtBinning)-1, highPtBinning)
+#h_hps_denom_med_muTau180_1pr_dm01 = ROOT.TH1D( 'hps denom_med_muTau180_1pr_dm01', 'HPS Tau', len(highPtBinning)-1, highPtBinning)
+#h_hps_pass_med_muTau180_1pr_dm01 = ROOT.TH1D( 'hps pass_med_muTau180_1pr_dm01', 'hps pass', len(highPtBinning)-1, highPtBinning)
 
 
 for row in iTree :
@@ -358,12 +400,18 @@ for row in iTree :
 
     # Tag
     if isData :
-        if row.HLT_IsoMu27 < 0.5 : continue
+        if row.HLT_IsoMu27 < 0.5 and row.HLT_IsoMu24 < 0.5 : continue
         if row.muonPt < 24 : continue
         if row.transMass > 40 : continue
         if row.m_vis < 40 : continue
-        if row.m_vis > 100 : continue
+        if row.m_vis > 80 : continue
         if row.tMVAIsoLoose < 0.5 : continue
+        #if row.tMVAIsoMedium < 0.5 : continue
+        #if row.tMVAIsoTight < 0.5 : continue
+        #if row.RunNumber not in runLumiMap.keys() : continue
+        #if row.lumi < runLumiMap[ row.RunNumber ][0] : continue
+        #if row.lumi > runLumiMap[ row.RunNumber ][1] : continue
+        
     else :
         if row.HLT_IsoMu20 < 0.5 : continue
         #if row.muonPt < 25 : continue
@@ -397,148 +445,159 @@ for row in iTree :
         weight = 1. if row.SS == 0 else -1.
 
         ''' Fill efficiencies '''
-        h_def_denom_med_gen.Fill( genTauPt, weight ) 
-        h_hps_denom_med_gen.Fill( genTauPt, weight )
+        h_def_denom_medDiTauFull.Fill( tPt, weight )
+        h_def_denom_medDiTauAll.Fill( tPt, weight )
+        #h_def_denom_med_gen.Fill( genTauPt, weight ) 
+        #h_hps_denom_med_gen.Fill( genTauPt, weight )
         h_def_denom_loose.Fill( tPt, weight ) 
         h_hps_denom_loose.Fill( tPt, weight )
-        h_def_denom_loose_TightID.Fill( tPt, weight ) 
-        h_hps_denom_loose_TightID.Fill( tPt, weight )
+        #h_def_denom_loose_TightID.Fill( tPt, weight ) 
+        #h_hps_denom_loose_TightID.Fill( tPt, weight )
         h_def_denom_med.Fill( tPt, weight ) 
         h_hps_denom_med.Fill( tPt, weight )
         h_def_denom_med_muTau.Fill( tPt, weight ) 
         h_hps_denom_med_muTau.Fill( tPt, weight )
-        h_def_denom_med_muTau_TightID.Fill( tPt, weight ) 
-        h_hps_denom_med_muTau_TightID.Fill( tPt, weight )
-        h_def_denom_med_muTau50_1pr.Fill( tPt, weight ) 
-        h_hps_denom_med_muTau50_1pr.Fill( tPt, weight )
-        h_def_denom_med_muTau180.Fill( tPt, weight ) 
-        h_hps_denom_med_muTau180.Fill( tPt, weight )
-        h_def_denom_med_muTau180_1pr.Fill( tPt, weight ) 
-        h_hps_denom_med_muTau180_1pr.Fill( tPt, weight )
+        #h_def_denom_med_muTau_TightID.Fill( tPt, weight ) 
+        #h_hps_denom_med_muTau_TightID.Fill( tPt, weight )
+        #h_def_denom_med_muTau50_1pr.Fill( tPt, weight ) 
+        #h_hps_denom_med_muTau50_1pr.Fill( tPt, weight )
+        #h_def_denom_med_muTau180.Fill( tPt, weight ) 
+        #h_hps_denom_med_muTau180.Fill( tPt, weight )
+        #h_def_denom_med_muTau180_1pr.Fill( tPt, weight ) 
+        #h_hps_denom_med_muTau180_1pr.Fill( tPt, weight )
         h_def_denom_tight.Fill( tPt, weight ) 
         h_hps_denom_tight.Fill( tPt, weight )
         h_def_denom_tight_muTau.Fill( tPt, weight ) 
         h_hps_denom_tight_muTau.Fill( tPt, weight )
-        h_def_denom_tight_muTau_TightID.Fill( tPt, weight ) 
-        h_hps_denom_tight_muTau_TightID.Fill( tPt, weight )
+        #h_def_denom_tight_muTau_TightID.Fill( tPt, weight ) 
+        #h_hps_denom_tight_muTau_TightID.Fill( tPt, weight )
 
         # 1 Prong taus
-        if tDM == 0 or tDM == 1 :
-            h_def_denom_med_muTau50_1pr_dm01.Fill( tPt, weight ) 
-            h_hps_denom_med_muTau50_1pr_dm01.Fill( tPt, weight )
-            h_def_denom_med_muTau180_dm01.Fill( tPt, weight ) 
-            h_hps_denom_med_muTau180_dm01.Fill( tPt, weight )
-            h_def_denom_med_muTau180_1pr_dm01.Fill( tPt, weight ) 
-            h_hps_denom_med_muTau180_1pr_dm01.Fill( tPt, weight )
-            if row.HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr > 0.5 :
-                h_def_pass_med_muTau180_1pr_dm01.Fill( tPt, weight )
-            if row.HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_1pr > 0.5 :
-                h_hps_pass_med_muTau180_1pr_dm01.Fill( tPt, weight )
-            if row.HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1 > 0.5 :
-                h_def_pass_med_muTau180_dm01.Fill( tPt, weight )
-            if row.HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1 > 0.5 :
-                h_hps_pass_med_muTau180_dm01.Fill( tPt, weight )
-            if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr > 0.5 :
-                h_def_pass_med_muTau50_1pr_dm01.Fill( tPt, weight )
-            if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr > 0.5 :
-                h_hps_pass_med_muTau50_1pr_dm01.Fill( tPt, weight )
+        #if tDM == 0 or tDM == 1 :
+        #    h_def_denom_med_muTau50_1pr_dm01.Fill( tPt, weight ) 
+        #    h_hps_denom_med_muTau50_1pr_dm01.Fill( tPt, weight )
+        #    h_def_denom_med_muTau180_dm01.Fill( tPt, weight ) 
+        #    h_hps_denom_med_muTau180_dm01.Fill( tPt, weight )
+        #    h_def_denom_med_muTau180_1pr_dm01.Fill( tPt, weight ) 
+        #    h_hps_denom_med_muTau180_1pr_dm01.Fill( tPt, weight )
+        #    if row.HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr > 0.5 :
+        #        h_def_pass_med_muTau180_1pr_dm01.Fill( tPt, weight )
+        #    if row.HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_1pr > 0.5 :
+        #        h_hps_pass_med_muTau180_1pr_dm01.Fill( tPt, weight )
+        #    if row.HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1 > 0.5 :
+        #        h_def_pass_med_muTau180_dm01.Fill( tPt, weight )
+        #    if row.HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1 > 0.5 :
+        #        h_hps_pass_med_muTau180_dm01.Fill( tPt, weight )
+        #    if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr > 0.5 :
+        #        h_def_pass_med_muTau50_1pr_dm01.Fill( tPt, weight )
+        #    if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr > 0.5 :
+        #        h_hps_pass_med_muTau50_1pr_dm01.Fill( tPt, weight )
 
         ''' Check passing for numerator defaul triggers '''
+        if (row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 or
+                row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 or
+                row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1 > 0.5) :
+            h_def_pass_medDiTauFull.Fill( tPt, weight )
+        if (row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 or
+                row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 or
+                row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1 > 0.5 or
+                row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5) :
+            h_def_pass_medDiTauAll.Fill( tPt, weight )
         if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
-            h_def_pass_med_gen.Fill( genTauPt, weight )
+            #h_def_pass_med_gen.Fill( genTauPt, weight )
             h_def_pass_med.Fill( tPt, weight )
         if row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
             h_def_pass_tight.Fill( tPt, weight )
         if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1 > 0.5 :
             h_def_pass_loose.Fill( tPt, weight )
-        if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1 > 0.5 :
-            h_def_pass_loose_TightID.Fill( tPt, weight )
+        #if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1 > 0.5 :
+        #    h_def_pass_loose_TightID.Fill( tPt, weight )
         if row.HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1 > 0.5 :
             h_def_pass_med_muTau.Fill( tPt, weight )
-        if row.HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1 > 0.5 :
-            h_def_pass_med_muTau_TightID.Fill( tPt, weight )
+        #if row.HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1 > 0.5 :
+        #    h_def_pass_med_muTau_TightID.Fill( tPt, weight )
         if row.HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1 > 0.5 :
             h_def_pass_tight_muTau.Fill( tPt, weight )
-        if row.HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1 > 0.5 :
-            h_def_pass_tight_muTau_TightID.Fill( tPt, weight )
-        if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr > 0.5 :
-            h_def_pass_med_muTau50_1pr.Fill( tPt, weight )
-        if row.HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1 > 0.5 :
-            h_def_pass_med_muTau180.Fill( tPt, weight )
-        if row.HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr > 0.5 :
-            h_def_pass_med_muTau180_1pr.Fill( tPt, weight )
+        #if row.HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1 > 0.5 :
+        #    h_def_pass_tight_muTau_TightID.Fill( tPt, weight )
+        #if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr > 0.5 :
+        #    h_def_pass_med_muTau50_1pr.Fill( tPt, weight )
+        #if row.HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1 > 0.5 :
+        #    h_def_pass_med_muTau180.Fill( tPt, weight )
+        #if row.HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr > 0.5 :
+        #    h_def_pass_med_muTau180_1pr.Fill( tPt, weight )
 
         ''' Check passing for numerator HPS triggers '''
         if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
-            h_hps_pass_med_gen.Fill( genTauPt, weight )
+            #h_hps_pass_med_gen.Fill( genTauPt, weight )
             h_hps_pass_med.Fill( tPt, weight )
         if row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
             h_hps_pass_tight.Fill( tPt, weight )
         if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1 > 0.5 :
             h_hps_pass_loose.Fill( tPt, weight )
-        if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1 > 0.5 :
-            h_hps_pass_loose_TightID.Fill( tPt, weight )
+        #if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1 > 0.5 :
+        #    h_hps_pass_loose_TightID.Fill( tPt, weight )
         if row.HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_CrossL1 > 0.5 :
             h_hps_pass_med_muTau.Fill( tPt, weight )
-        if row.HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1 > 0.5 :
-            h_hps_pass_med_muTau_TightID.Fill( tPt, weight )
+        #if row.HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1 > 0.5 :
+        #    h_hps_pass_med_muTau_TightID.Fill( tPt, weight )
         if row.HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_CrossL1 > 0.5 :
             h_hps_pass_tight_muTau.Fill( tPt, weight )
-        if row.HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1 > 0.5 :
-            h_hps_pass_tight_muTau_TightID.Fill( tPt, weight )
-        if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr > 0.5 :
-            h_hps_pass_med_muTau50_1pr.Fill( tPt, weight )
-        if row.HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1 > 0.5 :
-            h_hps_pass_med_muTau180.Fill( tPt, weight )
-        if row.HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_1pr > 0.5 :
-            h_hps_pass_med_muTau180_1pr.Fill( tPt, weight )
+        #if row.HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1 > 0.5 :
+        #    h_hps_pass_tight_muTau_TightID.Fill( tPt, weight )
+        #if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr > 0.5 :
+        #    h_hps_pass_med_muTau50_1pr.Fill( tPt, weight )
+        #if row.HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1 > 0.5 :
+        #    h_hps_pass_med_muTau180.Fill( tPt, weight )
+        #if row.HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_1pr > 0.5 :
+        #    h_hps_pass_med_muTau180_1pr.Fill( tPt, weight )
 
 
 
 
-    # Require tau trigger fired or good online taus will not be present
-    if getattr( row, trigger1 ) < 0.5 and getattr( row, trigger2 ) < 0.5 : continue 
-    if row.tauPt < 30 : continue
-    #if row.tauPt < 50 : continue
+    ## Require tau trigger fired or good online taus will not be present
+    #if getattr( row, trigger1 ) < 0.5 and getattr( row, trigger2 ) < 0.5 : continue 
+    #if row.tauPt < 30 : continue
+    ##if row.tauPt < 50 : continue
 
-    offlineDM = row.tauDM
-    hpsDM = row.hpsTauDM
-    defaultDM = row.defaultTauDM
+    #offlineDM = row.tauDM
+    #hpsDM = row.hpsTauDM
+    #defaultDM = row.defaultTauDM
 
-    offlineCode = getDMCode( offlineDM )
-    hpsCode = getDMCode( hpsDM )
-    defaultCode = getDMCode( defaultDM )
-    h_dm_offline_hps.Fill( offlineCode, hpsCode )
-    h_dm_hps_offline.Fill( hpsCode, offlineCode )
-    h_dm_offline_default.Fill( offlineCode, defaultCode )
-    h_dm_default_offline.Fill( defaultCode, offlineCode )
-    h_dm_hps_conebased.Fill( hpsCode, defaultCode )
-    if row.tauPt > 30 and row.tauPt < 80 :
-        h_dm_hps_conebased30to80.Fill( hpsCode, defaultCode )
-        h_dm_hps_offline30to80.Fill( hpsCode, offlineCode )
-    elif row.tauPt > 80 and row.tauPt < 150 :
-        h_dm_hps_conebased80to150.Fill( hpsCode, defaultCode )
-        h_dm_hps_offline80to150.Fill( hpsCode, offlineCode )
-    elif row.tauPt > 150 :
-        h_dm_hps_conebased150plus.Fill( hpsCode, defaultCode )
-        h_dm_hps_offline150plus.Fill( hpsCode, offlineCode )
+    #offlineCode = getDMCode( offlineDM )
+    #hpsCode = getDMCode( hpsDM )
+    #defaultCode = getDMCode( defaultDM )
+    #h_dm_offline_hps.Fill( offlineCode, hpsCode )
+    #h_dm_hps_offline.Fill( hpsCode, offlineCode )
+    #h_dm_offline_default.Fill( offlineCode, defaultCode )
+    #h_dm_default_offline.Fill( defaultCode, offlineCode )
+    #h_dm_hps_conebased.Fill( hpsCode, defaultCode )
+    #if row.tauPt > 30 and row.tauPt < 80 :
+    #    h_dm_hps_conebased30to80.Fill( hpsCode, defaultCode )
+    #    h_dm_hps_offline30to80.Fill( hpsCode, offlineCode )
+    #elif row.tauPt > 80 and row.tauPt < 150 :
+    #    h_dm_hps_conebased80to150.Fill( hpsCode, defaultCode )
+    #    h_dm_hps_offline80to150.Fill( hpsCode, offlineCode )
+    #elif row.tauPt > 150 :
+    #    h_dm_hps_conebased150plus.Fill( hpsCode, defaultCode )
+    #    h_dm_hps_offline150plus.Fill( hpsCode, offlineCode )
 
-    # Only compare pT and dR if they are both matched
-    if hpsPt > 0 and defPt > 0 :
-        ptRes3.Fill( (genTauPt - hpsPt) / genTauPt )
-        ptRes4.Fill( (genTauPt - defPt) / genTauPt )
-        ptRes7.Fill( (tPt - hpsPt) / tPt )
-        ptRes8.Fill( (tPt - defPt) / tPt )
-        if genTauPt > 30 and genTauPt < 40 :
-            ptRes1.Fill( (tPt - hpsPt) / tPt )
-            ptRes2.Fill( (tPt - defPt) / tPt )
-            ptRes5.Fill( (genTauPt - hpsPt) / genTauPt )
-            ptRes6.Fill( (genTauPt - defPt) / genTauPt )
-        ptRes2DGenHPS.Fill( genTauPt, ((genTauPt - hpsPt) / genTauPt) )
-        ptRes2DGenDef.Fill( genTauPt, ((genTauPt - defPt) / genTauPt) )
+    ## Only compare pT and dR if they are both matched
+    #if hpsPt > 0 and defPt > 0 :
+    #    ptRes3.Fill( (genTauPt - hpsPt) / genTauPt )
+    #    ptRes4.Fill( (genTauPt - defPt) / genTauPt )
+    #    ptRes7.Fill( (tPt - hpsPt) / tPt )
+    #    ptRes8.Fill( (tPt - defPt) / tPt )
+    #    if genTauPt > 30 and genTauPt < 40 :
+    #        ptRes1.Fill( (tPt - hpsPt) / tPt )
+    #        ptRes2.Fill( (tPt - defPt) / tPt )
+    #        ptRes5.Fill( (genTauPt - hpsPt) / genTauPt )
+    #        ptRes6.Fill( (genTauPt - defPt) / genTauPt )
+    #    ptRes2DGenHPS.Fill( genTauPt, ((genTauPt - hpsPt) / genTauPt) )
+    #    ptRes2DGenDef.Fill( genTauPt, ((genTauPt - defPt) / genTauPt) )
 
-        drRes1.Fill( row.hpsTauDR )
-        drRes2.Fill( row.defaultTauDR )
+    #    drRes1.Fill( row.hpsTauDR )
+    #    drRes2.Fill( row.defaultTauDR )
 
 
 
@@ -557,29 +616,39 @@ c.SaveAs( plotBase+'resolutionPt2D_Gen_Def.png' )
 c.Clear()
 
 
-h_denoms_med_gen = [h_def_denom_med_gen, h_hps_denom_med_gen]
-h_passes_med_gen = [h_def_pass_med_gen, h_hps_pass_med_gen]
-plotEff( c, plotBase, 'Med Iso WP: Gen pT', h_denoms_med_gen, h_passes_med_gen )
+#h_denoms_med_gen = [h_def_denom_med_gen, h_hps_denom_med_gen]
+#h_passes_med_gen = [h_def_pass_med_gen, h_hps_pass_med_gen]
+#plotEff( c, plotBase, 'Med Iso WP: Gen pT', h_denoms_med_gen, h_passes_med_gen )
 
 h_denoms_loose = [h_def_denom_loose, h_hps_denom_loose]
 h_passes_loose = [h_def_pass_loose, h_hps_pass_loose]
 plotEff( c, plotBase, 'Loose Iso WP: offline pT', h_denoms_loose, h_passes_loose )
 
-h_denoms_loose_TightID = [h_def_denom_loose_TightID, h_hps_denom_loose_TightID]
-h_passes_loose_TightID = [h_def_pass_loose_TightID, h_hps_pass_loose_TightID]
-plotEff( c, plotBase, 'Loose Iso TightID WP: offline pT', h_denoms_loose_TightID, h_passes_loose_TightID )
+#h_denoms_loose_TightID = [h_def_denom_loose_TightID, h_hps_denom_loose_TightID]
+#h_passes_loose_TightID = [h_def_pass_loose_TightID, h_hps_pass_loose_TightID]
+#plotEff( c, plotBase, 'Loose Iso TightID WP: offline pT', h_denoms_loose_TightID, h_passes_loose_TightID )
 
 h_denoms_med = [h_def_denom_med, h_hps_denom_med]
 h_passes_med = [h_def_pass_med, h_hps_pass_med]
 plotEff( c, plotBase, 'Med Iso WP: offline pT', h_denoms_med, h_passes_med )
 
+# Make HPS comp to fully enabled cone-based
+h_denoms_med = [h_def_denom_medDiTauFull, h_hps_denom_med]
+h_passes_med = [h_def_pass_medDiTauFull, h_hps_pass_med]
+plotEff( c, plotBase, 'di-Tau Efficiency: offline pT', h_denoms_med, h_passes_med )
+
+# Make HPS comp to fully enabled + med 35 cone-based
+h_denoms_med = [h_def_denom_medDiTauAll, h_hps_denom_med]
+h_passes_med = [h_def_pass_medDiTauAll, h_hps_pass_med]
+plotEff( c, plotBase, 'di-Tau Efficiency: offline pT_', h_denoms_med, h_passes_med )
+
 h_denoms_med_muTau = [h_def_denom_med_muTau, h_hps_denom_med_muTau]
 h_passes_med_muTau = [h_def_pass_med_muTau, h_hps_pass_med_muTau]
 plotEff( c, plotBase, 'Med Iso WP MuTauCrossTrig: offline pT', h_denoms_med_muTau, h_passes_med_muTau )
 
-h_denoms_med_muTau_TightID = [h_def_denom_med_muTau_TightID, h_hps_denom_med_muTau_TightID]
-h_passes_med_muTau_TightID = [h_def_pass_med_muTau_TightID, h_hps_pass_med_muTau_TightID]
-plotEff( c, plotBase, 'Med Iso TightID WP MuTauCrossTrig: offline pT', h_denoms_med_muTau_TightID, h_passes_med_muTau_TightID )
+#h_denoms_med_muTau_TightID = [h_def_denom_med_muTau_TightID, h_hps_denom_med_muTau_TightID]
+#h_passes_med_muTau_TightID = [h_def_pass_med_muTau_TightID, h_hps_pass_med_muTau_TightID]
+#plotEff( c, plotBase, 'Med Iso TightID WP MuTauCrossTrig: offline pT', h_denoms_med_muTau_TightID, h_passes_med_muTau_TightID )
 
 h_denoms_tight = [h_def_denom_tight, h_hps_denom_tight]
 h_passes_tight = [h_def_pass_tight, h_hps_pass_tight]
@@ -589,62 +658,62 @@ h_denoms_tight_muTau = [h_def_denom_tight_muTau, h_hps_denom_tight_muTau]
 h_passes_tight_muTau = [h_def_pass_tight_muTau, h_hps_pass_tight_muTau]
 plotEff( c, plotBase, 'Tight Iso WP MuTauCrossTrig: offline pT', h_denoms_tight_muTau, h_passes_tight_muTau )
 
-h_denoms_tight_muTau_TightID = [h_def_denom_tight_muTau_TightID, h_hps_denom_tight_muTau_TightID]
-h_passes_tight_muTau_TightID = [h_def_pass_tight_muTau_TightID, h_hps_pass_tight_muTau_TightID]
-plotEff( c, plotBase, 'Tight Iso TightID WP MuTauCrossTrig: offline pT', h_denoms_tight_muTau_TightID, h_passes_tight_muTau_TightID )
-
-h_denoms_med_muTau50_1pr_dm01 = [h_def_denom_med_muTau50_1pr_dm01, h_hps_denom_med_muTau50_1pr_dm01]
-h_passes_med_muTau50_1pr_dm01 = [h_def_pass_med_muTau50_1pr_dm01, h_hps_pass_med_muTau50_1pr_dm01]
-plotEff( c, plotBase, 'Med Iso WP MuTau50 1Prong DM 0or1: offline pT', h_denoms_med_muTau50_1pr_dm01, h_passes_med_muTau50_1pr_dm01 )
-
-h_denoms_med_muTau50_1pr = [h_def_denom_med_muTau50_1pr, h_hps_denom_med_muTau50_1pr]
-h_passes_med_muTau50_1pr = [h_def_pass_med_muTau50_1pr, h_hps_pass_med_muTau50_1pr]
-plotEff( c, plotBase, 'Med Iso WP MuTau50 1Prong: offline pT', h_denoms_med_muTau50_1pr, h_passes_med_muTau50_1pr )
-
-h_denoms_med_muTau180 = [h_def_denom_med_muTau180, h_hps_denom_med_muTau180]
-h_passes_med_muTau180 = [h_def_pass_med_muTau180, h_hps_pass_med_muTau180]
-plotEff( c, plotBase, 'Med Iso WP Tau180: offline pT', h_denoms_med_muTau180, h_passes_med_muTau180 )
-
-h_denoms_med_muTau180_dm01 = [h_def_denom_med_muTau180_dm01, h_hps_denom_med_muTau180_dm01]
-h_passes_med_muTau180_dm01 = [h_def_pass_med_muTau180_dm01, h_hps_pass_med_muTau180_dm01]
-plotEff( c, plotBase, 'Med Iso WP Tau180 DM 0or1: offline pT', h_denoms_med_muTau180_dm01, h_passes_med_muTau180_dm01 )
-
-h_denoms_med_muTau180_1pr = [h_def_denom_med_muTau180_1pr, h_hps_denom_med_muTau180_1pr]
-h_passes_med_muTau180_1pr = [h_def_pass_med_muTau180_1pr, h_hps_pass_med_muTau180_1pr]
-plotEff( c, plotBase, 'Med Iso WP Tau180 1Prong: offline pT', h_denoms_med_muTau180_1pr, h_passes_med_muTau180_1pr )
-
-h_denoms_med_muTau180_1pr_dm01 = [h_def_denom_med_muTau180_1pr_dm01, h_hps_denom_med_muTau180_1pr_dm01]
-h_passes_med_muTau180_1pr_dm01 = [h_def_pass_med_muTau180_1pr_dm01, h_hps_pass_med_muTau180_1pr_dm01]
-plotEff( c, plotBase, 'Med Iso WP Tau180 1Prong DM 0or1: offline pT', h_denoms_med_muTau180_1pr_dm01, h_passes_med_muTau180_1pr_dm01 )
-
-c.Clear()
-nvtx.Draw()
-ROOT.gPad.SetLogx( 0 )
-c.SaveAs( plotBase+'nvtx.png' )
-
-p2 = ROOT.TPad( 'p2', 'p2', 0, 0, 1, 1 )
-p2.Draw()
-p2.SetLeftMargin( ROOT.gPad.GetLeftMargin() * 1.5 )
-p2.SetRightMargin( ROOT.gPad.GetRightMargin() * 1.5 )
-p2.Draw()
-p2.cd()
-
-
-print "offlineVsHPS"
-saveHists( h_dm_offline_hps, plotBase+'offlineVsHPS' )
-print "hpsVsOffline"
-saveHists( h_dm_hps_offline, plotBase+'hpsVsOffline' )
-saveHists( h_dm_hps_offline30to80, plotBase+'hpsVsOffline30to80' )
-saveHists( h_dm_hps_offline80to150, plotBase+'hpsVsOffline80to150' )
-saveHists( h_dm_hps_offline150plus, plotBase+'hpsVsOffline150plus' )
-print "offlineVsCone-Based"
-saveHists( h_dm_offline_default, plotBase+'offlineVsCone-Based' )
-print "Cone-BasedVsOffline"
-saveHists( h_dm_default_offline, plotBase+'defaultVsOffline' )
-print "hpsVsConeBased"
-saveHists( h_dm_hps_conebased, plotBase+'hpsVsConebased' )
-saveHists( h_dm_hps_conebased30to80, plotBase+'hpsVsConebased30to80' )
-saveHists( h_dm_hps_conebased80to150, plotBase+'hpsVsConebased80to150' )
-saveHists( h_dm_hps_conebased150plus, plotBase+'hpsVsConebased150plus' )
+#h_denoms_tight_muTau_TightID = [h_def_denom_tight_muTau_TightID, h_hps_denom_tight_muTau_TightID]
+#h_passes_tight_muTau_TightID = [h_def_pass_tight_muTau_TightID, h_hps_pass_tight_muTau_TightID]
+#plotEff( c, plotBase, 'Tight Iso TightID WP MuTauCrossTrig: offline pT', h_denoms_tight_muTau_TightID, h_passes_tight_muTau_TightID )
+#
+#h_denoms_med_muTau50_1pr_dm01 = [h_def_denom_med_muTau50_1pr_dm01, h_hps_denom_med_muTau50_1pr_dm01]
+#h_passes_med_muTau50_1pr_dm01 = [h_def_pass_med_muTau50_1pr_dm01, h_hps_pass_med_muTau50_1pr_dm01]
+#plotEff( c, plotBase, 'Med Iso WP MuTau50 1Prong DM 0or1: offline pT', h_denoms_med_muTau50_1pr_dm01, h_passes_med_muTau50_1pr_dm01 )
+#
+#h_denoms_med_muTau50_1pr = [h_def_denom_med_muTau50_1pr, h_hps_denom_med_muTau50_1pr]
+#h_passes_med_muTau50_1pr = [h_def_pass_med_muTau50_1pr, h_hps_pass_med_muTau50_1pr]
+#plotEff( c, plotBase, 'Med Iso WP MuTau50 1Prong: offline pT', h_denoms_med_muTau50_1pr, h_passes_med_muTau50_1pr )
+#
+#h_denoms_med_muTau180 = [h_def_denom_med_muTau180, h_hps_denom_med_muTau180]
+#h_passes_med_muTau180 = [h_def_pass_med_muTau180, h_hps_pass_med_muTau180]
+#plotEff( c, plotBase, 'Med Iso WP Tau180: offline pT', h_denoms_med_muTau180, h_passes_med_muTau180 )
+#
+#h_denoms_med_muTau180_dm01 = [h_def_denom_med_muTau180_dm01, h_hps_denom_med_muTau180_dm01]
+#h_passes_med_muTau180_dm01 = [h_def_pass_med_muTau180_dm01, h_hps_pass_med_muTau180_dm01]
+#plotEff( c, plotBase, 'Med Iso WP Tau180 DM 0or1: offline pT', h_denoms_med_muTau180_dm01, h_passes_med_muTau180_dm01 )
+#
+#h_denoms_med_muTau180_1pr = [h_def_denom_med_muTau180_1pr, h_hps_denom_med_muTau180_1pr]
+#h_passes_med_muTau180_1pr = [h_def_pass_med_muTau180_1pr, h_hps_pass_med_muTau180_1pr]
+#plotEff( c, plotBase, 'Med Iso WP Tau180 1Prong: offline pT', h_denoms_med_muTau180_1pr, h_passes_med_muTau180_1pr )
+#
+#h_denoms_med_muTau180_1pr_dm01 = [h_def_denom_med_muTau180_1pr_dm01, h_hps_denom_med_muTau180_1pr_dm01]
+#h_passes_med_muTau180_1pr_dm01 = [h_def_pass_med_muTau180_1pr_dm01, h_hps_pass_med_muTau180_1pr_dm01]
+#plotEff( c, plotBase, 'Med Iso WP Tau180 1Prong DM 0or1: offline pT', h_denoms_med_muTau180_1pr_dm01, h_passes_med_muTau180_1pr_dm01 )
+#
+#c.Clear()
+#nvtx.Draw()
+#ROOT.gPad.SetLogx( 0 )
+#c.SaveAs( plotBase+'nvtx.png' )
+#
+#p2 = ROOT.TPad( 'p2', 'p2', 0, 0, 1, 1 )
+#p2.Draw()
+#p2.SetLeftMargin( ROOT.gPad.GetLeftMargin() * 1.5 )
+#p2.SetRightMargin( ROOT.gPad.GetRightMargin() * 1.5 )
+#p2.Draw()
+#p2.cd()
+#
+#
+#print "offlineVsHPS"
+#saveHists( h_dm_offline_hps, plotBase+'offlineVsHPS' )
+#print "hpsVsOffline"
+#saveHists( h_dm_hps_offline, plotBase+'hpsVsOffline' )
+#saveHists( h_dm_hps_offline30to80, plotBase+'hpsVsOffline30to80' )
+#saveHists( h_dm_hps_offline80to150, plotBase+'hpsVsOffline80to150' )
+#saveHists( h_dm_hps_offline150plus, plotBase+'hpsVsOffline150plus' )
+#print "offlineVsCone-Based"
+#saveHists( h_dm_offline_default, plotBase+'offlineVsCone-Based' )
+#print "Cone-BasedVsOffline"
+#saveHists( h_dm_default_offline, plotBase+'defaultVsOffline' )
+#print "hpsVsConeBased"
+#saveHists( h_dm_hps_conebased, plotBase+'hpsVsConebased' )
+#saveHists( h_dm_hps_conebased30to80, plotBase+'hpsVsConebased30to80' )
+#saveHists( h_dm_hps_conebased80to150, plotBase+'hpsVsConebased80to150' )
+#saveHists( h_dm_hps_conebased150plus, plotBase+'hpsVsConebased150plus' )
 
 

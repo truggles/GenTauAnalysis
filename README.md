@@ -1,3 +1,7 @@
+# Do not use the master branch for HPS tau studies, used hps_at_hlt_10X
+
+The master branch is currently compiling in CMSSW_9_4_0
+
 # Tau HLT Studies
 Current HLT studies require rerunning the HLT menue on trigger studies samples. The code in THRAnalysis/TauHLTStudies is being set up for this purpose. WORK IN PROGRESS.
 

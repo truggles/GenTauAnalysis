@@ -149,40 +149,45 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
         //t2IsoCmbLoose, t2IsoCmbLoose03, t2IsoCmbMedium, t2IsoCmbMedium03, t2IsoCmbTight, t2IsoCmbTight03,
         t2IsoCmbLoose, t2IsoCmbMedium, t2IsoCmbTight,
         t2TrigMatch,t2genPt,t2L1Match, emptyVertices, failNdof,
-        hpsTauSize, hpsTauPt, hpsTauEta, hpsTauPhi, hpsTauDM, hpsTauDMFinding, hpsTauDR,
+        hpsTauSize, hpsTauPt, hpsTauEta, hpsTauPhi, hpsTauDM, hpsTauDMFinding, hpsTauDR, hpsTauChrgIso, hpsTauDRDefault,
         hpsTau2Pt, hpsTau2Eta, hpsTau2Phi, hpsTau2DM,
-        defaultTauSize, defaultTauPt, defaultTauEta, defaultTauPhi, defaultTauDM, defaultTauDMFinding, defaultTauDR,
+        defaultTauSize, defaultTauPt, defaultTauEta, defaultTauPhi, 
+        defaultTauDM, defaultTauDMFinding, defaultTauDR, defaultTauChrgIso,
         defaultTau2Pt, defaultTau2Eta, defaultTau2Phi, defaultTau2DM;
       bool foundGenTau, foundGenMuon; 
       std::map<std::string, int*> triggers;
       std::map<std::string, int>::iterator triggerIterator;
       int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1;
-      int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM;
       int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1;
-      //int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1;
-      //int HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1;
-      //int HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1;
-      //int HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1;
-      //int HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1;
+      int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1;
+      int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1;
+      int HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1;
+      int HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1;
+      int HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_CrossL1;
+      int HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1;
+      int HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1;
+      int HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1;
+      int HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_CrossL1;
+      int HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1;
       int HLT_IsoMu20;
-      //int HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1;
-      //int HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1;
-      //int HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1;
-      //int HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1;
       //int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1;
       //int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1;
-      //int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1;
+      int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1;
+      int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1;
       int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1;
       int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1;
-      //int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1;
+      int HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1;
+      int HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1;
+      int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1;
       //int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1;
-      //int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr;
+      int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr;
+      int HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr;
       //int HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1;
       //int HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1;
-      //int HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1;
-      //int HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1;
+      int HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1;
+      int HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1;
       //int HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1;
-      //int HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1;
+      int HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1;
       //int HLT_IsoMu24_eta2p1;
       int HLT_IsoMu24;
       //int HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1;
@@ -193,18 +198,54 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
       //int HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg;
       //int HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
       //int HLT_DoubleLooseChargedIsoPFTau40_Trk1_eta2p1_Reg;
-      //int HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg;
+      int HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg;
+      int HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg;
+      int HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1;
+      int HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_Reg;
+      int HLT_VBF_DoubleMediumChargedIsoPFTau20_Trk1_eta2p1;
+      int HLT_VBF_DoubleMediumChargedIsoPFTauHPS20_Trk1_eta2p1_Reg;
+      int HLT_VBF_DoubleTightChargedIsoPFTau20_Trk1_eta2p1;
+      int HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_Reg;
       int HLT_DoubleMediumChargedIsoPFTau35_Trk1_eta2p1_Reg;
       int HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg;
       int HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
       int HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg;
-      //int HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg;
+      int HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg;
+      int HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_eta2p1_Reg;
       int HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg;
       int HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg;
-      //int HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg;
-      //int HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
+      int HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg;
+      int HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg;
       int HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg;
       int HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg;
+      int HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr;
+      int HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr;
+      int HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr;
+      int HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1;
+      int HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_1pr;
+      int HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1;
+      int HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
+      int HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg;
+      int HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET90;
+      int HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET100;
+      int HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET110;
+      int HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET130;
+      int HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET90;
+      int HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET100;
+      int HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET110;
+      int HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET130;
+      int HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1;
+      int HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_TightID_CrossL1;
+      int HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_CrossL1;
+      int HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_TightID_CrossL1;
+      int HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTau30_eta2p1_CrossL1;
+      int HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTau30_eta2p1_TightID_CrossL1;
+      int HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_CrossL1;
+      int HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1;
+      int HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTauHPS30_eta2p1_CrossL1;
+      int HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1;
+      int HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTauHPS30_eta2p1_CrossL1;
+      int HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1;
 };
 
 //
@@ -252,32 +293,36 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    edm::Service<TFileService> fs;
 
    triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_v"]                   = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1;
-   triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM_v"]                   = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM;
    triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1_v"]                = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1;
-   //triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1_v"]           = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1;
-   //triggers["HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1_v"]                  = &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1;
-   //triggers["HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1_v"]          = &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1;
-   //triggers["HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1_v"]                   = &HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1;
-   //triggers["HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1_v"]           = &HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1;
+   triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1_v"]           = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1;
+   triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1_v"]        = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1;
+   triggers["HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1_v"]                  = &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1;
+   triggers["HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1_v"]          = &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1;
+   triggers["HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1_v"]                   = &HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1;
+   triggers["HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1_v"]           = &HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1;
+   triggers["HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_CrossL1_v"]               = &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_CrossL1;
+   triggers["HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1_v"]       = &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1;
+   triggers["HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_CrossL1_v"]                = &HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_CrossL1;
+   triggers["HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1_v"]        = &HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1;
    triggers["HLT_IsoMu20_v"]                                                                = &HLT_IsoMu20;
-   //triggers["HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1_v"]                         = &HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1;
-   //triggers["HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1_v"]                 = &HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1;
-   //triggers["HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1_v"]  = &HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1;
-   //triggers["HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v"]          = &HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1;
    //triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1_v"]                        = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1;
    //triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1_v"]                = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1;
-   //triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1_v"] = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1;
+   triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1_v"] = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1;
+   triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1_v"] = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1;
    triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v"]         = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1;
-   triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1_v"]         = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1;
-   //triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1_v"] = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1;
+   triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1_v"]      = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1;
+   triggers["HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v"]          = &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1;
+   triggers["HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1_v"]       = &HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1;
+   triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1_v"] = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1;
    //triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1_v"]         = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1;
-   //triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_v"]                = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr;
+   triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_v"]                = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr;
+   triggers["HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_v"]                = &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr;
    //triggers["HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1_v"]                         = &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1;
    //triggers["HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1_v"]                 = &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1;
-   //triggers["HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1_v"]  = &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1;
-   //triggers["HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v"]          = &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1;
+   triggers["HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1_v"]  = &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1;
+   triggers["HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1_v"]  = &HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1;
    //triggers["HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1_v"]  = &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1;
-   //triggers["HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1_v"]          = &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1;
+   triggers["HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1_v"]          = &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1;
    //triggers["HLT_IsoMu24_eta2p1_v"]                                                         = &HLT_IsoMu24_eta2p1;
    triggers["HLT_IsoMu24_v"]                                                                = &HLT_IsoMu24;
    //triggers["HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1_v"]                         = &HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1;
@@ -288,18 +333,54 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    //triggers["HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg_v"]                           = &HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg;
    //triggers["HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v"]                   = &HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
    //triggers["HLT_DoubleLooseChargedIsoPFTau40_Trk1_eta2p1_Reg_v"]                           = &HLT_DoubleLooseChargedIsoPFTau40_Trk1_eta2p1_Reg;
-   //triggers["HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v"]                  = &HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg;
+   triggers["HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v"]                  = &HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg;
+   triggers["HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_v"]               = &HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg;
+   triggers["HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_v"]                       = &HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1;
+   triggers["HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_Reg_v"]                    = &HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_Reg;
+   triggers["HLT_VBF_DoubleMediumChargedIsoPFTau20_Trk1_eta2p1_v"]                      = &HLT_VBF_DoubleMediumChargedIsoPFTau20_Trk1_eta2p1;
+   triggers["HLT_VBF_DoubleMediumChargedIsoPFTauHPS20_Trk1_eta2p1_Reg_v"]                   = &HLT_VBF_DoubleMediumChargedIsoPFTauHPS20_Trk1_eta2p1_Reg;
+   triggers["HLT_VBF_DoubleTightChargedIsoPFTau20_Trk1_eta2p1_v"]                       = &HLT_VBF_DoubleTightChargedIsoPFTau20_Trk1_eta2p1;
+   triggers["HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_Reg_v"]                    = &HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_Reg;
    triggers["HLT_DoubleMediumChargedIsoPFTau35_Trk1_eta2p1_Reg_v"]                          = &HLT_DoubleMediumChargedIsoPFTau35_Trk1_eta2p1_Reg;
-   triggers["HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v"]                          = &HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg;
+   triggers["HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v"]                       = &HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg;
    triggers["HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v"]                  = &HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
-   triggers["HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg_v"]                  = &HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg;
-   //triggers["HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg_v"]                          = &HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg;
+   triggers["HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg_v"]               = &HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg;
+   triggers["HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg_v"]                          = &HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg;
+   triggers["HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_eta2p1_Reg_v"]                       = &HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_eta2p1_Reg;
    triggers["HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v"]                   = &HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg;
-   triggers["HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_v"]                   = &HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg;
-   //triggers["HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg_v"]                           = &HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg;
-   //triggers["HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v"]                   = &HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
+   triggers["HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_v"]                = &HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg;
+   triggers["HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg_v"]                           = &HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg;
+   triggers["HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v"]                        = &HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg;
+   triggers["HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v"]                   = &HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
+   triggers["HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg_v"]                = &HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg;
    triggers["HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v"]                           = &HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg;
-   triggers["HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg_v"]                           = &HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg;
+   triggers["HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg_v"]                        = &HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg;
+   triggers["HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_v"]                               = &HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr;
+   triggers["HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_v"]                            = &HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr;
+   triggers["HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr_v"]              = &HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr;
+   triggers["HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_1pr_v"]           = &HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_1pr;
+   triggers["HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_v"]                  = &HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1;
+   triggers["HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_v"]               = &HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1;
+   triggers["HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET90_v"]                         = &HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET90;
+   triggers["HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET100_v"]                        = &HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET100;
+   triggers["HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET110_v"]                        = &HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET110;
+   triggers["HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET130_v"]                        = &HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET130;
+   triggers["HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET90_v"]                      = &HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET90;
+   triggers["HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET100_v"]                     = &HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET100;
+   triggers["HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET110_v"]                     = &HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET110;
+   triggers["HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET130_v"]                     = &HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET130;
+   triggers["HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v"]         = &HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1;
+   triggers["HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_TightID_CrossL1_v"] = &HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_TightID_CrossL1;
+   triggers["HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_CrossL1_v"]        = &HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_CrossL1;
+   triggers["HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_TightID_CrossL1_v"] = &HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_TightID_CrossL1;
+   triggers["HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTau30_eta2p1_CrossL1_v"]         = &HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTau30_eta2p1_CrossL1;
+   triggers["HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTau30_eta2p1_TightID_CrossL1_v"] = &HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTau30_eta2p1_TightID_CrossL1;
+   triggers["HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_CrossL1_v"]      = &HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_CrossL1;
+   triggers["HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1_v"] = &HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1;
+   triggers["HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTauHPS30_eta2p1_CrossL1_v"]     = &HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTauHPS30_eta2p1_CrossL1;
+   triggers["HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1_v"] = &HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1;
+   triggers["HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTauHPS30_eta2p1_CrossL1_v"]      = &HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTauHPS30_eta2p1_CrossL1;
+   triggers["HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1_v"] = &HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1;
 
    TFileDirectory subDir = fs->mkdir( "tagAndProbe" );
    nEvents = subDir.make<TH1D>("nEvents","nEvents",1,-0.5,0.5);
@@ -356,6 +437,8 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("hpsTauDM",&hpsTauDM,"hpsTauDM/F");
    tree->Branch("hpsTauDMFinding",&hpsTauDMFinding,"hpsTauDMFinding/F");
    tree->Branch("hpsTauDR",&hpsTauDR,"hpsTauDR/F");
+   tree->Branch("hpsTauChrgIso",&hpsTauChrgIso,"hpsTauChrgIso/F");
+   tree->Branch("hpsTauDRDefault",&hpsTauDRDefault,"hpsTauDRDefault/F");
    tree->Branch("hpsTau2Pt",&hpsTau2Pt,"hpsTau2Pt/F");
    tree->Branch("hpsTau2Eta",&hpsTau2Eta,"hpsTau2Eta/F");
    tree->Branch("hpsTau2Phi",&hpsTau2Phi,"hpsTau2Phi/F");
@@ -367,6 +450,7 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("defaultTauDM",&defaultTauDM,"defaultTauDM/F");
    tree->Branch("defaultTauDMFinding",&defaultTauDMFinding,"defaultTauDMFinding/F");
    tree->Branch("defaultTauDR",&defaultTauDR,"defaultTauDR/F");
+   tree->Branch("defaultTauChrgIso",&defaultTauChrgIso,"defaultTauChrgIso/F");
    tree->Branch("defaultTau2Pt",&defaultTau2Pt,"defaultTau2Pt/F");
    tree->Branch("defaultTau2Eta",&defaultTau2Eta,"defaultTau2Eta/F");
    tree->Branch("defaultTau2Phi",&defaultTau2Phi,"defaultTau2Phi/F");
@@ -405,32 +489,36 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("failNdof",&failNdof,"failNdof/F");
 
    tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1",                   &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1,                  "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1/I");
-   tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM",                   &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM,                  "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_withNewDM/I");
    tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1",                   &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1,                  "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1/I");
-   //tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1",           &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1,          "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1/I");
-   //tree->Branch("HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1",                  &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1,                 "HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1/I");
-   //tree->Branch("HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1",          &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1,         "HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1/I");
-   //tree->Branch("HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1",                   &HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1,                  "HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1/I");
-   //tree->Branch("HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1",           &HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1,          "HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1/I");
+   tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1",           &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1,          "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1/I");
+   tree->Branch("HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1",                  &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1,                 "HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1/I");
+   tree->Branch("HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1",          &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1,         "HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1/I");
+   tree->Branch("HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1",                   &HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1,                  "HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1/I");
+   tree->Branch("HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1",           &HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1,          "HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1/I");
+   tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1",           &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1,          "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1/I");
+   tree->Branch("HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_CrossL1",                  &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_CrossL1,                 "HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_CrossL1/I");
+   tree->Branch("HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1",          &HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1,         "HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1/I");
+   tree->Branch("HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_CrossL1",                   &HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_CrossL1,                  "HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_CrossL1/I");
+   tree->Branch("HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1",           &HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1,          "HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1/I");
    tree->Branch("HLT_IsoMu20",                                                                &HLT_IsoMu20,                                                               "HLT_IsoMu20/I");
-   //tree->Branch("HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1",                         &HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1,                        "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1/I");
-   //tree->Branch("HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1",                 &HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1,                "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_TightID_SingleL1/I");
-   //tree->Branch("HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",  &HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1, "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1/I");
-   //tree->Branch("HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",          &HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1,         "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1/I");
    //tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1",                        &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1,                       "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_SingleL1/I");
    //tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1",                &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1,               "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau20_TightID_SingleL1/I");
-   //tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1", &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1,"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1/I");
+   tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1", &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1,"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1/I");
+   tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1", &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1,"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1/I");
    tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",         &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1,        "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1/I");
-   tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1",         &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1,        "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1/I");
-   //tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1", &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1,"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1/I");
+   tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1",      &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1,        "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1/I");
+   tree->Branch("HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",          &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1,        "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1/I");
+   tree->Branch("HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1",       &HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1,        "HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1/I");
+   tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1", &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1,"HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1/I");
    //tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1",         &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1,        "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1/I");
-   //tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr",                &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr,               "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr/I");
+   tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr",                &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr,               "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr/I");
+   tree->Branch("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr",                &HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr,               "HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr/I");
    //tree->Branch("HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1",                         &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1,                        "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1/I");
    //tree->Branch("HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1",                 &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1,                "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_TightID_SingleL1/I");
-   //tree->Branch("HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",  &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1, "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1/I");
-   //tree->Branch("HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1",          &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1,         "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1/I");
+   tree->Branch("HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1",  &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1, "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1/I");
+   tree->Branch("HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1",  &HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1, "HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1/I");
    //tree->Branch("HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1",  &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1, "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1/I");
-   //tree->Branch("HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1",          &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1,         "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1/I");
+   tree->Branch("HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1",          &HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1,         "HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1/I");
    //tree->Branch("HLT_IsoMu24_eta2p1",                                                         &HLT_IsoMu24_eta2p1,                                                        "HLT_IsoMu24_eta2p1/I");
    tree->Branch("HLT_IsoMu24",                                                                &HLT_IsoMu24,                                                               "HLT_IsoMu24/I");
    //tree->Branch("HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1",                         &HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1,                        "HLT_IsoMu27_eta2p1_LooseChargedIsoPFTau20_SingleL1/I");
@@ -441,18 +529,54 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    //tree->Branch("HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg",                           &HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg,                          "HLT_DoubleLooseChargedIsoPFTau35_Trk1_eta2p1_Reg/I");
    //tree->Branch("HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg",                   &HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg,                  "HLT_DoubleLooseChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg/I");
    //tree->Branch("HLT_DoubleLooseChargedIsoPFTau40_Trk1_eta2p1_Reg",                           &HLT_DoubleLooseChargedIsoPFTau40_Trk1_eta2p1_Reg,                          "HLT_DoubleLooseChargedIsoPFTau40_Trk1_eta2p1_Reg/I");
-   //tree->Branch("HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg",                  &HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg,                 "HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg/I");
+   tree->Branch("HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg",                  &HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg,                 "HLT_DoubleMediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg/I");
+   tree->Branch("HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg",                  &HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg,                 "HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg/I");
+   tree->Branch("HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1",                          &HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1,                         "HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1/I");
+   tree->Branch("HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_Reg",                          &HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_Reg,                         "HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_Reg/I");
+   tree->Branch("HLT_VBF_DoubleMediumChargedIsoPFTau20_Trk1_eta2p1",                          &HLT_VBF_DoubleMediumChargedIsoPFTau20_Trk1_eta2p1,                         "HLT_VBF_DoubleMediumChargedIsoPFTau20_Trk1_eta2p1/I");
+   tree->Branch("HLT_VBF_DoubleMediumChargedIsoPFTauHPS20_Trk1_eta2p1_Reg",                          &HLT_VBF_DoubleMediumChargedIsoPFTauHPS20_Trk1_eta2p1_Reg,                         "HLT_VBF_DoubleMediumChargedIsoPFTauHPS20_Trk1_eta2p1_Reg/I");
+   tree->Branch("HLT_VBF_DoubleTightChargedIsoPFTau20_Trk1_eta2p1",                          &HLT_VBF_DoubleTightChargedIsoPFTau20_Trk1_eta2p1,                         "HLT_VBF_DoubleTightChargedIsoPFTau20_Trk1_eta2p1/I");
+   tree->Branch("HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_Reg",                          &HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_Reg,                         "HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleMediumChargedIsoPFTau35_Trk1_eta2p1_Reg",                          &HLT_DoubleMediumChargedIsoPFTau35_Trk1_eta2p1_Reg,                         "HLT_DoubleMediumChargedIsoPFTau35_Trk1_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg",                          &HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg,                         "HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg",                  &HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg,                 "HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg",                  &HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg,                 "HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg/I");
-   //tree->Branch("HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg",                          &HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg,                         "HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg/I");
+   tree->Branch("HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg",                          &HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg,                         "HLT_DoubleMediumChargedIsoPFTau40_Trk1_eta2p1_Reg/I");
+   tree->Branch("HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_eta2p1_Reg",                          &HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_eta2p1_Reg,                         "HLT_DoubleMediumChargedIsoPFTauHPS40_Trk1_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg",                   &HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg,                  "HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg",                   &HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg,                  "HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg/I");
-   //tree->Branch("HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg",                           &HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg,                          "HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg/I");
-   //tree->Branch("HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg",                   &HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg,                  "HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg/I");
+   tree->Branch("HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg",                           &HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg,                          "HLT_DoubleTightChargedIsoPFTau35_Trk1_eta2p1_Reg/I");
+   tree->Branch("HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg",                           &HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg,                          "HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg/I");
+   tree->Branch("HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg",                   &HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg,                  "HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg/I");
+   tree->Branch("HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg",                   &HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg,                  "HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg",                           &HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg,                          "HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg/I");
    tree->Branch("HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg",                           &HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg,                          "HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg/I");
+   tree->Branch("HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr",                           &HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr,                          "HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr/I");
+   tree->Branch("HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr",                           &HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr,                          "HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr/I");
+   tree->Branch("HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr",          &HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr,                          "HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr/I");
+   tree->Branch("HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_1pr",          &HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_1pr,                          "HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_1pr/I");
+   tree->Branch("HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1",              &HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1,                          "HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1/I");
+   tree->Branch("HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1",              &HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1,                          "HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1/I");
+   tree->Branch("HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET90",              &HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET90,                          "HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET90/I");
+   tree->Branch("HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET100",              &HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET100,                          "HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET100/I");
+   tree->Branch("HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET110",              &HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET110,                          "HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET110/I");
+   tree->Branch("HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET130",              &HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET130,                          "HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET130/I");
+   tree->Branch("HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET90",              &HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET90,                          "HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET90/I");
+   tree->Branch("HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET100",              &HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET100,                          "HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET100/I");
+   tree->Branch("HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET110",              &HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET110,                          "HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET110/I");
+   tree->Branch("HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET130",              &HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET130,                          "HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET130/I");
+   tree->Branch("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1",              &HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1,                          "HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1/I");
+   tree->Branch("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_TightID_CrossL1",              &HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_TightID_CrossL1,                          "HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_TightID_CrossL1/I");
+   tree->Branch("HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_CrossL1",              &HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_CrossL1,                          "HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_CrossL1/I");
+   tree->Branch("HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_TightID_CrossL1",              &HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_TightID_CrossL1,                          "HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_TightID_CrossL1/I");
+   tree->Branch("HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTau30_eta2p1_CrossL1",              &HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTau30_eta2p1_CrossL1,                          "HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTau30_eta2p1_CrossL1/I");
+   tree->Branch("HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTau30_eta2p1_TightID_CrossL1",              &HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTau30_eta2p1_TightID_CrossL1,                          "HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTau30_eta2p1_TightID_CrossL1/I");
+   tree->Branch("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_CrossL1",              &HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_CrossL1,                          "HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_CrossL1/I");
+   tree->Branch("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1",              &HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1,                          "HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1/I");
+   tree->Branch("HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTauHPS30_eta2p1_CrossL1",              &HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTauHPS30_eta2p1_CrossL1,                          "HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTauHPS30_eta2p1_CrossL1/I");
+   tree->Branch("HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1",              &HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1,                          "HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1/I");
+   tree->Branch("HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTauHPS30_eta2p1_CrossL1",              &HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTauHPS30_eta2p1_CrossL1,                          "HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTauHPS30_eta2p1_CrossL1/I");
+   tree->Branch("HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1",              &HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1,                          "HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1/I");
 
 }
 
@@ -1143,8 +1267,14 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
   // Currently Data is in RAW form
   // all it has is
   // edm::TriggerResults       "TriggerResults"         ""        "HLT"
-  if (isRAW) { // isRAW (only trigger results abailable)
+  // And info on the saved default and HPS tau collections
+  if (isRAW) {
 
+    // Because there is no offline tau to match to, we need to apply
+    // a tighter selection criteria here beyond just pT ordering the
+    // taus, use charged iso < 3.9 GeV which is the loosest HPS passing cut
+    // isolationPFChargedHadrCandsPtSum() < 3.9 GeV
+    // make exception if Tau pT > 250 GeV to keep that one in the collection
     edm::Handle<std::vector<reco::PFTau>> hpsTaus;
     try {iEvent.getByToken(hpsTauToken_, hpsTaus);} catch (...) {;}
     edm::Handle<reco::PFTauDiscriminator> hpsTauDMs;
@@ -1157,6 +1287,8 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     hpsTauDM = -9;
     hpsTauDMFinding = -9;
     hpsTauDR = -9;
+    hpsTauChrgIso = -9;
+    hpsTauDRDefault = -9;
     
     std::vector<reco::PFTauRef> passingHPSTaus;
 
@@ -1166,6 +1298,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
 
             reco::PFTauRef hpsTauCandidate(hpsTaus, iTau);
             if (hpsTauCandidate->pt() < 18 || fabs(hpsTauCandidate->eta()) > 2.2) continue;
+            if (hpsTauCandidate->isolationPFChargedHadrCandsPtSum() > 3.9 && hpsTauCandidate->pt() < 250) continue;
             passingHPSTaus.push_back( hpsTauCandidate );
 
             if (verbose) std::cout << "found hps tau matching slimmed tau:" << std::endl;
@@ -1185,6 +1318,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
         if (hpsTauDMs.isValid()) {
             hpsTauDMFinding = (*hpsTauDMs)[passingHPSTaus.at(0)];
         }
+        hpsTauChrgIso = passingHPSTaus.at(0)->isolationPFChargedHadrCandsPtSum();
     }
     if ( passingHPSTaus.size() > 1 ) {
         hpsTau2Pt = passingHPSTaus.at(1)->pt();
@@ -1208,6 +1342,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     defaultTauDM = -9;
     defaultTauDMFinding = -9;
     defaultTauDR = -9;
+    defaultTauChrgIso = -9;
 
     std::vector<reco::PFTauRef> passingDefaultTaus;
 
@@ -1217,6 +1352,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
 
             reco::PFTauRef defaultTauCandidate(defaultTaus, iTau);
             if (defaultTauCandidate->pt() < 18 || fabs(defaultTauCandidate->eta()) > 2.2) continue;
+            if (defaultTauCandidate->isolationPFChargedHadrCandsPtSum() > 3.9 && defaultTauCandidate->pt() < 250) continue;
 
             passingDefaultTaus.push_back( defaultTauCandidate );
 
@@ -1237,12 +1373,18 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
         if (defaultTauDMs.isValid()) {
             defaultTauDMFinding = (*defaultTauDMs)[passingDefaultTaus.at(0)];
         }
+        defaultTauChrgIso = passingDefaultTaus.at(0)->isolationPFChargedHadrCandsPtSum();
     }
     if ( passingDefaultTaus.size() > 1 ) {
         defaultTau2Pt = passingDefaultTaus.at(1)->pt();
         defaultTau2Eta = passingDefaultTaus.at(1)->eta();
         defaultTau2Phi = passingDefaultTaus.at(1)->phi();
         defaultTau2DM = passingDefaultTaus.at(1)->decayMode();
+    }
+
+    // Delta R for the leading HPS and default Tau
+    if ( passingHPSTaus.size() > 0 && passingDefaultTaus.size() > 0 ) {
+        hpsTauDRDefault = deltaR( *passingHPSTaus.at(0), *passingDefaultTaus.at(0) );
     }
 
     edm::Handle<edm::TriggerResults> triggerResults;   

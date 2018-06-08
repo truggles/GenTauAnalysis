@@ -55,7 +55,11 @@
 >                                            "keep *_offlineBeamSpot_*_*",
 >                                            "keep *_hltHpsPFTauProducerSingleTau_*_*",
 >                                            "keep *_hltHpsSelectedPFTausTrackFinding_*_*",
->                                            "keep *_*_*_TAUHLT",
+>                                            "keep *_hltPFTaus_*_TAUHLT",
+>                                            "keep *_hltPFTausReg_*_TAUHLT",
+>                                            "keep *_hltHpsPFTauProducer_*_TAUHLT",
+>                                            "keep *_hltHpsPFTauProducerReg_*_TAUHLT",
+>                                            #"keep *_*_*_TAUHLT",
 >                                            #"keep *__*_*",
 >     )
 > )

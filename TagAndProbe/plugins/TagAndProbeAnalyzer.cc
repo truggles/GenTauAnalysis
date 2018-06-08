@@ -391,19 +391,39 @@ TagAndProbeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     for (unsigned int i = 0, n = triggerResults->size(); i < n; ++i) {
         //std::cout << names.triggerName(i) << std::endl;
         if (names.triggerName(i).find("HLT_IsoMu20_v") != std::string::npos) {
-            if (triggerResults->accept(i)) IsoMu20 = 1; TrigPass = 1; usedPaths.push_back( names.triggerName(i) );
+            if (triggerResults->accept(i)) {
+                IsoMu20 = 1;
+                TrigPass = 1;
+                usedPaths.push_back( names.triggerName(i) );
+            }
         }
         if (names.triggerName(i).find("HLT_IsoMu22_v") != std::string::npos) {
-            if (triggerResults->accept(i)) IsoMu22 = 1; TrigPass = 1; usedPaths.push_back( names.triggerName(i) );
+            if (triggerResults->accept(i)) {
+                IsoMu22 = 1;
+                TrigPass = 1;
+                usedPaths.push_back( names.triggerName(i) );
+            }
         }
         if (names.triggerName(i).find("HLT_IsoMu24_v") != std::string::npos) {
-            if (triggerResults->accept(i)) IsoMu24 = 1; TrigPass = 1; usedPaths.push_back( names.triggerName(i) );
+            if (triggerResults->accept(i)) {
+                IsoMu24 = 1;
+                TrigPass = 1;
+                usedPaths.push_back( names.triggerName(i) );
+            }
         }
         if (names.triggerName(i).find("HLT_IsoMu27_v") != std::string::npos) {
-            if (triggerResults->accept(i)) IsoMu27 = 1; TrigPass = 1; usedPaths.push_back( names.triggerName(i) );
+            if (triggerResults->accept(i)) {
+                IsoMu27 = 1;
+                TrigPass = 1;
+                usedPaths.push_back( names.triggerName(i) );
+            }
         }
         if (names.triggerName(i).find("HLT_IsoMu21_eta2p1_MediumIsoPFTau32_Trk1_eta2p1_Reg_v") != std::string::npos) {
-            if (triggerResults->accept(i)) IsoMu21MediumIsoTau32 = 1; TrigPass = 1; usedPaths.push_back( names.triggerName(i) );
+            if (triggerResults->accept(i)) {
+                IsoMu21MediumIsoTau32 = 1;
+                TrigPass = 1;
+                usedPaths.push_back( names.triggerName(i) );
+            }
         }
     }
 

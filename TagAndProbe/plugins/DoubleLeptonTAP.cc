@@ -436,7 +436,7 @@ DoubleLeptonTAP::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       // No isolation as it is built into MVA WP 90
 
       // Check conversion veto and missing hits to align with analysis
-      if (electronCandidate->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS) >= 2) continue;
+      if (electronCandidate->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) >= 2) continue;
       if (electronCandidate->passConversionVeto() < 0.5) continue;
 
       // Check deltaR after we have 1 electron, throw away any within dR 0.3 of leading electron

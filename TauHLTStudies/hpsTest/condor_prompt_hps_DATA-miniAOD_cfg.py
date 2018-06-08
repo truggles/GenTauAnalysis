@@ -11,15 +11,14 @@ process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring($inputFileNames)
     #fileNames = cms.untracked.vstring(
-    #    'file:/hdfs/store/user/truggles/SingleMuon/DataSingleMuonF_hps_10x_feb17_finalCfg/180217_103918/0000/output_10.root')
+    #    'file:root://cmsxrootd.fnal.gov///store/data/Run2018A/SingleMuon/MINIAOD/PromptReco-v1/000/315/322/00000/B47169E3-4C4C-E811-80E9-02163E015DF5.root')
 )
 
 
 # ---- Global Tag :
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, '92X_upgrade2017_realistic_v10')
-process.GlobalTag = GlobalTag(process.GlobalTag, '100X_dataRun2_relval_ForTSG_v1')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_hlt_GRun')
 
 
 #
@@ -49,6 +48,7 @@ process.load("THRAnalysis.TauHLTStudies.hps_CfiFile_cfi")
 #process.hpsTauHLTStudies.verbose = cms.untracked.bool(True)
 #process.hpsTauHLTStudies.isRAW = cms.untracked.bool(True)
 process.hpsTauHLTStudies.isData = cms.untracked.bool(True)
+process.hpsTauHLTStudies.triggerSrc = cms.InputTag("TriggerResults","","HLT")
 
 
 process.TFileService = cms.Service("TFileService",
@@ -58,7 +58,6 @@ process.TFileService = cms.Service("TFileService",
 
 
 process.p = cms.Path(
-            #process.hltFilter*
             process.egmGsfElectronIDSequence*
             process.hpsTauHLTStudies)
 

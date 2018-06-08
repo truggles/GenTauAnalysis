@@ -8958,6 +8958,7 @@ process.HLTSchedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLT_Is
 
 process.source = cms.Source( "PoolSource",
     fileNames = cms.untracked.vstring(
+        'file:RelVal_Raw_GRun_MC.root',
     ),
     inputCommands = cms.untracked.vstring(
         'keep *'
@@ -8988,22 +8989,22 @@ if 'GlobalTag' in process.__dict__:
     from Configuration.AlCa.GlobalTag import GlobalTag as customiseGlobalTag
     process.GlobalTag = customiseGlobalTag(process.GlobalTag, globaltag = 'auto:run2_mc_GRun')
 
-#if 'MessageLogger' in process.__dict__:
-#    process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
-#    process.MessageLogger.categories.append('L1GtTrigReport')
-#    process.MessageLogger.categories.append('L1TGlobalSummary')
-#    process.MessageLogger.categories.append('HLTrigReport')
-#    process.MessageLogger.categories.append('FastReport')
+if 'MessageLogger' in process.__dict__:
+    process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
+    process.MessageLogger.categories.append('L1GtTrigReport')
+    process.MessageLogger.categories.append('L1TGlobalSummary')
+    process.MessageLogger.categories.append('HLTrigReport')
+    process.MessageLogger.categories.append('FastReport')
 
 # load the DQMStore and DQMRootOutputModule
 process.load( "DQMServices.Core.DQMStore_cfi" )
 process.DQMStore.enableMultiThread = True
 
-#process.dqmOutput = cms.OutputModule("DQMRootOutputModule",
-#    fileName = cms.untracked.string("DQMIO.root")
-#)
-#
-#process.DQMOutput = cms.EndPath( process.dqmOutput )
+process.dqmOutput = cms.OutputModule("DQMRootOutputModule",
+    fileName = cms.untracked.string("DQMIO.root")
+)
+
+process.DQMOutput = cms.EndPath( process.dqmOutput )
 
 # add specific customizations
 _customInfo = {}
@@ -9019,8 +9020,7 @@ _customInfo['globalTag' ]= "auto:run2_mc_GRun"
 _customInfo['inputFile' ]=  ['file:RelVal_Raw_GRun_MC.root']
 _customInfo['realData'  ]=  False
 from HLTrigger.Configuration.customizeHLTforALL import customizeHLTforAll
-#process = customizeHLTforAll(process,"GRun",_customInfo)
-process = customizeHLTforAll(process,"GRun")
+process = customizeHLTforAll(process,"GRun",_customInfo)
 
 from HLTrigger.Configuration.customizeHLTforCMSSW import customizeHLTforCMSSW
 process = customizeHLTforCMSSW(process,"GRun")
@@ -9028,32 +9028,4 @@ process = customizeHLTforCMSSW(process,"GRun")
 # Eras-based customisations
 from HLTrigger.Configuration.Eras import modifyHLTforEras
 modifyHLTforEras(process)
-
-process.Out = cms.OutputModule( "PoolOutputModule",
-    fileName = cms.untracked.string( "output.root" ),
-    fastCloning = cms.untracked.bool( False ),
-    outputCommands = cms.untracked.vstring(
-                                           "drop *",
-                                           "keep *_TriggerResults_*_*",
-                                           "keep *_genParticles_*_*",
-                                           "keep *_prunedGenParticles_*_*",
-                                           "keep *_slimmedElectrons_*_*",
-                                           "keep *_slimmedMuons_*_*",
-                                           "keep *_slimmedAddPileupInfo_*_*",
-                                           "keep *_slimmedTaus_*_*",
-                                           "keep *_slimmedJets_*_*",
-                                           "keep *_slimmedMETs_*_*",
-                                           "keep *_offlineSlimmedPrimaryVertices_*_*",
-                                           "keep *_slimmedPatTrigger_*_*",
-                                           "keep *_caloStage2Digis_*_*",
-                                           "keep *_reducedEgamma_*_*",
-                                           "keep *_offlineBeamSpot_*_*",
-                                           "keep *_hltHpsPFTauProducerSingleTau_*_*",
-                                           "keep *_hltHpsSelectedPFTausTrackFinding_*_*",
-                                           "keep *_*_*_TAUHLT",
-                                           #"keep *__*_*",
-    )
-)
-
-process.end = cms.EndPath( process.Out )
 

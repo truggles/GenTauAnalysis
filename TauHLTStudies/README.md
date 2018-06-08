@@ -1,3 +1,20 @@
+# HLT Twiki
+https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideGlobalHLT#How_to_run_the_production_HLT_wi
+
+# HPS Study Eff Alignment:
+
+Get py cfg of entire HLT menu.  Do this from lxplus or the timing PCs.
+```
+hltGetConfiguration /users/tstreble/CMSSW_9_2_14/HLT_HPS/V13 --full --offline --mc --unprescale --process TAUHLT --globaltag auto:run2_mc_GRun --setup /dev/CMSSW_9_2_0/GRun > hps_cfg_strebler_v13_hlt.py
+```
+Original output: /afs/cern.ch/work/t/truggles/hpsAtHLT/jan14_strebler_v13/hps_cfg_strebler_v13_hlt.py
+
+The output file from hltGetConfiguration must be edited slightly to run via crab.  Please see the diff file here: ./hpsTest/official_diff_from_hltGetConfiguration.txt to see the necessary edits.
+
+
+
+
+
 # Running on miniAOD data via Crab
 Added DCS lumi-mask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/DCSOnly/json_DCSONLY.txt
 Using runs from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmV2017Analysis case-2 - HV=200 7 July 2017
@@ -85,26 +102,10 @@ process.dqmOutput = cms.OutputModule("DQMRootOutputModule",
 process.DQMOutput = cms.EndPath( process.dqmOutput )
 ```
 
+#process = customizeHLTforAll(process,"GRun",_customInfo)
+process = customizeHLTforAll(process,"GRun")
 
-Right after the '_customInfo' section:
-```
-from THRAnalysis.TauHLTStudies.tauHLTStudies import customizeInput
-customizeInput( _customInfo )
-```
 
-Append to the end:
-```
-from THRAnalysis.TauHLTStudies.tauHLTStudies import setSourceFiles
-process = setSourceFiles( process )
-
-#from THRAnalysis.TauHLTStudies.tauHLTStudies import buildGenTausAndMore
-#process = buildGenTausAndMore( process )
-
-from THRAnalysis.TauHLTStudies.tauHLTStudies import setOutputFile
-process = setOutputFile( process )
-
-#print process.dumpPython()
-```
 
 
 # Running with Crab3

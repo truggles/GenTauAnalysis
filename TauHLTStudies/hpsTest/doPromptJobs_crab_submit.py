@@ -32,6 +32,7 @@ dataMap = OrderedDict()
 
 dataMap[ 'SingleMuon_2018A-v1' ] = '/SingleMuon/Run2018A-PromptReco-v1/MINIAOD'
 dataMap[ 'SingleMuon_2018A-v2' ] = '/SingleMuon/Run2018A-PromptReco-v2/MINIAOD'
+dataMap[ 'SingleMuon_2018B-v1' ] = '/SingleMuon/Run2018B-PromptReco-v1/MINIAOD'
 
 if __name__ == '__main__':
 
@@ -52,7 +53,7 @@ if __name__ == '__main__':
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k in dataMap.keys() :
-        config.General.requestName = '%s_hps_1011_may29_prompReco_DCSOnly_v1' % k
+        config.General.requestName = '%s_hps_1011_june11_prompReco_DCSOnly_v1' % k
         config.Data.outputDatasetTag   = config.General.requestName
         config.Data.inputDataset = dataMap[ k ]
         config.JobType.maxMemoryMB = 3500

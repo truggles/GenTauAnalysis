@@ -51,7 +51,7 @@ def resComp( c, name, h1, h2 ) :
     s2.SetY2NDC(.3+yDiff)
 
     #ROOT.gPad.BuildLegend()
-    leg = buildLegend( [h1, h2], ['HPS', 'Fixed Cone'] )
+    leg = buildLegend( [h1, h2], ['HPS', 'Cone-based'] )
     leg.Draw()
 
     h1.GetYaxis().SetTitleOffset( h1.GetYaxis().GetTitleOffset() * 1.5 )
@@ -62,10 +62,10 @@ def resComp( c, name, h1, h2 ) :
 def buildLegend( items, names, big=False ) :
     if not big :
         #legend = ROOT.TLegend(0.5, 0.73, 0.83, 0.88)
-        legend = ROOT.TLegend(0.35, 0.33, 0.85, 0.50)
+        legend = ROOT.TLegend(0.35, 0.31, 0.8, 0.48)
     else :
         #legend = ROOT.TLegend(0.35, 0.73, 0.83, 0.88)
-        legend = ROOT.TLegend(0.35, 0.33, 0.85, 0.50)
+        legend = ROOT.TLegend(0.35, 0.31, 0.8, 0.48)
     legend.SetMargin(0.3)
     legend.SetBorderSize(0)
     for item, name in zip(items, names) : #range(0, stack.GetStack().GetLast() + 1) :
@@ -85,8 +85,8 @@ def plotEff( c, plotBase, name, h_denoms, h_passes ) :
     legNames = []
     #if 'di-Tau Efficiency' in name :
     #    for h in h_denoms :
-    #        if h.GetTitle() == 'Fixed Cone' :
-    #            h.SetTitle( 'Fixed Cone: All Fully Enabled' ) 
+    #        if h.GetTitle() == 'Cone-based' :
+    #            h.SetTitle( 'Cone-based: All Fully Enabled' ) 
     #        if h.GetTitle() == 'HPS Tau' :
     #            h.SetTitle( 'HPS Tau: pT 35, Med. Iso. WP' ) 
     count = 0
@@ -104,7 +104,7 @@ def plotEff( c, plotBase, name, h_denoms, h_passes ) :
     mg.Draw('ap')
     mg.GetXaxis().SetTitle('Gen #tau p_{T} (GeV)')
     if 'offline' in name :
-        mg.GetXaxis().SetTitle('Offline #tau p_{T} (GeV)')
+        mg.GetXaxis().SetTitle('Offline #tau_{h} p_{T} (GeV)')
     mg.GetXaxis().SetTitleOffset( mg.GetXaxis().GetTitleOffset() * 1.2 )
     mg.GetYaxis().SetTitle('L1 + HLT Efficiency')
     mg.SetMaximum( 1.2 )
@@ -112,7 +112,10 @@ def plotEff( c, plotBase, name, h_denoms, h_passes ) :
 
     if isData :
         #mg.GetXaxis().SetLimits( 20., 150 )
-        mg.GetXaxis().SetLimits( 20., 200 )
+        #mg.GetXaxis().SetLimits( 20., 200 )
+        mg.GetXaxis().SetLimits( 20., 500 )
+        mg.GetXaxis().SetMoreLogLabels()
+        ROOT.gPad.SetLogx()
     else :
         ROOT.gPad.SetLogx()
         mg.GetXaxis().SetMoreLogLabels()
@@ -134,7 +137,7 @@ def plotEff( c, plotBase, name, h_denoms, h_passes ) :
     lumi.SetTextSize(0.03)
     #lumi.DrawTextNDC(.75,.92,"2018 (13 TeV)")
     #lumi.DrawTextNDC(.5,.92,"14.3 fb^{-1} 2018 Run A (13 TeV)")
-    lumi.DrawLatexNDC(.5,.91,"14.3 fb^{-1}  2018 Run A (13 TeV)")
+    lumi.DrawLatexNDC(.55,.91,"14.3 fb^{-1}  2018 (13 TeV)")
 
     #logo = ROOT.TText(.18, .92,"#bf{CMS} #it{Preliminary}")
     #logo.SetTextSize(0.03)
@@ -233,6 +236,7 @@ name = 'singleMuon_may28'
 name = 'outfile_10'
 name = 'singleMuon_may29_cut2'
 #name = 'singleMuon_june11_cut'
+name = 'june20_RunA_Golden'
 
 isData = False
 isData = True
@@ -247,7 +251,7 @@ trigger2 = 'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1'
 #trigger1 = 'HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr'
 #trigger2 = 'HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr'
 
-plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'v5/'
+plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'_log_v2/'
 #plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'_GenJet/'
 #plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'_GenEorMu/'
 if not os.path.exists( plotBase ) : os.makedirs( plotBase )
@@ -261,13 +265,13 @@ p.Draw()
 p.cd()
 
 app1 = 'Offline vs HPS'
-app2 = 'Offline vs Fixed Cone'
+app2 = 'Offline vs Cone-based'
 app3 = 'Gen Tau vs HPS'
-app4 = 'Gen Tau vs Fixed Cone'
+app4 = 'Gen Tau vs Cone-based'
 axes = ';(offline p_{T} - online p_{T})/offline p_{T};A.U.'
 axesGen = ';(Gen p_{T} - online p_{T})/Gen p_{T};A.U.'
 axesHPSGen = ';(Gen p_{T} - online_{HPS} p_{T})/Gen p_{T}'
-axesDefGen = ';(Gen p_{T} - online_{Fixed Cone} p_{T})/Gen p_{T}'
+axesDefGen = ';(Gen p_{T} - online_{Cone-based} p_{T})/Gen p_{T}'
 minPtRes = -0.6
 maxPtRes = 0.7
 #ptRes1 = ROOT.TH1D('Pt Resolution '+app1, 'Pt_Resolution_'+app1.replace(' ','_')+axes, 50, minPtRes, maxPtRes )
@@ -275,13 +279,13 @@ maxPtRes = 0.7
 #ptRes3 = ROOT.TH1D('Pt Resolution '+app3, 'Pt_Resolution_'+app3.replace(' ','_')+axes, 50, minPtRes, maxPtRes )
 #ptRes4 = ROOT.TH1D('Pt Resolution '+app4, 'Pt_Resolution_'+app4.replace(' ','_')+axes, 50, minPtRes, maxPtRes )
 ptRes1 = ROOT.TH1D('HPS', 'Pt_Resolution_'+app1.replace(' ','_')+axes, 100, minPtRes, maxPtRes )
-ptRes2 = ROOT.TH1D('Fixed Cone', 'Pt_Resolution_'+app2.replace(' ','_')+axes, 100, minPtRes, maxPtRes )
+ptRes2 = ROOT.TH1D('Cone-based', 'Pt_Resolution_'+app2.replace(' ','_')+axes, 100, minPtRes, maxPtRes )
 ptRes3 = ROOT.TH1D('HPS', 'Pt_Resolution_'+app3.replace(' ','_')+axesGen, 100, minPtRes, maxPtRes )
-ptRes4 = ROOT.TH1D('Fixed Cone', 'Pt_Resolution_'+app4.replace(' ','_')+axesGen, 100, minPtRes, maxPtRes )
+ptRes4 = ROOT.TH1D('Cone-based', 'Pt_Resolution_'+app4.replace(' ','_')+axesGen, 100, minPtRes, maxPtRes )
 ptRes5 = ROOT.TH1D('HPS', 'HPS'+axesGen, 100, minPtRes, maxPtRes )
-ptRes6 = ROOT.TH1D('Fixed Cone', 'Fixed Cone'+axesGen, 100, minPtRes, maxPtRes )
+ptRes6 = ROOT.TH1D('Cone-based', 'Cone-based'+axesGen, 100, minPtRes, maxPtRes )
 ptRes7 = ROOT.TH1D('HPS', 'Pt_Resolution_2'+app1.replace(' ','_')+axes, 100, minPtRes, maxPtRes )
-ptRes8 = ROOT.TH1D('Fixed Cone', 'Pt_Resolution_2'+app2.replace(' ','_')+axes, 100, minPtRes, maxPtRes )
+ptRes8 = ROOT.TH1D('Cone-based', 'Pt_Resolution_2'+app2.replace(' ','_')+axes, 100, minPtRes, maxPtRes )
 ptRes2DGenHPS = ROOT.TH2D( 'ptRes2DGenHPS', 'HPS Tau p_{T} Resolution vs. Gen p_{T};Gen p_{T} [GeV]'+axesHPSGen, 11,20,75,50,-.6,.6 )
 ptRes2DGenDef = ROOT.TH2D( 'ptRes2DGenDef', 'HPS Tau p_{T} Resolution vs. Gen p_{T};Gen p_{T} [GeV]'+axesDefGen, 11,20,75,50,-.6,.6 )
 
@@ -300,8 +304,8 @@ nvtx = ROOT.TH1D('nvtx', 'nvtx;nvtx;Events', 40, 0, 80 )
 #h_dm_hps_offline80to150 = make_DM_plot( 'Online HPS pt80to150', 'Offline' )
 #h_dm_hps_offline150plus = make_DM_plot( 'Online HPS pt150plus', 'Offline' )
 #
-#h_dm_offline_default = make_DM_plot( 'Offline', 'Online HLT Fixed Cone' )
-#h_dm_default_offline = make_DM_plot( 'Online HLT Fixed Cone', 'Offline' )
+#h_dm_offline_default = make_DM_plot( 'Offline', 'Online HLT Cone-based' )
+#h_dm_default_offline = make_DM_plot( 'Online HLT Cone-based', 'Offline' )
 #h_dm_hps_conebased = make_DM_plot( 'Online HPS', 'Online Cone-based' )
 #h_dm_hps_conebased30to80 = make_DM_plot( 'Online HPS pt30to80', 'Online Cone-based' )
 #h_dm_hps_conebased80to150 = make_DM_plot( 'Online HPS pt80to150', 'Online Cone-based' )
@@ -316,11 +320,11 @@ nvtx = ROOT.TH1D('nvtx', 'nvtx;nvtx;Events', 40, 0, 80 )
 
 if isData :
     binning = array('d', [20,25,30,35,40,\
-        45,50,60,80,100,200])
+        45,50,60,80,100,200,500])
     binning27 = array('d', [20,22.5,25,27.5,30,32.5,35,40,\
-        45,50,60,80,100,200])
+        45,50,60,80,100,200,500])
     binning35 = array('d', [20,25,30,32.5,35,37.5,40,\
-        45,50,60,80,100,200])
+        45,50,60,80,100,200,500])
 else :
     binning = array('d', [20,25,30,35,40,\
         45,50,60,80,100,150,200,500])
@@ -328,82 +332,82 @@ else :
 highPtBinning = array('d', [100,150,175,200,300,400,500,750])
 
 
-h_def_denom_medDiTauFull = ROOT.TH1D( 'def denom_medDiTauFull', 'Fixed Cone #tau_{h} Reco.', len(binning35)-1, binning35)
+h_def_denom_medDiTauFull = ROOT.TH1D( 'def denom_medDiTauFull', 'Cone-based #tau_{h} Reco.', len(binning35)-1, binning35)
 h_def_pass_medDiTauFull = ROOT.TH1D( 'def pass_medDiTauFull', 'def pass', len(binning35)-1, binning35)
-h_def_denom_medDiTauAll = ROOT.TH1D( 'def denom_medDiTauAll', 'Fixed Cone #tau_{h} Reco.', len(binning35)-1, binning35)
+h_def_denom_medDiTauAll = ROOT.TH1D( 'def denom_medDiTauAll', 'Cone-based #tau_{h} Reco.', len(binning35)-1, binning35)
 h_def_pass_medDiTauAll = ROOT.TH1D( 'def pass_medDiTauAll', 'def pass', len(binning35)-1, binning35)
 
-#h_def_denom_med_gen = ROOT.TH1D( 'def denom_med_gen', 'Fixed Cone #tau_{h} Reco.', len(binning)-1, binning)
+#h_def_denom_med_gen = ROOT.TH1D( 'def denom_med_gen', 'Cone-based #tau_{h} Reco.', len(binning)-1, binning)
 #h_def_pass_med_gen = ROOT.TH1D( 'def pass_med_gen', 'def pass', len(binning)-1, binning)
 #h_hps_denom_med_gen = ROOT.TH1D( 'hps denom_med_gen', 'HPS #tau_{h} Reco.', len(binning)-1, binning)
 #h_hps_pass_med_gen = ROOT.TH1D( 'hps pass_med_gen', 'hps pass', len(binning)-1, binning)
 
-h_def_denom_loose = ROOT.TH1D( 'def denom_loose', 'Fixed Cone #tau_{h} Reco.', len(binning27)-1, binning27)
+h_def_denom_loose = ROOT.TH1D( 'def denom_loose', 'Cone-based #tau_{h} Reco.', len(binning27)-1, binning27)
 h_def_pass_loose = ROOT.TH1D( 'def pass_loose', 'def pass', len(binning27)-1, binning27)
 h_hps_denom_loose = ROOT.TH1D( 'hps denom_loose', 'HPS #tau_{h} Reco.', len(binning27)-1, binning27)
 h_hps_pass_loose = ROOT.TH1D( 'hps pass_loose', 'hps pass', len(binning27)-1, binning27)
 
-#h_def_denom_loose_TightID = ROOT.TH1D( 'def denom_loose_TightID', 'Fixed Cone #tau_{h} Reco.', len(binning)-1, binning)
+#h_def_denom_loose_TightID = ROOT.TH1D( 'def denom_loose_TightID', 'Cone-based #tau_{h} Reco.', len(binning)-1, binning)
 #h_def_pass_loose_TightID = ROOT.TH1D( 'def pass_loose_TightID', 'def pass', len(binning)-1, binning)
 #h_hps_denom_loose_TightID = ROOT.TH1D( 'hps denom_loose_TightID', 'HPS #tau_{h} Reco.', len(binning)-1, binning)
 #h_hps_pass_loose_TightID = ROOT.TH1D( 'hps pass_loose_TightID', 'hps pass', len(binning)-1, binning)
 
-h_def_denom_med = ROOT.TH1D( 'def denom_med', 'Fixed Cone #tau_{h} Reco.', len(binning35)-1, binning35)
+h_def_denom_med = ROOT.TH1D( 'def denom_med', 'Cone-based #tau_{h} Reco.', len(binning35)-1, binning35)
 h_def_pass_med = ROOT.TH1D( 'def pass_med', 'def pass', len(binning35)-1, binning35)
 h_hps_denom_med = ROOT.TH1D( 'hps denom_med', 'HPS #tau_{h} Reco.', len(binning35)-1, binning35)
 h_hps_pass_med = ROOT.TH1D( 'hps pass_med', 'hps pass', len(binning35)-1, binning35)
 
-h_def_denom_med_muTau = ROOT.TH1D( 'def denom_med_muTau', 'Fixed Cone #tau_{h} Reco.', len(binning)-1, binning)
+h_def_denom_med_muTau = ROOT.TH1D( 'def denom_med_muTau', 'Cone-based #tau_{h} Reco.', len(binning)-1, binning)
 h_def_pass_med_muTau = ROOT.TH1D( 'def pass_med_muTau', 'def pass', len(binning)-1, binning)
 h_hps_denom_med_muTau = ROOT.TH1D( 'hps denom_med_muTau', 'HPS #tau_{h} Reco.', len(binning)-1, binning)
 h_hps_pass_med_muTau = ROOT.TH1D( 'hps pass_med_muTau', 'hps pass', len(binning)-1, binning)
 
-#h_def_denom_med_muTau_TightID = ROOT.TH1D( 'def denom_med_muTau_TightID', 'Fixed Cone #tau_{h} Reco.', len(binning)-1, binning)
+#h_def_denom_med_muTau_TightID = ROOT.TH1D( 'def denom_med_muTau_TightID', 'Cone-based #tau_{h} Reco.', len(binning)-1, binning)
 #h_def_pass_med_muTau_TightID = ROOT.TH1D( 'def pass_med_muTau_TightID', 'def pass', len(binning)-1, binning)
 #h_hps_denom_med_muTau_TightID = ROOT.TH1D( 'hps denom_med_muTau_TightID', 'HPS #tau_{h} Reco.', len(binning)-1, binning)
 #h_hps_pass_med_muTau_TightID = ROOT.TH1D( 'hps pass_med_muTau_TightID', 'hps pass', len(binning)-1, binning)
 
-h_def_denom_tight = ROOT.TH1D( 'def denom_tight', 'Fixed Cone #tau_{h} Reco.', len(binning)-1, binning)
+h_def_denom_tight = ROOT.TH1D( 'def denom_tight', 'Cone-based #tau_{h} Reco.', len(binning)-1, binning)
 h_def_pass_tight = ROOT.TH1D( 'def pass_tight', 'def pass', len(binning)-1, binning)
 h_hps_denom_tight = ROOT.TH1D( 'hps denom_tight', 'HPS #tau_{h} Reco.', len(binning)-1, binning)
 h_hps_pass_tight = ROOT.TH1D( 'hps pass_tight', 'hps pass', len(binning)-1, binning)
 
-h_def_denom_tight_muTau = ROOT.TH1D( 'def denom_tight_muTau', 'Fixed Cone #tau_{h} Reco.', len(binning)-1, binning)
+h_def_denom_tight_muTau = ROOT.TH1D( 'def denom_tight_muTau', 'Cone-based #tau_{h} Reco.', len(binning)-1, binning)
 h_def_pass_tight_muTau = ROOT.TH1D( 'def pass_tight_muTau', 'def pass', len(binning)-1, binning)
 h_hps_denom_tight_muTau = ROOT.TH1D( 'hps denom_tight_muTau', 'HPS #tau_{h} Reco.', len(binning)-1, binning)
 h_hps_pass_tight_muTau = ROOT.TH1D( 'hps pass_tight_muTau', 'hps pass', len(binning)-1, binning)
 
-#h_def_denom_tight_muTau_TightID = ROOT.TH1D( 'def denom_tight_muTau_TightID', 'Fixed Cone #tau_{h} Reco.', len(binning)-1, binning)
+#h_def_denom_tight_muTau_TightID = ROOT.TH1D( 'def denom_tight_muTau_TightID', 'Cone-based #tau_{h} Reco.', len(binning)-1, binning)
 #h_def_pass_tight_muTau_TightID = ROOT.TH1D( 'def pass_tight_muTau_TightID', 'def pass', len(binning)-1, binning)
 #h_hps_denom_tight_muTau_TightID = ROOT.TH1D( 'hps denom_tight_muTau_TightID', 'HPS #tau_{h} Reco.', len(binning)-1, binning)
 #h_hps_pass_tight_muTau_TightID = ROOT.TH1D( 'hps pass_tight_muTau_TightID', 'hps pass', len(binning)-1, binning)
 #
-#h_def_denom_med_muTau50_1pr_dm01 = ROOT.TH1D( 'def denom_med_muTau50_1pr_dm01', 'Fixed Cone #tau_{h} Reco.', len(binning)-1, binning)
+#h_def_denom_med_muTau50_1pr_dm01 = ROOT.TH1D( 'def denom_med_muTau50_1pr_dm01', 'Cone-based #tau_{h} Reco.', len(binning)-1, binning)
 #h_def_pass_med_muTau50_1pr_dm01 = ROOT.TH1D( 'def pass_med_muTau50_1pr_dm01', 'def pass', len(binning)-1, binning)
 #h_hps_denom_med_muTau50_1pr_dm01 = ROOT.TH1D( 'hps denom_med_muTau50_1pr_dm01', 'HPS #tau_{h} Reco.', len(binning)-1, binning)
 #h_hps_pass_med_muTau50_1pr_dm01 = ROOT.TH1D( 'hps pass_med_muTau50_1pr_dm01', 'hps pass', len(binning)-1, binning)
 #
-#h_def_denom_med_muTau50_1pr = ROOT.TH1D( 'def denom_med_muTau50_1pr', 'Fixed Cone #tau_{h} Reco.', len(binning)-1, binning)
+#h_def_denom_med_muTau50_1pr = ROOT.TH1D( 'def denom_med_muTau50_1pr', 'Cone-based #tau_{h} Reco.', len(binning)-1, binning)
 #h_def_pass_med_muTau50_1pr = ROOT.TH1D( 'def pass_med_muTau50_1pr', 'def pass', len(binning)-1, binning)
 #h_hps_denom_med_muTau50_1pr = ROOT.TH1D( 'hps denom_med_muTau50_1pr', 'HPS #tau_{h} Reco.', len(binning)-1, binning)
 #h_hps_pass_med_muTau50_1pr = ROOT.TH1D( 'hps pass_med_muTau50_1pr', 'hps pass', len(binning)-1, binning)
 #
-#h_def_denom_med_muTau180 = ROOT.TH1D( 'def denom_med_muTau180', 'Fixed Cone #tau_{h} Reco.', len(highPtBinning)-1, highPtBinning)
+#h_def_denom_med_muTau180 = ROOT.TH1D( 'def denom_med_muTau180', 'Cone-based #tau_{h} Reco.', len(highPtBinning)-1, highPtBinning)
 #h_def_pass_med_muTau180 = ROOT.TH1D( 'def pass_med_muTau180', 'def pass', len(highPtBinning)-1, highPtBinning)
 #h_hps_denom_med_muTau180 = ROOT.TH1D( 'hps denom_med_muTau180', 'HPS #tau_{h} Reco.', len(highPtBinning)-1, highPtBinning)
 #h_hps_pass_med_muTau180 = ROOT.TH1D( 'hps pass_med_muTau180', 'hps pass', len(highPtBinning)-1, highPtBinning)
 #
-#h_def_denom_med_muTau180_dm01 = ROOT.TH1D( 'def denom_med_muTau180_dm01', 'Fixed Cone #tau_{h} Reco.', len(highPtBinning)-1, highPtBinning)
+#h_def_denom_med_muTau180_dm01 = ROOT.TH1D( 'def denom_med_muTau180_dm01', 'Cone-based #tau_{h} Reco.', len(highPtBinning)-1, highPtBinning)
 #h_def_pass_med_muTau180_dm01 = ROOT.TH1D( 'def pass_med_muTau180_dm01', 'def pass', len(highPtBinning)-1, highPtBinning)
 #h_hps_denom_med_muTau180_dm01 = ROOT.TH1D( 'hps denom_med_muTau180_dm01', 'HPS #tau_{h} Reco.', len(highPtBinning)-1, highPtBinning)
 #h_hps_pass_med_muTau180_dm01 = ROOT.TH1D( 'hps pass_med_muTau180_dm01', 'hps pass', len(highPtBinning)-1, highPtBinning)
 #
-#h_def_denom_med_muTau180_1pr = ROOT.TH1D( 'def denom_med_muTau180_1pr', 'Fixed Cone #tau_{h} Reco.', len(highPtBinning)-1, highPtBinning)
+#h_def_denom_med_muTau180_1pr = ROOT.TH1D( 'def denom_med_muTau180_1pr', 'Cone-based #tau_{h} Reco.', len(highPtBinning)-1, highPtBinning)
 #h_def_pass_med_muTau180_1pr = ROOT.TH1D( 'def pass_med_muTau180_1pr', 'def pass', len(highPtBinning)-1, highPtBinning)
 #h_hps_denom_med_muTau180_1pr = ROOT.TH1D( 'hps denom_med_muTau180_1pr', 'HPS #tau_{h} Reco.', len(highPtBinning)-1, highPtBinning)
 #h_hps_pass_med_muTau180_1pr = ROOT.TH1D( 'hps pass_med_muTau180_1pr', 'hps pass', len(highPtBinning)-1, highPtBinning)
 #
-#h_def_denom_med_muTau180_1pr_dm01 = ROOT.TH1D( 'def denom_med_muTau180_1pr_dm01', 'Fixed Cone #tau_{h} Reco.', len(highPtBinning)-1, highPtBinning)
+#h_def_denom_med_muTau180_1pr_dm01 = ROOT.TH1D( 'def denom_med_muTau180_1pr_dm01', 'Cone-based #tau_{h} Reco.', len(highPtBinning)-1, highPtBinning)
 #h_def_pass_med_muTau180_1pr_dm01 = ROOT.TH1D( 'def pass_med_muTau180_1pr_dm01', 'def pass', len(highPtBinning)-1, highPtBinning)
 #h_hps_denom_med_muTau180_1pr_dm01 = ROOT.TH1D( 'hps denom_med_muTau180_1pr_dm01', 'HPS #tau_{h} Reco.', len(highPtBinning)-1, highPtBinning)
 #h_hps_pass_med_muTau180_1pr_dm01 = ROOT.TH1D( 'hps pass_med_muTau180_1pr_dm01', 'hps pass', len(highPtBinning)-1, highPtBinning)
@@ -513,13 +517,13 @@ for row in iTree :
         #        h_hps_pass_med_muTau50_1pr_dm01.Fill( tPt, weight )
 
         ''' Check passing for numerator defaul triggers '''
-        if (row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 or
+        if ( (row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 and tPt > 40) or
                 row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 or
-                row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1 > 0.5) :
+                (row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5 and tPt > 40) ) :
             h_def_pass_medDiTauFull.Fill( tPt, weight )
-        if (row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 or
+        if ( (row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 and tPt > 40) or
                 row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 or
-                row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTau40_Trk1_eta2p1_Reg_CrossL1 > 0.5 or
+                (row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5 and tPt > 40) or
                 row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5) :
             h_def_pass_medDiTauAll.Fill( tPt, weight )
         if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
@@ -725,9 +729,9 @@ plotEff( c, plotBase, 'di-Tau Efficiency: offline pT', h_denoms_med, h_passes_me
 #saveHists( h_dm_hps_offline30to80, plotBase+'hpsVsOffline30to80' )
 #saveHists( h_dm_hps_offline80to150, plotBase+'hpsVsOffline80to150' )
 #saveHists( h_dm_hps_offline150plus, plotBase+'hpsVsOffline150plus' )
-#print "offlineVsFixed Cone"
-#saveHists( h_dm_offline_default, plotBase+'offlineVsFixed Cone' )
-#print "Fixed ConeVsOffline"
+#print "offlineVsCone-based"
+#saveHists( h_dm_offline_default, plotBase+'offlineVsCone-based' )
+#print "Cone-basedVsOffline"
 #saveHists( h_dm_default_offline, plotBase+'defaultVsOffline' )
 #print "hpsVsConeBased"
 #saveHists( h_dm_hps_conebased, plotBase+'hpsVsConebased' )

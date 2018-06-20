@@ -99,6 +99,8 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
       bool isData;
       bool isRAW;
       bool doTauTau;
+      bool doMuTau;
+      bool doETau;
       bool requireMediumTauMVA;
       bool verbose;
       edm::EDGetTokenT<std::vector<reco::GenJet>> genHadronicTausToken_;
@@ -134,20 +136,22 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
       double event;
       float run, lumi, nTruePU, nvtx, nvtxCleaned, passingTaus, passingMuons, nVetoMuons, nSlimmedMuons,
         mPt, mEta, mPhi, mIso,
-        tmpPt, tmpEta, tmpPhi, tmpIso,
+        ePt, eEta, ePhi,
         l1TauPt, l1TauIso,
         tPt, tEta, tPhi, tMVAIsoVLoose, tMVAIsoLoose, tMVAIsoMedium, 
         tMVAIsoTight, tMVAIsoVTight, tMVAIsoVVTight, m_vis, transMass, SS, isOS, pfMet,
-        nBTag, nBTagAll, passingElectrons,
+        nBTag, nBTagAll, passingElectrons, transMassE, SSE, isOSE, m_visE,
         //tIsoCmbLoose, tIsoCmbLoose03, tIsoCmbMedium, tIsoCmbMedium03, tIsoCmbTight, tIsoCmbTight03,
         tIsoCmbLoose, tIsoCmbMedium, tIsoCmbTight,
-        leptonDR_t1_t2, leptonDR_m_t1, leptonDR_m_t2,
-        mTrigMatch, tTrigMatch, mL1Match, tL1Match,
+        leptonDR_t1_t2, leptonDR_m_t1, leptonDR_m_t2, leptonDR_e_t1,
+        //mTrigMatch, tTrigMatch, tL1Match,
+        tTrigMatch, tL1Match,
         t1_gen_match,genTauPt,tDecayMode, tDMFinding,
         t2Pt, t2Eta, t2Phi, t2MVAIsoVLoose, t2MVAIsoLoose, t2MVAIsoMedium, 
         t2MVAIsoTight, t2MVAIsoVTight, t2MVAIsoVVTight, t2_gen_match,t2DecayMode,
         //t2IsoCmbLoose, t2IsoCmbLoose03, t2IsoCmbMedium, t2IsoCmbMedium03, t2IsoCmbTight, t2IsoCmbTight03,
         t2IsoCmbLoose, t2IsoCmbMedium, t2IsoCmbTight,
+        hltHPSPt, hltConePt, hltHPSPtX, hltConePtX, hltHPSPt2, hltConePt2,
         t2TrigMatch,t2genPt,t2L1Match, emptyVertices, failNdof,
         hpsTauSize, hpsTauPt, hpsTauEta, hpsTauPhi, hpsTauDM, hpsTauDMFinding, hpsTauDR, hpsTauChrgIso, hpsTauDRDefault,
         hpsTau2Pt, hpsTau2Eta, hpsTau2Phi, hpsTau2DM,
@@ -225,6 +229,8 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
       int HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET100;
       int HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET110;
       int HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET130;
+      int HLT_Ele32_WPTight_Gsf;
+      int HLT_Ele35_WPTight_Gsf;
       int HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1;
       int HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_TightID_CrossL1;
       int HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_CrossL1;
@@ -255,6 +261,8 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
     isData(iConfig.getUntrackedParameter<bool>("isData", false)),
     isRAW(iConfig.getUntrackedParameter<bool>("isRAW", false)),
     doTauTau(iConfig.getUntrackedParameter<bool>("doTauTau", false)),
+    doMuTau(iConfig.getUntrackedParameter<bool>("doMuTau", false)),
+    doETau(iConfig.getUntrackedParameter<bool>("doETau", false)),
     requireMediumTauMVA(iConfig.getUntrackedParameter<bool>("requireMediumTauMVA", false)),
     verbose(iConfig.getUntrackedParameter<bool>("verbose", false)),
     genHadronicTausToken_(consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>("hadronSrc"))),
@@ -280,6 +288,17 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
     eleLooseIdMapTag_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap")))
 {
    //now do what ever initialization is needed
+
+   std::cout << "Settings:" << std::endl;
+   std::cout << "doTauTau: " <<  doTauTau << std::endl;
+   std::cout << "doMuTau: " <<  doMuTau << std::endl;
+   std::cout << "doETau: " << doETau << std::endl;
+   std::cout << "isData: " << isData << std::endl;
+   std::cout << "isRAW: " << isRAW << std::endl;
+   std::cout << "requireMediumTauMVA: " << requireMediumTauMVA << std::endl;
+   std::cout << "verbose: " << verbose << std::endl;
+
+
    //usesResource("TFileService");
    edm::Service<TFileService> fs;
 
@@ -351,6 +370,8 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    triggers["HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET100_v"]                     = &HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET100;
    triggers["HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET110_v"]                     = &HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET110;
    triggers["HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET130_v"]                     = &HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET130;
+   triggers["HLT_Ele32_WPTight_Gsf_v"]         = &HLT_Ele32_WPTight_Gsf;
+   triggers["HLT_Ele35_WPTight_Gsf_v"]         = &HLT_Ele35_WPTight_Gsf;
    triggers["HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v"]         = &HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1;
    triggers["HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_TightID_CrossL1_v"] = &HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_TightID_CrossL1;
    triggers["HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_CrossL1_v"]        = &HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_CrossL1;
@@ -383,15 +404,17 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("muonEta",&mEta,"muonEta/F");
    tree->Branch("muonPhi",&mPhi,"muonPhi/F");
    tree->Branch("muonIso",&mIso,"muonIso/F");
-   tree->Branch("tmpMuonPt",&tmpPt,"tmpMuonPt/F");
-   tree->Branch("tmpMuonEta",&tmpEta,"tmpMuonEta/F");
-   tree->Branch("tmpMuonPhi",&tmpPhi,"tmpMuonPhi/F");
-   tree->Branch("tmpMuonIso",&tmpIso,"tmpMuonIso/F");
-   tree->Branch("mTrigMatch",&mTrigMatch,"mTrigMatch/F");
-   tree->Branch("mL1Match",&mL1Match,"mL1Match/F");
+   tree->Branch("electronPt",&ePt,"electronPt/F");
+   tree->Branch("electronEta",&eEta,"electronEta/F");
+   tree->Branch("electronPhi",&ePhi,"electronPhi/F");
+   //tree->Branch("mTrigMatch",&mTrigMatch,"mTrigMatch/F");
    tree->Branch("tauPt",&tPt,"tauPt/F");
    tree->Branch("tauEta",&tEta,"tauEta/F");
    tree->Branch("tauPhi",&tPhi,"tauPhi/F");
+   tree->Branch("hltHPSPt",&hltHPSPt,"hltHPSPt/F");
+   tree->Branch("hltConePt",&hltConePt,"hltConePt/F");
+   tree->Branch("hltHPSPtX",&hltHPSPtX,"hltHPSPtX/F");
+   tree->Branch("hltConePtX",&hltConePtX,"hltConePtX/F");
    tree->Branch("l1TauPt",&l1TauPt,"l1TauPt/F");
    tree->Branch("l1TauIso",&l1TauIso,"l1TauIso/F");
    tree->Branch("tL1Match",&tL1Match,"tL1Match/F");
@@ -438,6 +461,8 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("defaultTau2Phi",&defaultTau2Phi,"defaultTau2Phi/F");
    tree->Branch("defaultTau2DM",&defaultTau2DM,"defaultTau2DM/F");
    tree->Branch("t2Pt",&t2Pt,"t2Pt/F");
+   tree->Branch("hltHPSPt2",&hltHPSPt2,"hltHPSPt2/F");
+   tree->Branch("hltConePt2",&hltConePt2,"hltConePt2/F");
    tree->Branch("t2Eta",&t2Eta,"t2Eta/F");
    tree->Branch("t2Phi",&t2Phi,"t2Phi/F");
    tree->Branch("t2_gen_match",&t2_gen_match,"t2_gen_match/F");
@@ -458,13 +483,18 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("t2TrigMatch",&t2TrigMatch,"t2TrigMatch/F");
    tree->Branch("t2L1Match",&t2L1Match,"t2L1Match/F");
    tree->Branch("leptonDR_m_t1",&leptonDR_m_t1,"leptonDR_m_t1/F");
+   tree->Branch("leptonDR_e_t1",&leptonDR_e_t1,"leptonDR_e_t1/F");
    tree->Branch("leptonDR_m_t2",&leptonDR_m_t2,"leptonDR_m_t2/F");
    tree->Branch("leptonDR_t1_t2",&leptonDR_t1_t2,"leptonDR_t1_t2/F");
    tree->Branch("m_vis",&m_vis,"m_vis/F");
+   tree->Branch("m_visE",&m_visE,"m_visE/F");
    tree->Branch("transMass",&transMass,"transMass/F");
+   tree->Branch("transMassE",&transMassE,"transMassE/F");
    tree->Branch("pfMet",&pfMet,"pfMet/F");
    tree->Branch("SS",&SS,"SS/F");
+   tree->Branch("SSE",&SSE,"SSE/F");
    tree->Branch("isOS",&isOS,"isOS/F");
+   tree->Branch("isOSE",&isOSE,"isOSE/F");
    tree->Branch("nBTag",&nBTag,"nBTag/F");
    tree->Branch("nBTagAll",&nBTagAll,"nBTagAll/F");
    tree->Branch("emptyVertices",&emptyVertices,"emptyVertices/F");
@@ -538,6 +568,8 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET100",              &HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET100,                          "HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET100/I");
    tree->Branch("HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET110",              &HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET110,                          "HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET110/I");
    tree->Branch("HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET130",              &HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET130,                          "HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr_MET130/I");
+   tree->Branch("HLT_Ele32_WPTight_Gsf",              &HLT_Ele32_WPTight_Gsf,                          "HLT_Ele32_WPTight_Gsf/I");
+   tree->Branch("HLT_Ele35_WPTight_Gsf",              &HLT_Ele35_WPTight_Gsf,                          "HLT_Ele35_WPTight_Gsf/I");
    tree->Branch("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1",              &HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1,                          "HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1/I");
    tree->Branch("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_TightID_CrossL1",              &HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_TightID_CrossL1,                          "HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_TightID_CrossL1/I");
    tree->Branch("HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_CrossL1",              &HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_CrossL1,                          "HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_CrossL1/I");
@@ -689,16 +721,9 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     nVetoMuons = 0;
 
 
-    tmpPt = -9;
-    tmpEta = -9;
-    tmpPhi = -9;
-    tmpIso = -9;
     for (const pat::Muon &mu : *muons) {
         ++nSlimmedMuons;
-        tmpPt = mu.pt();
-        tmpEta = mu.eta();
-        tmpPhi = mu.phi();
-        tmpIso = (mu.pfIsolationR04().sumChargedHadronPt
+        float tmpIso = (mu.pfIsolationR04().sumChargedHadronPt
             + TMath::Max(0., mu.pfIsolationR04().sumNeutralHadronEt
             + mu.pfIsolationR04().sumPhotonEt
             - 0.5*mu.pfIsolationR04().sumPUPt))
@@ -709,11 +734,9 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
         ++passingMuons;
         bestMuon = mu;
     }
-    // Require strictly 1 muon
-    //if (!doTauTau)
-    //    if (passingMuons == 0) return;
-    //if (doTauTau)
-    //    if (passingMuons > 0) return;
+    // Require at least 1 muon
+    if (doMuTau)
+        if (passingMuons < 0.5) return;
     cutFlow->Fill(4., 1.);
     // Extra lepton veto (muons)
     //if (passingMuons > 1) return;
@@ -727,17 +750,21 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     iEvent.getByToken(eleLooseIdMapTag_, loose_id_decisions);
 
     passingElectrons = 0;
+    pat::Electron bestElectron;
     for(unsigned int i = 0; i< electrons->size(); ++i){
      
         const auto ele = electrons->ptrAt(i);
         int isLooseID = (*loose_id_decisions)[ele];
-        if(isLooseID && ele->p4().Pt()>10 && fabs(ele->p4().Eta())<2.5)
+        if(isLooseID && ele->p4().Pt()>10 && fabs(ele->p4().Eta())<2.5) {
             ++passingElectrons;
+            bestElectron = ele;
+        }
     }
 
 
-    // Extra lepton veto (electrons)
-    //if (passingElectrons > 0) return;
+    // At least 1 electron for ETau
+    if (doETau)
+        if (passingElectrons < 0.5) return;
     cutFlow->Fill(6., 1.);
 
 
@@ -759,8 +786,10 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
             tauCandidate->tauID("againstElectronVLooseMVA6") < 0.5 ||
             tauCandidate->tauID("againstMuonLoose3") < 0.5) continue;
 
-        if (!doTauTau) // For TauTau only require looser selection, but MuTau is tighter
+        if (doMuTau) // For MuTau is tighter
             if (tauCandidate->tauID("againstMuonTight3") < 0.5) continue;
+        if (doETau) // For MuTau is tighter
+            if (tauCandidate->tauID("againstElectronTightMVA6") < 0.5) continue;
         
         // Require the loosest isolation WPs used by Tau POG
         // or require MVA Medium if requireMediumTauMVA selected
@@ -773,8 +802,9 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
                 //tauCandidate->tauID("byLooseCombinedIsolationDeltaBetaCorr3HitsdR03") < 0.5) continue;
         }
  
-        // Make sure tau doesn't overlap muon
-        if (!doTauTau &&  deltaR( bestMuon.p4(), tauCandidate->p4() ) < 0.5) continue;
+        // Make sure tau doesn't overlap
+        if (doMuTau && deltaR( bestMuon.p4(), tauCandidate->p4() ) < 0.5) continue;
+        if (doETau && deltaR( bestElectron.p4(), tauCandidate->p4() ) < 0.5) continue;
 
         passingTausV.push_back( tauCandidate );
 
@@ -888,7 +918,8 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     for (const pat::Jet &j : *jets) {
         if (j.pt() < 20 || fabs(j.eta()) > 2.4 || j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") < 0.8484) continue;
         ++nBTagAll;
-        if (!doTauTau && deltaR(j, bestMuon) < 0.5) continue;
+        if (doMuTau && deltaR(j, bestMuon) < 0.5) continue;
+        if (doETau && deltaR(j, bestElectron) < 0.5) continue;
         if (deltaR(j.p4(), passingTausV.at(0)->p4()) < 0.5) continue;
         //btagged = true;
         ++nBTag;
@@ -896,6 +927,47 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     //if (btagged) return;
     cutFlow->Fill(8., 1.);
 
+
+    mPt = -9;
+    mEta = -9;
+    mPhi = -9;
+    mIso = -9;
+    ePt = -9;
+    eEta = -9;
+    ePhi = -9;
+    leptonDR_m_t1 = -9;
+    leptonDR_e_t1 = -9;
+    leptonDR_m_t2 = -9;
+    leptonDR_t1_t2 = -9;
+    t1_gen_match = -9;
+    genTauPt = -9;
+    t2_gen_match = -9;
+    t2genPt = -9;
+    t2Pt = -9;
+    t2Eta = -9;
+    t2Phi = -9;
+    t2MVAIsoVLoose = -9;
+    t2MVAIsoLoose  = -9;
+    t2MVAIsoMedium = -9;
+    t2MVAIsoTight  = -9;
+    t2MVAIsoVTight = -9;
+    t2MVAIsoVVTight = -9;
+    t2IsoCmbLoose   = -9;
+    //t2IsoCmbLoose03 = -9;
+    t2IsoCmbMedium  = -9;
+    //t2IsoCmbMedium03 = -9;
+    t2IsoCmbTight   = -9;
+    //t2IsoCmbTight03 = -9;
+    t2DecayMode = -9;
+    leptonDR_m_t2 = -9;
+    leptonDR_t1_t2 = -9;
+    m_vis = -9;
+    SS = -9;
+    transMass = -9;
+    transMassE = -9;
+    m_visE = -9;
+    SSE = -9;
+    isOSE = -9;
 
     // Save our best tau and muon variables
     if (passingMuons > 0.5) {
@@ -908,11 +980,13 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
             - 0.5*bestMuon.pfIsolationR04().sumPUPt))
             /bestMuon.pt();
     }
-    else { // doTauTau
-        mPt = -9;
-        mEta = -9;
-        mPhi = -9;
-        mIso = -9;
+    
+    // Save our best tau and muon variables
+    if (passingElectrons > 0.5) {
+        ePt = bestElectron.pt();
+        eEta = bestElectron.eta();
+        ePhi = bestElectron.phi();
+        leptonDR_e_t1 = deltaR( bestElectron, *passingTausV.at(0) );
     }
     
     tPt = passingTausV.at(0)->pt();
@@ -932,8 +1006,6 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     //tIsoCmbTight03 = passingTausV.at(0)->tauID("byTightCombinedIsolationDeltaBetaCorr3HitsdR03");
     tDecayMode = passingTausV.at(0)->decayMode();
     tDMFinding = passingTausV.at(0)->tauID("decayModeFindingNewDMs");
-    if (!doTauTau )
-        leptonDR_m_t1 = deltaR( bestMuon, *passingTausV.at(0) );
 
     if (passingTausV.size() > 1) {
         t2Pt = passingTausV.at(1)->pt();
@@ -978,36 +1050,12 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
             leptonDR_t1_t2 = -9;
         }
     }
-    else {
-        t2Pt = -9;
-        t2Eta = -9;
-        t2Phi = -9;
-        t2MVAIsoVLoose = -9;
-        t2MVAIsoLoose  = -9;
-        t2MVAIsoMedium = -9;
-        t2MVAIsoTight  = -9;
-        t2MVAIsoVTight = -9;
-        t2MVAIsoVVTight = -9;
-        t2IsoCmbLoose   = -9;
-        //t2IsoCmbLoose03 = -9;
-        t2IsoCmbMedium  = -9;
-        //t2IsoCmbMedium03 = -9;
-        t2IsoCmbTight   = -9;
-        //t2IsoCmbTight03 = -9;
-        t2DecayMode = -9;
-        leptonDR_m_t2 = -9;
-        leptonDR_t1_t2 = -9;
-    }
 
 
 
     // Check for overlapping Gen Taus
     // with reconstructed gen taus of 3 types
     // and normal gen particles
-    t1_gen_match = -9;
-    genTauPt = -9;
-    t2_gen_match = -9;
-    t2genPt = -9;
     if (!isData) {
 
         getGenMatchNumber( 
@@ -1026,11 +1074,11 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     iEvent.getByToken(metToken_, mets);
     const pat::MET &met = mets->front();
     pfMet = met.pt();
-    if (!doTauTau )
-        transMass = TMath::Sqrt( 2. * bestMuon.pt() * met.pt() * (1. - TMath::Cos( bestMuon.phi() - met.phi())));
 
 
     if (passingMuons > 0) {
+        transMass = TMath::Sqrt( 2. * bestMuon.pt() * met.pt() * (1. - TMath::Cos( bestMuon.phi() - met.phi())));
+        leptonDR_m_t1 = deltaR( bestMuon, *passingTausV.at(0) );
         // Get Visible Mass
         TLorentzVector l1 = TLorentzVector( 0., 0., 0., 0. );
         l1.SetPtEtaPhiM( bestMuon.pt(), bestMuon.eta(),
@@ -1059,14 +1107,34 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
         if (passingTausV.at(1)->charge() + passingTausV.at(0)->charge() == 0) SS = 0;
         else SS = 1;
     }
-    else {
-        m_vis = -9;
-        SS = -9;
-    }
-
     if (SS == -1) isOS = -1;
     if (SS == 0) isOS = 1;
     if (SS == 1) isOS = 0;
+
+
+
+    if (passingElectrons > 0) {
+        TLorentzVector l1 = TLorentzVector( 0., 0., 0., 0. );
+        l1.SetPtEtaPhiM( bestElectron.pt(), bestElectron.eta(),
+            bestElectron.phi(), bestElectron.mass() );
+        TLorentzVector l2 = TLorentzVector( 0., 0., 0., 0. );
+        l2.SetPtEtaPhiM( passingTausV.at(0)->pt(), passingTausV.at(0)->eta(),
+            passingTausV.at(0)->phi(), passingTausV.at(0)->mass() );
+        m_visE = (l1 + l2).M();
+
+        transMassE = TMath::Sqrt( 2. * bestElectron.pt() * met.pt() * (1. - TMath::Cos( bestElectron.phi() - met.phi())));
+
+        // Same sign comparison
+        if (bestElectron.charge() + passingTausV.at(0)->charge() == 0) SSE = 0;
+        else SSE = 1;
+
+        if (SSE == -1) isOSE = -1;
+        if (SSE == 0) isOSE = 1;
+        if (SSE == 1) isOSE = 0;
+    }
+
+
+
 
 
     edm::Handle<edm::TriggerResults> triggerResults;   
@@ -1096,40 +1164,76 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     }
 
 
-    //// Do trigger object matching
-    //// for the moment, just record the number
-    //// of times our 'best' objects match
-    //// this can be expanded later to indivual trigs if necessary
+    // Do trigger object matching
+    // for the moment, just record the number
+    // of times our 'best' objects match
+    // this can be expanded later to indivual trigs if necessary
     //mTrigMatch = 0;
-    //tTrigMatch = 0;
-    //t2TrigMatch = 0;
-    //for (pat::TriggerObjectStandAlone obj : *triggerObjects) { // note: not "const &" since we want to call unpackPathNames
-    //    obj.unpackPathNames(names);
-    //    std::vector<std::string> pathNamesLast = obj.pathNames(true);
-    //    // pathNamesLast = vector of flags, if this object was used in the final 
-    //    // filter of a succeeding HLT path resp. in a succeeding 
-    //    // condition of a succeeding L1 algorithm
-    //    for (unsigned h = 0, n = pathNamesLast.size(); h < n; ++h) {
-    //        std::cout << "9a - xxx" << pathNamesLast[h] << std::endl;
-    //        if (std::find( usedPaths.begin(), usedPaths.end(), pathNamesLast[h]) != usedPaths.end()) {
-    //            std::cout << " ---  " << pathNamesLast[h] << std::endl;
-    //            std::cout << "\tTrigger object:  pt " << obj.pt() << ", eta " << obj.eta() << ", phi " << obj.phi() << std::endl;
-    //            if (!doTauTau) {
-    //                float drMu = deltaR( bestMuon, obj );
-    //                //std::cout << "\tbestMuon dR: " << drMu << std::endl;
-    //                if (drMu < 0.5) ++mTrigMatch;
-    //            }
-    //            float drTau = deltaR( *passingTausV.at(0), obj );
-    //            //std::cout << "\tpassingTausV.at(0) dR: " << drTau << std::endl;
-    //            if (drTau < 0.5) ++tTrigMatch;
-    //            if (doTauTau) {
-    //                float drTau2 = deltaR( *passingTausV.at(1), obj );
-    //                //std::cout << "\tpassingTausV.at(0) dR: " << drTau << std::endl;
-    //                if (drTau2 < 0.5) ++t2TrigMatch;
-    //            }
-    //        }
-    //    }
-    //}
+    tTrigMatch = 0;
+    t2TrigMatch = 0;
+    hltHPSPt = -9;
+    hltHPSPt2 = -9;
+    hltConePt = -9;
+    hltConePt2 = -9;
+    hltHPSPtX = -9;
+    hltConePtX = -9;
+    //std::cout << "==================================================" << std::endl;
+    for (pat::TriggerObjectStandAlone obj : *triggerObjects) { // note: not "const &" since we want to call unpackPathNames
+        obj.unpackPathNames(names);
+        obj.unpackFilterLabels(iEvent, *triggerResults);
+        std::vector<std::string> pathNamesLast = obj.pathNames(true);
+        // Try just matching filters first
+        float drTau = deltaR( *passingTausV.at(0), obj );
+        if (drTau < 0.5) {
+            if (obj.hasFilterLabel("hltHpsOverlapFilterIsoMu24MediumChargedIsoPFTau35MonitoringReg") ||
+                obj.hasFilterLabel("hltHpsOverlapFilterIsoMu24TightChargedIsoPFTau35MonitoringReg") ||
+                obj.hasFilterLabel("hltHpsOverlapFilterIsoMu24TightChargedIsoAndTightOOSCPhotonsPFTau35MonitoringReg") ||
+                obj.hasFilterLabel("hltHpsOverlapFilterIsoMu24MediumChargedIsoAndTightOOSCPhotonsPFTau35MonitoringReg"))
+                // Record pT as this is an HPS object
+                hltHPSPtX = obj.pt();
+            if (obj.hasFilterLabel("hltOverlapFilterIsoMu24MediumChargedIsoPFTau35MonitoringReg") ||
+                obj.hasFilterLabel("hltOverlapFilterIsoMu24TightChargedIsoPFTau35MonitoringReg") ||
+                obj.hasFilterLabel("hltOverlapFilterIsoMu24TightChargedIsoAndTightOOSCPhotonsPFTau35MonitoringReg") ||
+                obj.hasFilterLabel("hltOverlapFilterIsoMu24MediumChargedIsoAndTightOOSCPhotonsPFTau35MonitoringReg"))
+                // Record pT as this is an HPS object
+                hltConePtX = obj.pt();
+        }
+        // pathNamesLast = vector of flags, if this object was used in the final 
+        // filter of a succeeding HLT path resp. in a succeeding 
+        // condition of a succeeding L1 algorithm
+        for (unsigned h = 0, n = pathNamesLast.size(); h < n; ++h) {
+            //std::cout << "9a - xxx" << pathNamesLast[h] << std::endl;
+            if (std::find( usedPaths.begin(), usedPaths.end(), pathNamesLast[h]) != usedPaths.end()) {
+                if ( pathNamesLast[h].find("PFTau")!= std::string::npos ) {
+                    //std::cout << " ---  " << pathNamesLast[h] << std::endl;
+                    //std::cout << "\tTrigger object:  pt " << obj.pt() << ", eta " << obj.eta() << ", phi " << obj.phi() << std::endl;
+                    //if (!doTauTau) {
+                    //    float drMu = deltaR( bestMuon, obj );
+                    //    //std::cout << "\tbestMuon dR: " << drMu << std::endl;
+                    //    if (drMu < 0.5) ++mTrigMatch;
+                    //}
+                    ///float drTau = deltaR( *passingTausV.at(0), obj );
+                    //std::cout << "\tpassingTausV.at(0) dR: " << drTau << std::endl;
+                    if (drTau < 0.5) {
+                        ++tTrigMatch;
+                        if ( pathNamesLast[h].find("PFTauHPS")!= std::string::npos )
+                            hltHPSPt = obj.pt();
+                        else hltConePt = obj.pt();
+                    }
+                    if (doTauTau) {
+                        float drTau2 = deltaR( *passingTausV.at(1), obj );
+                        //std::cout << "\tpassingTausV.at(0) dR: " << drTau << std::endl;
+                        if (drTau2 < 0.5) {
+                            ++t2TrigMatch;
+                            if ( pathNamesLast[h].find("PFTauHPS")!= std::string::npos )
+                                hltHPSPt2 = obj.pt();
+                            else hltConePt2 = obj.pt();
+                        }
+                    }
+                } // has PFTau in passed trigger names
+            }
+        }
+    }
 
 
     //std::cout << "10 - xxx" << std::endl;

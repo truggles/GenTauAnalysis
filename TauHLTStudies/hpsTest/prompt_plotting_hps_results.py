@@ -170,6 +170,10 @@ name = 'eff_feb27x'
 name = 'qqH_june04'
 name = 'singleMuon_june10'
 name = 'singleMuon_june11'
+name = 'singleEG_june20'
+
+doETau = True
+doETau = False
 
 isData = False
 isData = True
@@ -178,12 +182,7 @@ iFile = ROOT.TFile('/data/truggles/'+name+'.root','r')
 print iFile
 iTree = iFile.Get( 'hpsTauHLTStudies/tagAndProbe/Ntuple' )
 
-trigger1 = 'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1'
-trigger2 = 'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1'
-
 plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'/'
-#plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'_GenJet/'
-#plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'_GenEorMu/'
 if not os.path.exists( plotBase ) : os.makedirs( plotBase )
 
 c = ROOT.TCanvas( 'c1', 'c1', 600, 600 ) 
@@ -225,6 +224,22 @@ else :
         45,50,60,80,100,150,200,500])
 
 highPtBinning = array('d', [100,150,175,200,300,400,500,750])
+
+# For ETau
+def_denom_loose_e24Tau30 = ROOT.TH1D( 'def denom_loose_e24Tau30', 'Cone-Based', len(binning)-1, binning)
+def_pass_loose_e24Tau30 = ROOT.TH1D( 'def pass_loose_e24Tau30', 'def pass', len(binning)-1, binning)
+hps_denom_loose_e24Tau30 = ROOT.TH1D( 'hps denom_loose_e24Tau30', 'HPS Tau', len(binning)-1, binning)
+hps_pass_loose_e24Tau30 = ROOT.TH1D( 'hps pass_loose_e24Tau30', 'hps pass', len(binning)-1, binning)
+
+def_denom_medium_e24Tau30 = ROOT.TH1D( 'def denom_medium_e24Tau30', 'Cone-Based', len(binning)-1, binning)
+def_pass_medium_e24Tau30 = ROOT.TH1D( 'def pass_medium_e24Tau30', 'def pass', len(binning)-1, binning)
+hps_denom_medium_e24Tau30 = ROOT.TH1D( 'hps denom_medium_e24Tau30', 'HPS Tau', len(binning)-1, binning)
+hps_pass_medium_e24Tau30 = ROOT.TH1D( 'hps pass_medium_e24Tau30', 'hps pass', len(binning)-1, binning)
+
+def_denom_tight_e24Tau30 = ROOT.TH1D( 'def denom_tight_e24Tau30', 'Cone-Based', len(binning)-1, binning)
+def_pass_tight_e24Tau30 = ROOT.TH1D( 'def pass_tight_e24Tau30', 'def pass', len(binning)-1, binning)
+hps_denom_tight_e24Tau30 = ROOT.TH1D( 'hps denom_tight_e24Tau30', 'HPS Tau', len(binning)-1, binning)
+hps_pass_tight_e24Tau30 = ROOT.TH1D( 'hps pass_tight_e24Tau30', 'hps pass', len(binning)-1, binning)
 
 
 def_denom_med = ROOT.TH1D( 'def denom_med', 'Cone-Based', len(binning)-1, binning)
@@ -312,38 +327,64 @@ hps_pass_tight_mu27Tau20 = ROOT.TH1D( 'hps pass_tight_mu27Tau20', 'hps pass', le
 #hps_pass_tight_mu27Tau20_TightID = ROOT.TH1D( 'hps pass_tight_mu27Tau20_TightID', 'hps pass', len(binning)-1, binning)
 
 
+print "Do ETau? ", doETau
+print "isData? ", isData
+cnt = 0
 for row in iTree :
+    cnt += 1
+    if cnt % 50000 == 0 : print cnt
 
     nvtx.Fill( row.nvtx )
 
     ''' BASIC TAG-AND-PROBE '''
-    if row.muonPt < 20 : continue
+    # For all events regardless
     if row.tauPt < 20 : continue
-
-    # Tag
-    if isData :
-        #if row.RunNumber < 317509 : continue
-        if row.HLT_IsoMu27 < 0.5 : continue
-        if row.muonPt < 24 : continue
-        if row.transMass > 40 : continue
-        if row.m_vis < 40 : continue
-        if row.m_vis > 100 : continue
-        if row.tMVAIsoLoose < 0.5 : continue
-    else :
-        if row.HLT_IsoMu24 < 0.5 and row.HLT_IsoMu27 < 0.5 : continue
-        #if row.muonPt < 25 : continue
-        if row.t1_gen_match != 5 : continue
-        #if row.t1_gen_match > 4 : continue
-        #if row.t1_gen_match < 6 : continue
-        if row.SS != 0 : continue
-        if row.tMVAIsoMedium < 0.5 : continue
-
-    #if row.mTrigMatch < 0.5 : continue
-    if row.passingMuons != 1 : continue
-    if row.nVetoMuons != 1 : continue
-    #if row.passingElectrons != 0 : continue
     if row.nBTag != 0 : continue
     if row.passingTaus != 1 : continue
+
+    if doETau :
+        if row.electronPt < 35 : continue
+
+        # Tag
+        if isData :
+            #if row.RunNumber < 317509 : continue
+            if row.HLT_Ele35_WPTight_Gsf < 0.5 : continue
+            if row.transMassE > 40 : continue
+            if row.m_visE < 40 : continue
+            if row.m_visE > 100 : continue
+            if row.tMVAIsoLoose < 0.5 : continue
+        else :
+            print "Never defined this portion"
+            break
+
+        #if row.passingElectrons != 1 : continue
+        #if row.passingMuons != 0 : continue
+
+    else : # MuTau
+        if row.muonPt < 20 : continue
+
+        # Tag
+        if isData :
+            #if row.RunNumber < 317509 : continue
+            if row.HLT_IsoMu27 < 0.5 : continue
+            if row.muonPt < 24 : continue
+            if row.transMass > 40 : continue
+            if row.m_vis < 40 : continue
+            if row.m_vis > 100 : continue
+            if row.tMVAIsoLoose < 0.5 : continue
+        else :
+            if row.HLT_IsoMu24 < 0.5 and row.HLT_IsoMu27 < 0.5 : continue
+            #if row.muonPt < 25 : continue
+            if row.t1_gen_match != 5 : continue
+            #if row.t1_gen_match > 4 : continue
+            #if row.t1_gen_match < 6 : continue
+            if row.SS != 0 : continue
+            if row.tMVAIsoMedium < 0.5 : continue
+
+        #if row.mTrigMatch < 0.5 : continue
+        if row.passingMuons != 1 : continue
+        if row.nVetoMuons != 1 : continue
+        #if row.passingElectrons != 0 : continue
 
     tPt = row.tauPt
     hpsPt = row.hpsTauPt
@@ -355,112 +396,138 @@ for row in iTree :
     if defPt < 0.1 : defPt = 1.
     tDM = row.tauDM
 
+
+
     ''' Increase min muon pT for matching to Tau35 triggers '''
     #if row.HLT_IsoMu24 > 0.5 and row.muonPt > 24 :
-    if row.muonPt > 25 :
-        #if row.tMVAIsoTight < 0.5 : continue
+    #if row.muonPt > 25 :
+    #if row.tMVAIsoTight < 0.5 : continue
+    if doETau :
+        weight = 1. if row.SSE == 0 else -1.
+    else : # MuTau
         weight = 1. if row.SS == 0 else -1.
 
-        ''' Fill efficiencies '''
-        # For the first 20 / fb
-        if row.RunNumber < 317509 :
-            # only 2 TnP paths are available for HPS before run 317509
-            def_denom_loose_muTau.Fill( tPt, weight ) 
-            hps_denom_loose_muTau.Fill( tPt, weight )
-            def_denom_loose_mu27Tau20.Fill( tPt, weight ) 
-            def_denom_med.Fill( tPt, weight ) 
-            hps_denom_med.Fill( tPt, weight )
+    ''' Fill efficiencies '''
+    # For the first 20 / fb
+    if row.RunNumber < 317509 :
+        # only 2 TnP paths are available for HPS before run 317509
+        def_denom_loose_muTau.Fill( tPt, weight ) 
+        hps_denom_loose_muTau.Fill( tPt, weight )
+        def_denom_loose_mu27Tau20.Fill( tPt, weight ) 
+        def_denom_med.Fill( tPt, weight ) 
+        hps_denom_med.Fill( tPt, weight )
 
-            # Cone base are not available after run run 317509
-            #def_denom_loose_muTau_TightID.Fill( tPt, weight ) 
-            #def_denom_med_TightID.Fill( tPt, weight ) 
-            def_denom_med_muTau.Fill( tPt, weight ) 
-            def_denom_med_mu27Tau20.Fill( tPt, weight ) 
-            #def_denom_med_muTau_TightID.Fill( tPt, weight ) 
-            def_denom_tight.Fill( tPt, weight ) 
-            #def_denom_tight_TightID.Fill( tPt, weight ) 
-            def_denom_tight_muTau.Fill( tPt, weight ) 
-            def_denom_tight_mu27Tau20.Fill( tPt, weight ) 
-            #def_denom_tight_muTau_TightID.Fill( tPt, weight ) 
+        # Cone base are not available after run run 317509
+        #def_denom_loose_muTau_TightID.Fill( tPt, weight ) 
+        #def_denom_med_TightID.Fill( tPt, weight ) 
+        def_denom_med_muTau.Fill( tPt, weight ) 
+        def_denom_med_mu27Tau20.Fill( tPt, weight ) 
+        #def_denom_med_muTau_TightID.Fill( tPt, weight ) 
+        def_denom_tight.Fill( tPt, weight ) 
+        #def_denom_tight_TightID.Fill( tPt, weight ) 
+        def_denom_tight_muTau.Fill( tPt, weight ) 
+        def_denom_tight_mu27Tau20.Fill( tPt, weight ) 
+        #def_denom_tight_muTau_TightID.Fill( tPt, weight ) 
+
+        def_denom_loose_e24Tau30.Fill( tPt, weight )
+        def_denom_medium_e24Tau30.Fill( tPt, weight )
+        def_denom_tight_e24Tau30.Fill( tPt, weight )
 
 
-            ''' Check passing for numerator defaul triggers '''
-            if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
-                def_pass_med.Fill( tPt, weight )
-            if row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
-                def_pass_tight.Fill( tPt, weight )
-            #if row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 :
-            #    def_pass_tight_TightID.Fill( tPt, weight )
-            if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1 > 0.5 :
-                def_pass_loose_muTau.Fill( tPt, weight )
-            if row.HLT_IsoMu27_LooseChargedIsoPFTau20_Trk1_eta2p1_SingleL1 > 0.5 :
-                def_pass_loose_mu27Tau20.Fill( tPt, weight )
-            #if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1 > 0.5 :
-            #    def_pass_loose_muTau_TightID.Fill( tPt, weight )
-            if row.HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1 > 0.5 :
-                def_pass_med_muTau.Fill( tPt, weight )
-            #if row.HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1 > 0.5 :
-            #    def_pass_med_muTau_TightID.Fill( tPt, weight )
-            if row.HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1 > 0.5 :
-                def_pass_tight_muTau.Fill( tPt, weight )
-            if row.HLT_IsoMu27_TightChargedIsoPFTau20_Trk1_eta2p1_SingleL1 > 0.5 :
-                def_pass_tight_mu27Tau20.Fill( tPt, weight )
-            if row.HLT_IsoMu27_MediumChargedIsoPFTau20_Trk1_eta2p1_SingleL1 > 0.5 :
-                def_pass_med_mu27Tau20.Fill( tPt, weight )
-            #if row.HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1 > 0.5 :
-            #    def_pass_tight_muTau_TightID.Fill( tPt, weight )
-            #if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 :
-            #    def_pass_med_TightID.Fill( tPt, weight )
+        ''' Check passing for numerator defaul triggers '''
+        if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
+            def_pass_med.Fill( tPt, weight )
+        if row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
+            def_pass_tight.Fill( tPt, weight )
+        #if row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 :
+        #    def_pass_tight_TightID.Fill( tPt, weight )
+        if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1 > 0.5 :
+            def_pass_loose_muTau.Fill( tPt, weight )
+        if row.HLT_IsoMu27_LooseChargedIsoPFTau20_Trk1_eta2p1_SingleL1 > 0.5 :
+            def_pass_loose_mu27Tau20.Fill( tPt, weight )
+        #if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1 > 0.5 :
+        #    def_pass_loose_muTau_TightID.Fill( tPt, weight )
+        if row.HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1 > 0.5 :
+            def_pass_med_muTau.Fill( tPt, weight )
+        #if row.HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_TightID_CrossL1 > 0.5 :
+        #    def_pass_med_muTau_TightID.Fill( tPt, weight )
+        if row.HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1 > 0.5 :
+            def_pass_tight_muTau.Fill( tPt, weight )
+        if row.HLT_IsoMu27_TightChargedIsoPFTau20_Trk1_eta2p1_SingleL1 > 0.5 :
+            def_pass_tight_mu27Tau20.Fill( tPt, weight )
+        if row.HLT_IsoMu27_MediumChargedIsoPFTau20_Trk1_eta2p1_SingleL1 > 0.5 :
+            def_pass_med_mu27Tau20.Fill( tPt, weight )
+        #if row.HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_TightID_CrossL1 > 0.5 :
+        #    def_pass_tight_muTau_TightID.Fill( tPt, weight )
+        #if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 :
+        #    def_pass_med_TightID.Fill( tPt, weight )
+        if row.HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1 > 0.5 :
+            def_pass_loose_e24Tau30.Fill( tPt, weight )
+        if row.HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_CrossL1 > 0.5 :
+            def_pass_medium_e24Tau30.Fill( tPt, weight )
+        if row.HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTau30_eta2p1_CrossL1 > 0.5 :
+            def_pass_tight_e24Tau30.Fill( tPt, weight )
 
-            ''' Check passing for numerator HPS triggers '''
-            if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
-                hps_pass_med.Fill( tPt, weight )
-            if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1 > 0.5 :
-                hps_pass_loose_muTau.Fill( tPt, weight )
+        ''' Check passing for numerator HPS triggers '''
+        if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
+            hps_pass_med.Fill( tPt, weight )
+        if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1 > 0.5 :
+            hps_pass_loose_muTau.Fill( tPt, weight )
 
-        # Fill the new HPS triggers
-        if row.RunNumber >= 317509 :
-            # were not available before run 317509
-            #hps_denom_loose_muTau_TightID.Fill( tPt, weight )
-            #hps_denom_med_TightID.Fill( tPt, weight )
-            hps_denom_med_muTau.Fill( tPt, weight )
-            hps_denom_med_mu27Tau20.Fill( tPt, weight )
-            #hps_denom_med_muTau_TightID.Fill( tPt, weight )
-            hps_denom_tight.Fill( tPt, weight )
-            #hps_denom_tight_TightID.Fill( tPt, weight )
-            hps_denom_tight_muTau.Fill( tPt, weight )
-            hps_denom_tight_mu27Tau20.Fill( tPt, weight )
-            #hps_denom_tight_muTau_TightID.Fill( tPt, weight )
-            # available before and after
-            hpsNew_denom_loose_muTau.Fill( tPt, weight )
-            hpsNew_denom_med.Fill( tPt, weight )
-            hps_denom_loose_mu27Tau20.Fill( tPt, weight )
-            if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
-                hpsNew_pass_med.Fill( tPt, weight )
-            if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1 > 0.5 :
-                hpsNew_pass_loose_muTau.Fill( tPt, weight )
-            if row.HLT_IsoMu27_LooseChargedIsoPFTauHPS20_Trk1_eta2p1_SingleL1 > 0.5 :
-                hps_pass_loose_mu27Tau20.Fill( tPt, weight )
-            if row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
-                hps_pass_tight.Fill( tPt, weight )
-            #if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 :
-            #    hps_pass_med_TightID.Fill( tPt, weight )
-            #if row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 :
-            #    hps_pass_tight_TightID.Fill( tPt, weight )
-            #if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1 > 0.5 :
-            #    hps_pass_loose_muTau_TightID.Fill( tPt, weight )
-            if row.HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_CrossL1 > 0.5 :
-                hps_pass_med_muTau.Fill( tPt, weight )
-            if row.HLT_IsoMu27_MediumChargedIsoPFTauHPS20_Trk1_eta2p1_SingleL1 > 0.5 :
-                hps_pass_med_mu27Tau20.Fill( tPt, weight )
-            #if row.HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1 > 0.5 :
-            #    hps_pass_med_muTau_TightID.Fill( tPt, weight )
-            if row.HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_CrossL1 > 0.5 :
-                hps_pass_tight_muTau.Fill( tPt, weight )
-            if row.HLT_IsoMu27_TightChargedIsoPFTauHPS20_Trk1_eta2p1_SingleL1 > 0.5 :
-                hps_pass_tight_mu27Tau20.Fill( tPt, weight )
-            #if row.HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1 > 0.5 :
-            #    hps_pass_tight_muTau_TightID.Fill( tPt, weight )
+    # Fill the new HPS triggers
+    if row.RunNumber >= 317509 :
+        # were not available before run 317509
+        #hps_denom_loose_muTau_TightID.Fill( tPt, weight )
+        #hps_denom_med_TightID.Fill( tPt, weight )
+        hps_denom_med_muTau.Fill( tPt, weight )
+        hps_denom_med_mu27Tau20.Fill( tPt, weight )
+        #hps_denom_med_muTau_TightID.Fill( tPt, weight )
+        hps_denom_tight.Fill( tPt, weight )
+        #hps_denom_tight_TightID.Fill( tPt, weight )
+        hps_denom_tight_muTau.Fill( tPt, weight )
+        hps_denom_tight_mu27Tau20.Fill( tPt, weight )
+        #hps_denom_tight_muTau_TightID.Fill( tPt, weight )
+        # available before and after
+        hpsNew_denom_loose_muTau.Fill( tPt, weight )
+        hpsNew_denom_med.Fill( tPt, weight )
+        hps_denom_loose_mu27Tau20.Fill( tPt, weight )
+
+        hps_denom_loose_e24Tau30.Fill( tPt, weight )
+        hps_denom_medium_e24Tau30.Fill( tPt, weight )
+        hps_denom_tight_e24Tau30.Fill( tPt, weight )
+
+        if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
+            hpsNew_pass_med.Fill( tPt, weight )
+        if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1 > 0.5 :
+            hpsNew_pass_loose_muTau.Fill( tPt, weight )
+        if row.HLT_IsoMu27_LooseChargedIsoPFTauHPS20_Trk1_eta2p1_SingleL1 > 0.5 :
+            hps_pass_loose_mu27Tau20.Fill( tPt, weight )
+        if row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1 > 0.5 :
+            hps_pass_tight.Fill( tPt, weight )
+        #if row.HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 :
+        #    hps_pass_med_TightID.Fill( tPt, weight )
+        #if row.HLT_IsoMu24_eta2p1_TightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_CrossL1 > 0.5 :
+        #    hps_pass_tight_TightID.Fill( tPt, weight )
+        #if row.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1 > 0.5 :
+        #    hps_pass_loose_muTau_TightID.Fill( tPt, weight )
+        if row.HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_CrossL1 > 0.5 :
+            hps_pass_med_muTau.Fill( tPt, weight )
+        if row.HLT_IsoMu27_MediumChargedIsoPFTauHPS20_Trk1_eta2p1_SingleL1 > 0.5 :
+            hps_pass_med_mu27Tau20.Fill( tPt, weight )
+        #if row.HLT_IsoMu20_eta2p1_MediumChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1 > 0.5 :
+        #    hps_pass_med_muTau_TightID.Fill( tPt, weight )
+        if row.HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_CrossL1 > 0.5 :
+            hps_pass_tight_muTau.Fill( tPt, weight )
+        if row.HLT_IsoMu27_TightChargedIsoPFTauHPS20_Trk1_eta2p1_SingleL1 > 0.5 :
+            hps_pass_tight_mu27Tau20.Fill( tPt, weight )
+        #if row.HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1 > 0.5 :
+        #    hps_pass_tight_muTau_TightID.Fill( tPt, weight )
+        if row.HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_CrossL1 > 0.5 :
+            hps_pass_loose_e24Tau30.Fill( tPt, weight )
+        if row.HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTauHPS30_eta2p1_CrossL1 > 0.5 :
+            hps_pass_medium_e24Tau30.Fill( tPt, weight )
+        if row.HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTauHPS30_eta2p1_CrossL1 > 0.5 :
+            hps_pass_tight_e24Tau30.Fill( tPt, weight )
 
 
 
@@ -520,6 +587,18 @@ plotEff( c, plotBase, 'Tight Iso WP - mu27Tau20', denoms_tight_mu27Tau20, passes
 #denoms_tight_muTau_TightID = [def_denom_tight_muTau_TightID, hps_denom_tight_muTau_TightID]
 #passes_tight_muTau_TightID = [def_pass_tight_muTau_TightID, hps_pass_tight_muTau_TightID]
 #plotEff( c, plotBase, 'Tight Iso TightID WP - mu20tau27', denoms_tight_muTau_TightID, passes_tight_muTau_TightID )
+
+denoms_loose_e24Tau30 = [def_denom_loose_e24Tau30, hps_denom_loose_e24Tau30]
+passes_loose_e24Tau30 = [def_pass_loose_e24Tau30, hps_pass_loose_e24Tau30]
+plotEff( c, plotBase, 'Loose Iso WP - e24Tau30', denoms_loose_e24Tau30, passes_loose_e24Tau30)
+
+denoms_medium_e24Tau30 = [def_denom_medium_e24Tau30, hps_denom_medium_e24Tau30]
+passes_medium_e24Tau30 = [def_pass_medium_e24Tau30, hps_pass_medium_e24Tau30]
+plotEff( c, plotBase, 'Medium Iso WP - e24Tau30', denoms_medium_e24Tau30, passes_medium_e24Tau30)
+
+denoms_tight_e24Tau30 = [def_denom_tight_e24Tau30, hps_denom_tight_e24Tau30]
+passes_tight_e24Tau30 = [def_pass_tight_e24Tau30, hps_pass_tight_e24Tau30]
+plotEff( c, plotBase, 'Tight Iso WP - e24Tau30', denoms_tight_e24Tau30, passes_tight_e24Tau30)
 
 c.Clear()
 nvtx.Draw()

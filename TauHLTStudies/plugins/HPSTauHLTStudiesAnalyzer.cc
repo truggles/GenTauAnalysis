@@ -1220,7 +1220,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
                             hltHPSPt = obj.pt();
                         else hltConePt = obj.pt();
                     }
-                    if (doTauTau) {
+                    if (doTauTau && passingTausV.size() > 1) {
                         float drTau2 = deltaR( *passingTausV.at(1), obj );
                         //std::cout << "\tpassingTausV.at(0) dR: " << drTau << std::endl;
                         if (drTau2 < 0.5) {

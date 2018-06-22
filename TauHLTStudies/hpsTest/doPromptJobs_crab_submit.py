@@ -30,15 +30,20 @@ dataMap = OrderedDict()
 # dasgoclient --query="dataset dataset=/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17*-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/*"
 # dasgoclient --query="dataset dataset=/*TauTau*/RunIISummer17*-NZSFlatPU28to62_*_upgrade2017_realistic*/*"
 
-dataMap[ 'SingleMuon_2018A-v1' ] = '/SingleMuon/Run2018A-PromptReco-v1/MINIAOD'
-dataMap[ 'SingleMuon_2018A-v2' ] = '/SingleMuon/Run2018A-PromptReco-v2/MINIAOD'
-dataMap[ 'SingleMuon_2018A-v3' ] = '/SingleMuon/Run2018A-PromptReco-v3/MINIAOD'
+#dataMap[ 'SingleMuon_2018A-v1' ] = '/SingleMuon/Run2018A-PromptReco-v1/MINIAOD'
+#dataMap[ 'SingleMuon_2018A-v2' ] = '/SingleMuon/Run2018A-PromptReco-v2/MINIAOD'
+#dataMap[ 'SingleMuon_2018A-v3' ] = '/SingleMuon/Run2018A-PromptReco-v3/MINIAOD'
 #dataMap[ 'SingleMuon_2018B-v1' ] = '/SingleMuon/Run2018B-PromptReco-v1/MINIAOD'
 
 #dataMap[ 'SingleElectron_2018A-v1' ] = '/EGamma/Run2018A-PromptReco-v1/MINIAOD'
 #dataMap[ 'SingleElectron_2018A-v2' ] = '/EGamma/Run2018A-PromptReco-v2/MINIAOD'
 #dataMap[ 'SingleElectron_2018A-v3' ] = '/EGamma/Run2018A-PromptReco-v3/MINIAOD'
 #dataMap[ 'SingleElectron_2018B-v1' ] = '/EGamma/Run2018B-PromptReco-v1/MINIAOD'
+
+dataMap[ 'TauPD_2018A-v1' ] = '/Tau/Run2018A-PromptReco-v1/MINIAOD'
+dataMap[ 'TauPD_2018A-v2' ] = '/Tau/Run2018A-PromptReco-v2/MINIAOD'
+dataMap[ 'TauPD_2018A-v3' ] = '/Tau/Run2018A-PromptReco-v3/MINIAOD'
+dataMap[ 'TauPD_2018B-v1' ] = '/Tau/Run2018B-PromptReco-v1/MINIAOD'
 
 if __name__ == '__main__':
 
@@ -59,14 +64,14 @@ if __name__ == '__main__':
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k in dataMap.keys() :
-        config.General.requestName = '%s_hps_1011_june20_prompReco_RunAGolden_v4' % k
-        #config.General.requestName = '%s_hps_1011_june20_prompReco_DCS_v1' % k
+        #config.General.requestName = '%s_hps_1011_june20_prompReco_RunAGolden_v4' % k
+        config.General.requestName = '%s_hps_1011_june20_prompReco_DCS_v1' % k
         config.Data.outputDatasetTag   = config.General.requestName
         config.Data.inputDataset = dataMap[ k ]
         config.JobType.maxMemoryMB = 3500
         config.JobType.psetName    = 'crab_prompt_hps_DATA-miniAOD_cfg.py'
-        #config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/DCSOnly/json_DCSONLY.txt'
-        config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/PromptReco/Cert_314472-317391_13TeV_PromptReco_Collisions18_JSON.txt' # Covers all Run A
+        config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/DCSOnly/json_DCSONLY.txt'
+        #config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/PromptReco/Cert_314472-317391_13TeV_PromptReco_Collisions18_JSON.txt' # Covers all Run A
         print 'submitting config:'
         print config
         submit(config)

@@ -31,10 +31,10 @@ config.User.voGroup            = 'uscms'
 
 dataMap = OrderedDict()
 ### FOR EFFICIENCY & OTHER MC STUDIES ###
-dataMap['qqH125'] = {
-        'child' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
-        'grandparent' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
-    }
+#dataMap['qqH125'] = {
+#        'child' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
+#        'grandparent' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
+#    }
 #dataMap['ggH125'] = {
 #        'child' : '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/MINIAODSIM',
 #        'grandparent' : '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/GEN-SIM-RAW',
@@ -42,14 +42,6 @@ dataMap['qqH125'] = {
 #dataMap['Zprime1500'] = {
 #        'child' : '/ZprimeToTauTau_M-1500_TuneCUETP8M1_13TeV-pythia8-tauola/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
 #        'grandparent' : '/ZprimeToTauTau_M-1500_TuneCUETP8M1_13TeV-pythia8-tauola/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
-#    }
-#dataMap['DYJetsToLL'] = {
-#        'child' : '/DYJetsToLL_M-50_Zpt-150toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
-#        'grandparent' : '/DYJetsToLL_M-50_Zpt-150toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
-#    }
-#dataMap['DYJets'] = {
-#        'child' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/MINIAODSIM',
-#        'grandparent' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/GEN-SIM-RAW',
 #    }
 #dataMap['DataSingleMuonF'] = {
 #        'child' : '/SingleMuon/Run2017F-PromptReco-v1/MINIAOD',
@@ -65,49 +57,17 @@ dataMap['qqH125'] = {
 #        'child' : '/EphemeralHLTPhysics1/Run2017F-PromptReco-v1/MINIAOD',
 #        'grandparent' : '/EphemeralHLTPhysics1/Run2017F-v1/RAW',
 #    }
-#dataMap['hltPhysicsV2'] = {
-#        'child' : '/EphemeralHLTPhysics2/Run2017F-PromptReco-v1/MINIAOD',
-#        'grandparent' : '/EphemeralHLTPhysics2/Run2017F-v1/RAW',
+
+
+
+#dataMap['DYJets'] = {
+#        'child' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/MINIAODSIM',
+#        'grandparent' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/GEN-SIM-RAW',
 #    }
-#dataMap['hltPhysicsV3'] = {
-#        'child' : '/EphemeralHLTPhysics3/Run2017F-PromptReco-v1/MINIAOD',
-#        'grandparent' : '/EphemeralHLTPhysics3/Run2017F-v1/RAW',
-#    }
-#dataMap['hltPhysicsV4'] = {
-#        'child' : '/EphemeralHLTPhysics4/Run2017F-PromptReco-v1/MINIAOD',
-#        'grandparent' : '/EphemeralHLTPhysics4/Run2017F-v1/RAW',
-#    }
-#dataMap['hltPhysicsV5'] = {
-#        'child' : '/EphemeralHLTPhysics5/Run2017F-PromptReco-v1/MINIAOD',
-#        'grandparent' : '/EphemeralHLTPhysics5/Run2017F-v1/RAW',
-#    }
-#dataMap['hltPhysicsV6'] = {
-#        'child' : '/EphemeralHLTPhysics6/Run2017F-PromptReco-v1/MINIAOD',
-#        'grandparent' : '/EphemeralHLTPhysics6/Run2017F-v1/RAW',
-#    }
-#dataMap['hltPhysicsV7'] = {
-#        'child' : '/EphemeralHLTPhysics7/Run2017F-PromptReco-v1/MINIAOD',
-#        'grandparent' : '/EphemeralHLTPhysics7/Run2017F-v1/RAW',
-#    }
-#dataMap['hltPhysicsV8'] = {
-#        'child' : '/EphemeralHLTPhysics8/Run2017F-PromptReco-v1/MINIAOD',
-#        'grandparent' : '/EphemeralHLTPhysics8/Run2017F-v1/RAW',
-#    }
-#dataMap['DataMuTauSkimB'] = { # B and C not available on disk
-#        'child' : '/SingleMuon/Run2017B-MuTau-PromptReco-v1/RAW-RECO',
-#    }
-#dataMap['DataMuTauSkimC'] = {
-#        'child' : '/SingleMuon/Run2017C-MuTau-PromptReco-v1/RAW-RECO',
-#    }
-#dataMap['DataMuTauSkimD'] = {
-#        'child' : '/SingleMuon/Run2017D-MuTau-PromptReco-v1/RAW-RECO',
-#    }
-#dataMap['DataMuTauSkimE'] = {
-#        'child' : '/SingleMuon/Run2017E-MuTau-PromptReco-v1/RAW-RECO',
-#    }
-#dataMap['DataMuTauSkimF'] = {
-#        'child' : '/SingleMuon/Run2017F-MuTau-PromptReco-v1/USER',
-#    }
+dataMap['DataMuTauSkimB'] = { # B and C not available on disk
+        'child' : '/SingleMuon/Run2018B-MuTau-PromptReco-v1/USER',
+    }
+
 
 # dasgoclient --query="dataset dataset=/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17*-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/*"
 # dasgoclient --query="dataset dataset=/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17*-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/*"
@@ -132,23 +92,23 @@ if __name__ == '__main__':
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k in dataMap.keys() :
-        config.General.requestName = '%s_hps_1003_march07_v1' % k
+        config.General.requestName = '%s_hps_10_1_1_june29_v2' % k
         config.Data.outputDatasetTag   = config.General.requestName
         if not 'hltPhysics' in k and not 'Data' in k :
-            config.JobType.psetName        = 'hps_hlt_MC_FINAL.py'
+            config.JobType.psetName        = 'hlt_MC_10_1_1_6Paths.py'
             config.Data.inputDataset = dataMap[ k ][ 'child' ]
             config.Data.secondaryInputDataset = dataMap[ k ][ 'grandparent' ]
             # ZPrime Test
             config.JobType.maxMemoryMB     = 2500
             config.Data.splitting          = 'EventAwareLumiBased'
             config.Data.unitsPerJob        = 2000 # events / job when using EventAwareLumiBased
-            #config.Data.totalUnits         = 30000 # for tests
+            config.Data.totalUnits         = 30000 # for tests
         elif 'hltPhysics' in k :
             config.Data.inputDataset = dataMap[ k ][ 'grandparent' ]
             config.JobType.maxMemoryMB = 2500
             config.Data.splitting      = 'FileBased'
             config.Data.unitsPerJob    = 5
-            config.JobType.psetName    = 'hps_hlt_DATA_FINAL.py'
+            config.JobType.psetName    = 'hlt_DATA_10_1_1_6Paths.py'
             config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/PromptReco/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
             #config.Data.totalUnits         = 45 # for small tests
         elif 'MuTauSkim' in k :
@@ -156,19 +116,19 @@ if __name__ == '__main__':
             config.Data.unitsPerJob        = 1 # files when FileBased
             config.Data.inputDataset = dataMap[ k ][ 'child' ]
             config.JobType.maxMemoryMB = 2500
-            config.JobType.psetName    = 'hps_hlt_10x_DATA.py'
-            config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/PromptReco/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
-            config.Data.totalUnits         = 3 # Total files when FileBased
+            config.JobType.psetName    = 'hlt_DATA_10_1_1_6Paths.py'
+            config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/DCSOnly/json_DCSONLY.txt'
+            config.Data.totalUnits         = 20 # Total files when FileBased
         elif 'Data' in k :
             config.Data.splitting          = 'EventAwareLumiBased'
             config.Data.unitsPerJob        = 3000 # events / job when using EventAwareLumiBased
             config.Data.inputDataset = dataMap[ k ][ 'child' ]
             config.Data.secondaryInputDataset = dataMap[ k ][ 'grandparent' ]
             config.JobType.maxMemoryMB = 3500
-            config.JobType.psetName    = 'hps_hlt_10x_DATA.py'
-            config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/PromptReco/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
-            #config.Data.totalUnits         = 1000000 # 1 mil was far too low for efficiency
-            config.Data.totalUnits         = 25000000 # For small tests # events when using EventAwareLumiBased
+            config.JobType.psetName    = 'hlt_DATA_10_1_1_6Paths.py'
+            config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/DCSOnly/json_DCSONLY.txt'
+            config.Data.totalUnits         = 100000 # 1 mil was far too low for efficiency
+            #config.Data.totalUnits         = 25000000 # For small tests # events when using EventAwareLumiBased
         print 'submitting config:'
         print config
         submit(config)

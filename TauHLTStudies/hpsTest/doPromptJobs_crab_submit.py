@@ -74,6 +74,6 @@ if __name__ == '__main__':
         #config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/PromptReco/Cert_314472-317391_13TeV_PromptReco_Collisions18_JSON.txt' # Covers all Run A
         print 'submitting config:'
         print config
-        submit(config)
+        #submit(config)
 
 

@@ -138,7 +138,7 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
         mPt, mEta, mPhi, mIso,
         ePt, eEta, ePhi,
         l1TauPt, l1TauIso,
-        tPt, tEta, tPhi, tMVAIsoVLoose, tMVAIsoLoose, tMVAIsoMedium, 
+        tPt, tEta, tPhi, tMass, tMVAIsoVLoose, tMVAIsoLoose, tMVAIsoMedium, 
         tMVAIsoTight, tMVAIsoVTight, tMVAIsoVVTight, m_vis, transMass, SS, isOS, pfMet,
         nBTag, nBTagAll, passingElectrons, transMassE, SSE, isOSE, m_visE,
         //tIsoCmbLoose, tIsoCmbLoose03, tIsoCmbMedium, tIsoCmbMedium03, tIsoCmbTight, tIsoCmbTight03,
@@ -147,15 +147,15 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
         //mTrigMatch, tTrigMatch, tL1Match,
         tTrigMatch, tL1Match,
         t1_gen_match,genTauPt,tDecayMode, tDMFinding,
-        t2Pt, t2Eta, t2Phi, t2MVAIsoVLoose, t2MVAIsoLoose, t2MVAIsoMedium, 
+        t2Pt, t2Eta, t2Phi, t2Mass, t2MVAIsoVLoose, t2MVAIsoLoose, t2MVAIsoMedium, 
         t2MVAIsoTight, t2MVAIsoVTight, t2MVAIsoVVTight, t2_gen_match,t2DecayMode,
         //t2IsoCmbLoose, t2IsoCmbLoose03, t2IsoCmbMedium, t2IsoCmbMedium03, t2IsoCmbTight, t2IsoCmbTight03,
         t2IsoCmbLoose, t2IsoCmbMedium, t2IsoCmbTight,
         hltHPSPt, hltConePt, hltHPSPtX, hltConePtX, hltHPSPt2, hltConePt2,
         t2TrigMatch,t2genPt,t2L1Match, emptyVertices, failNdof,
-        hpsTauSize, hpsTauPt, hpsTauEta, hpsTauPhi, hpsTauDM, hpsTauDMFinding, hpsTauDR, hpsTauChrgIso, hpsTauDRDefault,
+        hpsTauSize, hpsTauPt, hpsTauEta, hpsTauPhi, hpsTauMass, hpsTauDM, hpsTauDMFinding, hpsTauDR, hpsTauChrgIso, hpsTauDRDefault,
         hpsTau2Pt, hpsTau2Eta, hpsTau2Phi, hpsTau2DM,
-        defaultTauSize, defaultTauPt, defaultTauEta, defaultTauPhi, 
+        defaultTauSize, defaultTauPt, defaultTauEta, defaultTauPhi, defaultTauMass,
         defaultTauDM, defaultTauDMFinding, defaultTauDR, defaultTauChrgIso,
         defaultTau2Pt, defaultTau2Eta, defaultTau2Phi, defaultTau2DM;
       bool foundGenTau, foundGenMuon; 
@@ -411,6 +411,7 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("tauPt",&tPt,"tauPt/F");
    tree->Branch("tauEta",&tEta,"tauEta/F");
    tree->Branch("tauPhi",&tPhi,"tauPhi/F");
+   tree->Branch("tauMass",&tMass,"tauMass/F");
    tree->Branch("hltHPSPt",&hltHPSPt,"hltHPSPt/F");
    tree->Branch("hltConePt",&hltConePt,"hltConePt/F");
    tree->Branch("hltHPSPtX",&hltHPSPtX,"hltHPSPtX/F");
@@ -439,6 +440,7 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("hpsTauPt",&hpsTauPt,"hpsTauPt/F");
    tree->Branch("hpsTauEta",&hpsTauEta,"hpsTauEta/F");
    tree->Branch("hpsTauPhi",&hpsTauPhi,"hpsTauPhi/F");
+   tree->Branch("hpsTauMass",&hpsTauMass,"hpsTauMass/F");
    tree->Branch("hpsTauDM",&hpsTauDM,"hpsTauDM/F");
    tree->Branch("hpsTauDMFinding",&hpsTauDMFinding,"hpsTauDMFinding/F");
    tree->Branch("hpsTauDR",&hpsTauDR,"hpsTauDR/F");
@@ -465,6 +467,7 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("hltConePt2",&hltConePt2,"hltConePt2/F");
    tree->Branch("t2Eta",&t2Eta,"t2Eta/F");
    tree->Branch("t2Phi",&t2Phi,"t2Phi/F");
+   tree->Branch("t2Mass",&t2Mass,"t2Mass/F");
    tree->Branch("t2_gen_match",&t2_gen_match,"t2_gen_match/F");
    tree->Branch("t2genPt",&t2genPt,"t2genPt/F");
    tree->Branch("t2MVAIsoVLoose",&t2MVAIsoVLoose,"t2MVAIsoVLoose/F");
@@ -843,6 +846,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     hpsTauPt = -9;
     hpsTauEta = -9;
     hpsTauPhi = -9;
+    hpsTauMass = -9;
     hpsTauDM = -9;
     hpsTauDMFinding = -9;
     hpsTauDR = -9;
@@ -857,6 +861,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
                 hpsTauPt = hpsTauCandidate->pt();
                 hpsTauEta = hpsTauCandidate->eta();
                 hpsTauPhi = hpsTauCandidate->phi();
+                hpsTauMass = hpsTauCandidate->mass();
                 hpsTauDM = hpsTauCandidate->decayMode();
                 hpsTauDR = deltaR(passingTausV.at(0)->p4(), hpsTauCandidate->p4());
                 if (hpsTauDMs.isValid()) {
@@ -880,6 +885,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     defaultTauPt = -9;
     defaultTauEta = -9;
     defaultTauPhi = -9;
+    defaultTauMass = -9;
     defaultTauDM = -9;
     defaultTauDMFinding = -9;
     defaultTauDR = -9;
@@ -894,6 +900,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
                 defaultTauPt = defaultTauCandidate->pt();
                 defaultTauEta = defaultTauCandidate->eta();
                 defaultTauPhi = defaultTauCandidate->phi();
+                defaultTauMass = defaultTauCandidate->mass();
                 defaultTauDM = defaultTauCandidate->decayMode();
                 defaultTauDR = deltaR(passingTausV.at(0)->p4(), defaultTauCandidate->p4());
                 if (defaultTauDMs.isValid()) {
@@ -946,6 +953,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     t2Pt = -9;
     t2Eta = -9;
     t2Phi = -9;
+    t2Mass = -9;
     t2MVAIsoVLoose = -9;
     t2MVAIsoLoose  = -9;
     t2MVAIsoMedium = -9;
@@ -992,6 +1000,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     tPt = passingTausV.at(0)->pt();
     tEta = passingTausV.at(0)->eta();
     tPhi = passingTausV.at(0)->phi();
+    tMass = passingTausV.at(0)->mass();
     tMVAIsoVLoose = passingTausV.at(0)->tauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
     tMVAIsoLoose  = passingTausV.at(0)->tauID("byLooseIsolationMVArun2v1DBoldDMwLT");
     tMVAIsoMedium = passingTausV.at(0)->tauID("byMediumIsolationMVArun2v1DBoldDMwLT");
@@ -1011,6 +1020,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
         t2Pt = passingTausV.at(1)->pt();
         t2Eta = passingTausV.at(1)->eta();
         t2Phi = passingTausV.at(1)->phi();
+        t2Mass = passingTausV.at(1)->mass();
         t2MVAIsoVLoose = passingTausV.at(1)->tauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
         t2MVAIsoLoose  = passingTausV.at(1)->tauID("byLooseIsolationMVArun2v1DBoldDMwLT");
         t2MVAIsoMedium = passingTausV.at(1)->tauID("byMediumIsolationMVArun2v1DBoldDMwLT");
@@ -1033,6 +1043,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
             t2Pt = -9;
             t2Eta = -9;
             t2Phi = -9;
+            t2Mass = -9;
             t2MVAIsoVLoose = -9;
             t2MVAIsoLoose  = -9;
             t2MVAIsoMedium = -9;
@@ -1361,6 +1372,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     hpsTauPt = -9;
     hpsTauEta = -9;
     hpsTauPhi = -9;
+    hpsTauMass = -9;
     hpsTauDM = -9;
     hpsTauDMFinding = -9;
     hpsTauDR = -9;
@@ -1391,6 +1403,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
         hpsTauPt = passingHPSTaus.at(0)->pt();
         hpsTauEta = passingHPSTaus.at(0)->eta();
         hpsTauPhi = passingHPSTaus.at(0)->phi();
+        hpsTauMass = passingHPSTaus.at(0)->mass();
         hpsTauDM = passingHPSTaus.at(0)->decayMode();
         if (hpsTauDMs.isValid()) {
             hpsTauDMFinding = (*hpsTauDMs)[passingHPSTaus.at(0)];
@@ -1416,6 +1429,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     defaultTauPt = -9;
     defaultTauEta = -9;
     defaultTauPhi = -9;
+    defaultTauMass = -9;
     defaultTauDM = -9;
     defaultTauDMFinding = -9;
     defaultTauDR = -9;
@@ -1446,6 +1460,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
         defaultTauPt = passingDefaultTaus.at(0)->pt();
         defaultTauEta = passingDefaultTaus.at(0)->eta();
         defaultTauPhi = passingDefaultTaus.at(0)->phi();
+        defaultTauMass = passingDefaultTaus.at(0)->mass();
         defaultTauDM = passingDefaultTaus.at(0)->decayMode();
         if (defaultTauDMs.isValid()) {
             defaultTauDMFinding = (*defaultTauDMs)[passingDefaultTaus.at(0)];

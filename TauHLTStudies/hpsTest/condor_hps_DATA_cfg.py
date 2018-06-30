@@ -27,6 +27,9 @@ process.GlobalTag = GlobalTag(process.GlobalTag, '101X_dataRun2_HLT_v7')
 process.load("THRAnalysis.TauHLTStudies.hps_CfiFile_cfi")
 #process.hpsTauHLTStudies.verbose = cms.untracked.bool(True)
 process.hpsTauHLTStudies.isRAW = cms.untracked.bool(True)
+process.hpsTauHLTStudies.doMuTau = cms.untracked.bool(True)
+#process.hpsTauHLTStudies.doETau = cms.untracked.bool(True)
+#process.hpsTauHLTStudies.doTauTau = cms.untracked.bool(True)
 
 
 process.TFileService = cms.Service("TFileService",

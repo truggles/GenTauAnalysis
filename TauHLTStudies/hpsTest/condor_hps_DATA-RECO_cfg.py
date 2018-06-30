@@ -18,8 +18,7 @@ process.source = cms.Source("PoolSource",
 # ---- Global Tag :
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, '92X_upgrade2017_realistic_v10')
-process.GlobalTag = GlobalTag(process.GlobalTag, '100X_dataRun2_relval_ForTSG_v1')
+process.GlobalTag = GlobalTag(process.GlobalTag, '101X_dataRun2_HLT_v7')
 
 
 #

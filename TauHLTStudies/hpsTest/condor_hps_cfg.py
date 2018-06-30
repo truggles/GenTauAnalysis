@@ -16,8 +16,7 @@ process.source = cms.Source("PoolSource",
 # ---- Global Tag :
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, '92X_upgrade2017_realistic_v10')
-process.GlobalTag = GlobalTag(process.GlobalTag, '94X_mc2017_realistic_TSG_2017_12_19_13_49_40')
+process.GlobalTag = GlobalTag(process.GlobalTag, '101X_mc2017_realistic_TSG_2018_04_09_20_43_53')
 
 #
 # Set up electron ID (VID framework)

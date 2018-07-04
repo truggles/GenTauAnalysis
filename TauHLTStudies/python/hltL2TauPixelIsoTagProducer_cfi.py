@@ -11,9 +11,10 @@ hltL2TauPixelIsoTagProducer = cms.EDProducer( "L2TauPixelIsoTagProducer",
     IsoConeMax = cms.double( 0.4 ),
     TrackPVMaxDZ = cms.double( 0.1 ),
     IsoConeMin = cms.double( 0.15 ),
-    VertexSrc = cms.InputTag( "hltPixelVerticesRegL1TauSeeded","","MYHLT" ),
+    #VertexSrc = cms.InputTag( "hltPixelVerticesRegL1TauSeeded","","MYHLT" ),
+    VertexSrc = cms.InputTag( "hltPixelVerticesRegForTau","","MYHLT" ),
     #JetSrc = cms.InputTag( "hltL2TausForPixelIsolationL1TauSeeded","","MYHLT" ),
-    JetSrc = cms.InputTag( "hltL2TauJetsL1TauSeeded","","MYHLT" ),
+    JetSrc = cms.InputTag( "hltL2TausForPixelIsolation","","MYHLT" ),
     TrackMaxDxy = cms.double( 0.2 ),
     MaxNumberPV = cms.int32( 1 )
 )

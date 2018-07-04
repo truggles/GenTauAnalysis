@@ -12,7 +12,7 @@ process.options = cms.untracked.PSet(
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
+process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(100)
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
@@ -31,7 +31,18 @@ process.source = cms.Source("PoolSource",
         #'file:/hdfs/store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_L2p5_1003_may02_v1/180502_130922/0000/output_24.root',
         #'file:/hdfs/store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_L2p5_1003_may02_v1/180502_130922/0000/output_3.root',
         #'file:/hdfs/store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_L2p5_1003_may02_v1/180502_130922/0000/output_4.root',
-        'file:/hdfs/store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_L2p5_1003_may02_v1/180502_130922/0000/output_8.root',
+        #'file:/hdfs/store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_L2p5_1003_may02_v1/180502_130922/0000/output_8.root',
+        #'file:/hdfs/store/user/truggles/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/ttbar_L2p5Taus_1003_may16_v1/180516_193511/0000/output_1.root',
+        #'file:/hdfs/store/user/truggles/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/ttbar_L2p5Taus_1003_may16_v1/180516_193511/0000/output_10.root',
+        #'file:/hdfs/store/user/truggles/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/ttbar_L2p5Taus_1003_may16_v1/180516_193511/0000/output_11.root',
+        #'file:/hdfs/store/user/truggles/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/ttbar_L2p5Taus_1003_may16_v1/180516_193511/0000/output_2.root',
+        #'file:/hdfs/store/user/truggles/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/ttbar_L2p5Taus_1003_may16_v1/180516_193511/0000/output_4.root',
+        #'file:/hdfs/store/user/truggles/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/ttbar_L2p5Taus_1003_may16_v1/180516_193511/0000/output_5.root',
+        #'file:/hdfs/store/user/truggles/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/ttbar_L2p5Taus_1003_may16_v1/180516_193511/0000/output_7.root',
+        #'file:/hdfs/store/user/truggles/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/ttbar_L2p5Taus_1003_may16_v1/180516_193511/0000/output_8.root',
+        #'file:/hdfs/store/user/truggles/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/ttbar_L2p5Taus_1003_may16_v1/180516_193511/0000/output_9.root', 
+        #'file:/hdfs/store/user/truggles/SingleMuon/DataSingleMuonF_june12_hps_V7_v1/180612_154337/0000/output_3.root',
+        'file:/hdfs/store/user/truggles/SingleMuon/DataSingleMuonF_june12_hps_V7_v1/180612_154337/0000/output_8.root',
     )
 )
 
@@ -63,44 +74,44 @@ for idmod in my_id_modules:
 
 
 
-### Gen Taus ###
-process.tauGenJets = cms.EDProducer(
-    "TauGenJetProducer",
-    GenParticles =  cms.InputTag('prunedGenParticles'),
-    includeNeutrinos = cms.bool( False ),
-    verbose = cms.untracked.bool( False )
-    )
-
-
-
-process.tauGenJetsSelectorAllHadrons = cms.EDFilter("TauGenJetDecayModeSelector",
-     src = cms.InputTag("tauGenJets"),
-     select = cms.vstring('oneProng0Pi0', 
-                          'oneProng1Pi0', 
-                          'oneProng2Pi0', 
-                          'oneProngOther',
-                          'threeProng0Pi0', 
-                          'threeProng1Pi0', 
-                          'threeProngOther', 
-                          'rare'),
-     filter = cms.bool(False)
-)
-
-
-
-process.tauGenJetsSelectorElectrons = cms.EDFilter("TauGenJetDecayModeSelector",
-     src = cms.InputTag("tauGenJets"),
-     select = cms.vstring('electron'), 
-     filter = cms.bool(False)
-)
-
-
-
-process.tauGenJetsSelectorMuons = cms.EDFilter("TauGenJetDecayModeSelector",
-     src = cms.InputTag("tauGenJets"),
-     select = cms.vstring('muon'), 
-     filter = cms.bool(False)
-)
+#### Gen Taus ###
+#process.tauGenJets = cms.EDProducer(
+#    "TauGenJetProducer",
+#    GenParticles =  cms.InputTag('prunedGenParticles'),
+#    includeNeutrinos = cms.bool( False ),
+#    verbose = cms.untracked.bool( False )
+#    )
+#
+#
+#
+#process.tauGenJetsSelectorAllHadrons = cms.EDFilter("TauGenJetDecayModeSelector",
+#     src = cms.InputTag("tauGenJets"),
+#     select = cms.vstring('oneProng0Pi0', 
+#                          'oneProng1Pi0', 
+#                          'oneProng2Pi0', 
+#                          'oneProngOther',
+#                          'threeProng0Pi0', 
+#                          'threeProng1Pi0', 
+#                          'threeProngOther', 
+#                          'rare'),
+#     filter = cms.bool(False)
+#)
+#
+#
+#
+#process.tauGenJetsSelectorElectrons = cms.EDFilter("TauGenJetDecayModeSelector",
+#     src = cms.InputTag("tauGenJets"),
+#     select = cms.vstring('electron'), 
+#     filter = cms.bool(False)
+#)
+#
+#
+#
+#process.tauGenJetsSelectorMuons = cms.EDFilter("TauGenJetDecayModeSelector",
+#     src = cms.InputTag("tauGenJets"),
+#     select = cms.vstring('muon'), 
+#     filter = cms.bool(False)
+#)
 
 
 # Try to redo L2p5 iso calculation offline
@@ -111,23 +122,24 @@ process.new2HltL2TauPixelIsoTagProducer.TrackPVMaxDZ = cms.double( 0.005 )
 
 
 process.load("THRAnalysis.TauHLTStudies.hps_CfiFile_cfi")
-process.hpsTauHLTStudies.isData = cms.untracked.bool(False)
+#process.hpsTauHLTStudies.isData = cms.untracked.bool(False)
+process.hpsTauHLTStudies.isData = cms.untracked.bool(True)
 #process.hpsTauHLTStudies.verbose = cms.untracked.bool(True)
 #process.hpsTauHLTStudies.requireMediumTauMVA = cms.untracked.bool(True)
 
 
 process.TFileService = cms.Service("TFileService",
-        fileName = cms.string("outputFileName.root")
+        fileName = cms.string("outputFileName2.root")
     )
 
 
 process.p = cms.Path(
             #process.hltFilter*
             process.egmGsfElectronIDSequence*
-            process.tauGenJets*
-            process.tauGenJetsSelectorAllHadrons*
-            process.tauGenJetsSelectorElectrons*
-            process.tauGenJetsSelectorMuons*
+            #process.tauGenJets*
+            #process.tauGenJetsSelectorAllHadrons*
+            #process.tauGenJetsSelectorElectrons*
+            #process.tauGenJetsSelectorMuons*
             process.hltL2TauPixelIsoTagProducer*
             process.newHltL2TauPixelIsoTagProducer*
             process.new2HltL2TauPixelIsoTagProducer*

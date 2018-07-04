@@ -164,9 +164,10 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
         t2TrigMatch,t2genPt,t2L1Match, emptyVertices, failNdof,
         hpsTauSize, hpsTauPt, hpsTauEta, hpsTauPhi, hpsTauDM, hpsTauDMFinding, hpsTauDR, hpsTauChrgIso, hpsTauDRDefault,
         hpsTau2Pt, hpsTau2Eta, hpsTau2Phi, hpsTau2DM,
-        l2p5TauSize, l2p5TauPt, l2p5TauEta, l2p5TauPhi, l2p5TauDR, l2p5TauOnlineIso, l2p5TauOfflineIso, l2p5TauOfflineIso2,
+        l2p5TauSize, l2p5TauPt, l2p5TauEta, l2p5TauPhi, l2p5TauDR, l2p5TauOnlineIso, l2p5TauOfflineIso, 
+        l2p5TauOfflineIso2,
         l2p5TauOfflineIsoNew1, l2p5TauOfflineIsoNew2,
-        defaultTauSize, defaultTauPt, defaultTauEta, defaultTauPhi, 
+        defaultTauSize, defaultTauPt, defaultTauEta, defaultTauPhi,
         defaultTauDM, defaultTauDMFinding, defaultTauDR, defaultTauChrgIso,
         defaultTau2Pt, defaultTau2Eta, defaultTau2Phi, defaultTau2DM;
       bool foundGenTau, foundGenMuon; 
@@ -1207,11 +1208,11 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     double m_trackMaxDxy = 0.2;
     double m_isoCone2Min = 0.15;
     double m_isoCone2Max = 0.4;
-    l2p5TauSize = -1.;
-    l2p5TauPt = -1.;
-    l2p5TauEta = -1.;
-    l2p5TauPhi = -1.;
-    l2p5TauDR = -1.;
+    l2p5TauSize = -9.;
+    l2p5TauPt = -9.;
+    l2p5TauEta = -9.;
+    l2p5TauPhi = -9.;
+    l2p5TauDR = -9.;
     l2p5TauOnlineIso = -1.f;
     l2p5TauOfflineIso = -1.f;
     l2p5TauOfflineIso2 = -1.f;
@@ -1251,8 +1252,9 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
                 // Compare with online produced isolation value to check we do this correct
                 // Copying access methods from here:
                 //   https://github.com/cms-sw/cmssw/blob/master/DQMOffline/Trigger/plugins/BTVHLTOfflineSource.cc#L169-L173
-                float online_iso = -1.f;
+                float online_iso = -10.f;
                 if (l2p5TausIso.isValid()) {
+                    online_iso = -1.;
                     for (auto const & iterIso : *l2p5TausIso){
                         float iso_dr = reco::deltaR(iterIso.first->eta(),iterIso.first->phi(),caloTau_eta,caloTau_phi);
                         if (iso_dr<0.05) {
@@ -1260,8 +1262,9 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
                         }
                     }
                 }
-                float iso_offline2 = -1.f;
+                float iso_offline2 = -10.f;
                 if (l2p5TausIsoOffline.isValid()) {
+                    iso_offline2 = -1.;
                     for (auto const & iterIso : *l2p5TausIsoOffline){
                         float iso_dr = reco::deltaR(iterIso.first->eta(),iterIso.first->phi(),caloTau_eta,caloTau_phi);
                         if (iso_dr<0.05) {
@@ -1269,8 +1272,9 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
                         }
                     }
                 }
-                float iso_offlineNew1 = -1.f;
+                float iso_offlineNew1 = -10.f;
                 if (l2p5TausIsoOfflineNew1.isValid()) {
+                    iso_offlineNew1 = -1.;
                     for (auto const & iterIso : *l2p5TausIsoOfflineNew1){
                         float iso_dr = reco::deltaR(iterIso.first->eta(),iterIso.first->phi(),caloTau_eta,caloTau_phi);
                         if (iso_dr<0.05) {
@@ -1278,8 +1282,9 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
                         }
                     }
                 }
-                float iso_offlineNew2 = -1.f;
+                float iso_offlineNew2 = -10.f;
                 if (l2p5TausIsoOfflineNew2.isValid()) {
+                    iso_offlineNew2 = -1.;
                     for (auto const & iterIso : *l2p5TausIsoOfflineNew2){
                         float iso_dr = reco::deltaR(iterIso.first->eta(),iterIso.first->phi(),caloTau_eta,caloTau_phi);
                         if (iso_dr<0.05) {
@@ -1287,7 +1292,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
                         }
                     }
                 }
-                std::cout << "CaloJetRef pt: " << caloTauRef->pt() << " iso online: " << online_iso << " iso offline: " << iso << " iso offline2: " << iso_offline2 << std::endl;
+                //std::cout << "CaloJetRef pt: " << caloTauRef->pt() << " iso online: " << online_iso << " iso offline: " << iso << " iso offline2: " << iso_offline2 << std::endl;
                 l2p5TauPt = caloTauRef->pt();
                 l2p5TauEta = caloTau_eta;
                 l2p5TauPhi = caloTau_phi;

@@ -148,7 +148,7 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
         tIsoCmbLoose, tIsoCmbMedium, tIsoCmbTight,
         leptonDR_t1_t2, leptonDR_m_t1, leptonDR_m_t2, leptonDR_e_t1,
         //mTrigMatch, tTrigMatch, tL1Match,
-        tTrigMatch, tL1Match,
+        tTrigMatch, tL1Match, l1Tau2Pt, l1Tau2Iso,
         t1_gen_match,genTauPt,tDecayMode, tDMFinding,
         t2Pt, t2Eta, t2Phi, t2Mass, t2MVAIsoVLoose, t2MVAIsoLoose, t2MVAIsoMedium, 
         t2MVAIsoTight, t2MVAIsoVTight, t2MVAIsoVVTight, t2_gen_match,t2DecayMode,
@@ -497,6 +497,8 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("t2DecayMode",&t2DecayMode,"t2DecayMode/F");
    tree->Branch("t2TrigMatch",&t2TrigMatch,"t2TrigMatch/F");
    tree->Branch("t2L1Match",&t2L1Match,"t2L1Match/F");
+   tree->Branch("l1Tau2Pt",&l1Tau2Pt,"l1Tau2Pt/F");
+   tree->Branch("l1Tau2Iso",&l1Tau2Iso,"l1Tau2Iso/F");
    tree->Branch("leptonDR_m_t1",&leptonDR_m_t1,"leptonDR_m_t1/F");
    tree->Branch("leptonDR_e_t1",&leptonDR_e_t1,"leptonDR_e_t1/F");
    tree->Branch("leptonDR_m_t2",&leptonDR_m_t2,"leptonDR_m_t2/F");
@@ -838,7 +840,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     }
     // Tau study so...
     if (passingTausV.size() == 0) return;
-    //if (doTauTau && passingTausV.size() < 2) return;
+    if (doTauTau && passingTausV.size() < 2) return;
     passingTaus = passingTausV.size();
     cutFlow->Fill(7., 1.);
     if (verbose) std::cout << "Passing Muons: " << passingMuons << "   Passing Taus: " << passingTausV.size() << std::endl;
@@ -1273,19 +1275,23 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     } // doTriggerMatching
 
 
-    //std::cout << "10 - xxx" << std::endl;
-    //// Do l1extra object matching
-    //// Make sure to only consider l1 objects from the
-    //// intended BX.  That is the size(0) and
-    //// at(0,i) notation
-    //edm::Handle<BXVector<l1t::Tau>> l1Taus; 
-    //iEvent.getByToken(stage2TauToken_, l1Taus);
-    //
-    //getL1TauMatch( passingTausV.at(0), l1Taus, tL1Match, l1TauPt, l1TauIso);
-    ////if (passingTausV.size() > 1) {
-    ////    t2L1Match = getL1TauMatch( passingTausV.at(1), l1Taus);
-    ////}
-    //std::cout << "11 - xxx" << std::endl;
+    // Do l1extra object matching
+    // Make sure to only consider l1 objects from the
+    // intended BX.  That is the size(0) and
+    // at(0,i) notation
+    edm::Handle<BXVector<l1t::Tau>> l1Taus; 
+    iEvent.getByToken(stage2TauToken_, l1Taus);
+    
+    tL1Match = -9;
+    l1TauPt = -9;
+    l1TauIso = -9;
+    t2L1Match = -9;
+    l1Tau2Pt = -9;
+    l1Tau2Iso = -9;
+    getL1TauMatch( passingTausV.at(0), l1Taus, tL1Match, l1TauPt, l1TauIso);
+    if (passingTausV.size() > 1) {
+        getL1TauMatch( passingTausV.at(1), l1Taus, t2L1Match, l1Tau2Pt, l1Tau2Iso);
+    }
 
 
 
@@ -1692,12 +1698,12 @@ HPSTauHLTStudiesAnalyzer::getL1TauMatch( pat::TauRef& tau,
             const l1t::Tau &l1Tau = l1Taus->at(0,i);
             // skip l1Tau if it's low pt b/c the trigger we want
             // actual results for is seeded by
-            // L1_DoubleIsoTau28
-            if (l1Tau.hwIso()<1 || l1Tau.pt()<27.5) continue; // hardware Iso bit
+            // L1_DoubleIsoTau32
+            if (l1Tau.pt()<32) continue; // don't care about Iso bit any more, if low pT skip
             float drTau = deltaR( *tau, l1Tau );
             //std::cout << " - " << i << " L1Tau pt: " << l1Tau.pt() 
             //<< " Iso: " << l1Tau.hwIso() << " dr: " << drTau << std::endl;
-            if (drTau < 0.5) {
+            if (drTau < 0.3) {
                 ++l1TauMatch;
                 l1TauPt = l1Tau.pt();
                 l1TauIso = l1Tau.hwIso();

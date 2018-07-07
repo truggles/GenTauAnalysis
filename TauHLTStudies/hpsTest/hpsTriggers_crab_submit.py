@@ -60,13 +60,30 @@ dataMap = OrderedDict()
 
 
 
-#dataMap['DYJets'] = {
-#        'child' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/MINIAODSIM',
-#        'grandparent' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/GEN-SIM-RAW',
-#    }
-dataMap['DataMuTauSkimB'] = { # B and C not available on disk
-        'child' : '/SingleMuon/Run2018B-MuTau-PromptReco-v1/USER',
+dataMap['DYJets'] = {
+        'child' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/MINIAODSIM',
+        'grandparent' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/GEN-SIM-RAW',
     }
+#dataMap['DataSingleMuonBv1'] = {
+#        'child' : '/SingleMuon/Run2018B-PromptReco-v1/MINIAOD',
+#        'grandparent' : '/SingleMuon/Run2018B-v1/RAW',
+#    }
+##dataMap['DataSingleMuonAv1'] = {
+##        'child' : '/SingleMuon/Run2018A-PromptReco-v1/MINIAOD',
+##        'grandparent' : '/SingleMuon/Run2018A-v1/RAW',
+##    }
+##dataMap['DataSingleMuonAv2'] = {
+##        'child' : '/SingleMuon/Run2018A-PromptReco-v2/MINIAOD',
+##        'grandparent' : '/SingleMuon/Run2018A-v1/RAW',
+##    }
+#dataMap['DataSingleMuonAv3'] = {
+#        'child' : '/SingleMuon/Run2018A-PromptReco-v3/MINIAOD',
+#        'grandparent' : '/SingleMuon/Run2018A-v1/RAW',
+#    }
+
+#dataMap['DataMuTauSkimB'] = { # B and C not available on disk
+#        'child' : '/SingleMuon/Run2018B-MuTau-PromptReco-v1/USER',
+#    }
 
 
 # dasgoclient --query="dataset dataset=/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17*-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/*"
@@ -92,23 +109,25 @@ if __name__ == '__main__':
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k in dataMap.keys() :
-        config.General.requestName = '%s_hps_10_1_1_june29_v2' % k
+        config.General.requestName = '%s_hps_10_1_7_june30_v4' % k
         config.Data.outputDatasetTag   = config.General.requestName
         if not 'hltPhysics' in k and not 'Data' in k :
-            config.JobType.psetName        = 'hlt_MC_10_1_1_6Paths.py'
+            config.JobType.psetName        = 'hlt_MC_10_1_7_6Paths.py'
             config.Data.inputDataset = dataMap[ k ][ 'child' ]
             config.Data.secondaryInputDataset = dataMap[ k ][ 'grandparent' ]
             # ZPrime Test
             config.JobType.maxMemoryMB     = 2500
             config.Data.splitting          = 'EventAwareLumiBased'
             config.Data.unitsPerJob        = 2000 # events / job when using EventAwareLumiBased
+            config.Data.unitsPerJob        = 4000 # events / job when using EventAwareLumiBased
             config.Data.totalUnits         = 30000 # for tests
+            config.Data.totalUnits         = 4000000 # for tests
         elif 'hltPhysics' in k :
             config.Data.inputDataset = dataMap[ k ][ 'grandparent' ]
             config.JobType.maxMemoryMB = 2500
             config.Data.splitting      = 'FileBased'
             config.Data.unitsPerJob    = 5
-            config.JobType.psetName    = 'hlt_DATA_10_1_1_6Paths.py'
+            config.JobType.psetName    = 'hlt_DATA_10_1_7_6Paths.py'
             config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/PromptReco/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
             #config.Data.totalUnits         = 45 # for small tests
         elif 'MuTauSkim' in k :
@@ -116,7 +135,7 @@ if __name__ == '__main__':
             config.Data.unitsPerJob        = 1 # files when FileBased
             config.Data.inputDataset = dataMap[ k ][ 'child' ]
             config.JobType.maxMemoryMB = 2500
-            config.JobType.psetName    = 'hlt_DATA_10_1_1_6Paths.py'
+            config.JobType.psetName    = 'hlt_DATA_10_1_7_6Paths.py'
             config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/DCSOnly/json_DCSONLY.txt'
             config.Data.totalUnits         = 20 # Total files when FileBased
         elif 'Data' in k :
@@ -125,10 +144,10 @@ if __name__ == '__main__':
             config.Data.inputDataset = dataMap[ k ][ 'child' ]
             config.Data.secondaryInputDataset = dataMap[ k ][ 'grandparent' ]
             config.JobType.maxMemoryMB = 3500
-            config.JobType.psetName    = 'hlt_DATA_10_1_1_6Paths.py'
+            config.JobType.psetName    = 'hlt_DATA_10_1_7_6Paths.py'
             config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/DCSOnly/json_DCSONLY.txt'
-            config.Data.totalUnits         = 100000 # 1 mil was far too low for efficiency
-            #config.Data.totalUnits         = 25000000 # For small tests # events when using EventAwareLumiBased
+            #config.Data.totalUnits         = 100000 # 1 mil was far too low for efficiency
+            config.Data.totalUnits         = 25000000 # For small tests # events when using EventAwareLumiBased
         print 'submitting config:'
         print config
         submit(config)

@@ -101,6 +101,7 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
       bool doTauTau;
       bool doMuTau;
       bool doETau;
+      bool doTriggerMatching;
       bool requireMediumTauMVA;
       bool verbose;
       edm::EDGetTokenT<std::vector<reco::GenJet>> genHadronicTausToken_;
@@ -139,6 +140,8 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
         ePt, eEta, ePhi,
         l1TauPt, l1TauIso,
         tPt, tEta, tPhi, tMass, tMVAIsoVLoose, tMVAIsoLoose, tMVAIsoMedium, 
+        tMatchTight35TightID, tMatchTight40, tMatchMedium40TightID, 
+        t2MatchTight35TightID, t2MatchTight40, t2MatchMedium40TightID, 
         tMVAIsoTight, tMVAIsoVTight, tMVAIsoVVTight, m_vis, transMass, SS, isOS, pfMet,
         nBTag, nBTagAll, passingElectrons, transMassE, SSE, isOSE, m_visE,
         //tIsoCmbLoose, tIsoCmbLoose03, tIsoCmbMedium, tIsoCmbMedium03, tIsoCmbTight, tIsoCmbTight03,
@@ -263,6 +266,7 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
     doTauTau(iConfig.getUntrackedParameter<bool>("doTauTau", false)),
     doMuTau(iConfig.getUntrackedParameter<bool>("doMuTau", false)),
     doETau(iConfig.getUntrackedParameter<bool>("doETau", false)),
+    doTriggerMatching(iConfig.getUntrackedParameter<bool>("doTriggerMatching", false)),
     requireMediumTauMVA(iConfig.getUntrackedParameter<bool>("requireMediumTauMVA", false)),
     verbose(iConfig.getUntrackedParameter<bool>("verbose", false)),
     genHadronicTausToken_(consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>("hadronSrc"))),
@@ -293,6 +297,7 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    std::cout << "doTauTau: " <<  doTauTau << std::endl;
    std::cout << "doMuTau: " <<  doMuTau << std::endl;
    std::cout << "doETau: " << doETau << std::endl;
+   std::cout << "doTriggerMatching: " << doTriggerMatching << std::endl;
    std::cout << "isData: " << isData << std::endl;
    std::cout << "isRAW: " << isRAW << std::endl;
    std::cout << "requireMediumTauMVA: " << requireMediumTauMVA << std::endl;
@@ -436,6 +441,12 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("tauDM",&tDecayMode,"tauDM/F");
    tree->Branch("tauDMFinding",&tDMFinding,"tauDMFinding/F");
    tree->Branch("tTrigMatch",&tTrigMatch,"tTrigMatch/F");
+   tree->Branch("tMatchTight35TightID",&tMatchTight35TightID,"tMatchTight35TightID/F");
+   tree->Branch("tMatchTight40",&tMatchTight40,"tMatchTight40/F");
+   tree->Branch("tMatchMedium40TightID",&tMatchMedium40TightID,"tMatchMedium40TightID/F");
+   tree->Branch("t2MatchTight35TightID",&t2MatchTight35TightID,"t2MatchTight35TightID/F");
+   tree->Branch("t2MatchTight40",&t2MatchTight40,"t2MatchTight40/F");
+   tree->Branch("t2MatchMedium40TightID",&t2MatchMedium40TightID,"t2MatchMedium40TightID/F");
    tree->Branch("hpsTauSize",&hpsTauSize,"hpsTauSize/F");
    tree->Branch("hpsTauPt",&hpsTauPt,"hpsTauPt/F");
    tree->Branch("hpsTauEta",&hpsTauEta,"hpsTauEta/F");
@@ -454,6 +465,7 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("defaultTauPt",&defaultTauPt,"defaultTauPt/F");
    tree->Branch("defaultTauEta",&defaultTauEta,"defaultTauEta/F");
    tree->Branch("defaultTauPhi",&defaultTauPhi,"defaultTauPhi/F");
+   tree->Branch("defaultTauMass",&defaultTauMass,"defaultTauMass/F");
    tree->Branch("defaultTauDM",&defaultTauDM,"defaultTauDM/F");
    tree->Branch("defaultTauDMFinding",&defaultTauDMFinding,"defaultTauDMFinding/F");
    tree->Branch("defaultTauDR",&defaultTauDR,"defaultTauDR/F");
@@ -758,6 +770,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
      
         const auto ele = electrons->ptrAt(i);
         int isLooseID = (*loose_id_decisions)[ele];
+        //if(ele->p4().Pt()>10 && fabs(ele->p4().Eta())<2.5) {
         if(isLooseID && ele->p4().Pt()>10 && fabs(ele->p4().Eta())<2.5) {
             ++passingElectrons;
             bestElectron = ele;
@@ -967,8 +980,6 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     t2IsoCmbTight   = -9;
     //t2IsoCmbTight03 = -9;
     t2DecayMode = -9;
-    leptonDR_m_t2 = -9;
-    leptonDR_t1_t2 = -9;
     m_vis = -9;
     SS = -9;
     transMass = -9;
@@ -1150,8 +1161,6 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
 
     edm::Handle<edm::TriggerResults> triggerResults;   
     iEvent.getByToken(triggerToken_, triggerResults);
-    edm::Handle<pat::TriggerObjectStandAloneCollection> triggerObjects;
-    iEvent.getByToken(triggerObjectsToken_, triggerObjects);
 
     for (auto& pair : triggers) {
         (*pair.second) = 0;
@@ -1188,63 +1197,80 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     hltConePt2 = -9;
     hltHPSPtX = -9;
     hltConePtX = -9;
-    //std::cout << "==================================================" << std::endl;
-    for (pat::TriggerObjectStandAlone obj : *triggerObjects) { // note: not "const &" since we want to call unpackPathNames
-        obj.unpackPathNames(names);
-        obj.unpackFilterLabels(iEvent, *triggerResults);
-        std::vector<std::string> pathNamesLast = obj.pathNames(true);
-        // Try just matching filters first
-        float drTau = deltaR( *passingTausV.at(0), obj );
-        if (drTau < 0.5) {
-            if (obj.hasFilterLabel("hltHpsOverlapFilterIsoMu24MediumChargedIsoPFTau35MonitoringReg") ||
-                obj.hasFilterLabel("hltHpsOverlapFilterIsoMu24TightChargedIsoPFTau35MonitoringReg") ||
-                obj.hasFilterLabel("hltHpsOverlapFilterIsoMu24TightChargedIsoAndTightOOSCPhotonsPFTau35MonitoringReg") ||
-                obj.hasFilterLabel("hltHpsOverlapFilterIsoMu24MediumChargedIsoAndTightOOSCPhotonsPFTau35MonitoringReg"))
-                // Record pT as this is an HPS object
-                hltHPSPtX = obj.pt();
-            if (obj.hasFilterLabel("hltOverlapFilterIsoMu24MediumChargedIsoPFTau35MonitoringReg") ||
-                obj.hasFilterLabel("hltOverlapFilterIsoMu24TightChargedIsoPFTau35MonitoringReg") ||
-                obj.hasFilterLabel("hltOverlapFilterIsoMu24TightChargedIsoAndTightOOSCPhotonsPFTau35MonitoringReg") ||
-                obj.hasFilterLabel("hltOverlapFilterIsoMu24MediumChargedIsoAndTightOOSCPhotonsPFTau35MonitoringReg"))
-                // Record pT as this is an HPS object
-                hltConePtX = obj.pt();
-        }
-        // pathNamesLast = vector of flags, if this object was used in the final 
-        // filter of a succeeding HLT path resp. in a succeeding 
-        // condition of a succeeding L1 algorithm
-        for (unsigned h = 0, n = pathNamesLast.size(); h < n; ++h) {
-            //std::cout << "9a - xxx" << pathNamesLast[h] << std::endl;
-            if (std::find( usedPaths.begin(), usedPaths.end(), pathNamesLast[h]) != usedPaths.end()) {
-                if ( pathNamesLast[h].find("PFTau")!= std::string::npos ) {
-                    //std::cout << " ---  " << pathNamesLast[h] << std::endl;
-                    //std::cout << "\tTrigger object:  pt " << obj.pt() << ", eta " << obj.eta() << ", phi " << obj.phi() << std::endl;
-                    //if (!doTauTau) {
-                    //    float drMu = deltaR( bestMuon, obj );
-                    //    //std::cout << "\tbestMuon dR: " << drMu << std::endl;
-                    //    if (drMu < 0.5) ++mTrigMatch;
-                    //}
-                    ///float drTau = deltaR( *passingTausV.at(0), obj );
-                    //std::cout << "\tpassingTausV.at(0) dR: " << drTau << std::endl;
-                    if (drTau < 0.5) {
-                        ++tTrigMatch;
-                        if ( pathNamesLast[h].find("PFTauHPS")!= std::string::npos )
-                            hltHPSPt = obj.pt();
-                        else hltConePt = obj.pt();
-                    }
-                    if (doTauTau && passingTausV.size() > 1) {
-                        float drTau2 = deltaR( *passingTausV.at(1), obj );
+    tMatchTight35TightID = -9;
+    tMatchTight40 = -9;
+    tMatchMedium40TightID = -9;
+    t2MatchTight35TightID = -9;
+    t2MatchTight40 = -9;
+    t2MatchMedium40TightID = -9;
+
+    if (doTriggerMatching) {
+        edm::Handle<pat::TriggerObjectStandAloneCollection> triggerObjects;
+        iEvent.getByToken(triggerObjectsToken_, triggerObjects);
+        //std::cout << "==================================================" << std::endl;
+        for (pat::TriggerObjectStandAlone obj : *triggerObjects) { // note: not "const &" since we want to call unpackPathNames
+            obj.unpackPathNames(names);
+            obj.unpackFilterLabels(iEvent, *triggerResults);
+            std::vector<std::string> pathNamesLast = obj.pathNames(true);
+            // Try just matching filters first
+            float drTau = deltaR( *passingTausV.at(0), obj );
+            if (drTau < 0.5) {
+                if (obj.hasFilterLabel("hltHpsOverlapFilterIsoMu24MediumChargedIsoPFTau35MonitoringReg") ||
+                    obj.hasFilterLabel("hltHpsOverlapFilterIsoMu24TightChargedIsoPFTau35MonitoringReg") ||
+                    obj.hasFilterLabel("hltHpsOverlapFilterIsoMu24TightChargedIsoAndTightOOSCPhotonsPFTau35MonitoringReg") ||
+                    obj.hasFilterLabel("hltHpsOverlapFilterIsoMu24MediumChargedIsoAndTightOOSCPhotonsPFTau35MonitoringReg"))
+                    // Record pT as this is an HPS object
+                    hltHPSPtX = obj.pt();
+                if (obj.hasFilterLabel("hltOverlapFilterIsoMu24MediumChargedIsoPFTau35MonitoringReg") ||
+                    obj.hasFilterLabel("hltOverlapFilterIsoMu24TightChargedIsoPFTau35MonitoringReg") ||
+                    obj.hasFilterLabel("hltOverlapFilterIsoMu24TightChargedIsoAndTightOOSCPhotonsPFTau35MonitoringReg") ||
+                    obj.hasFilterLabel("hltOverlapFilterIsoMu24MediumChargedIsoAndTightOOSCPhotonsPFTau35MonitoringReg"))
+                    // Record pT as this is an HPS object
+                    hltConePtX = obj.pt();
+            }
+            // pathNamesLast = vector of flags, if this object was used in the final 
+            // filter of a succeeding HLT path resp. in a succeeding 
+            // condition of a succeeding L1 algorithm
+            for (unsigned h = 0, n = pathNamesLast.size(); h < n; ++h) {
+                //std::cout << "9a - xxx" << pathNamesLast[h] << std::endl;
+                if (std::find( usedPaths.begin(), usedPaths.end(), pathNamesLast[h]) != usedPaths.end()) {
+                    if ( pathNamesLast[h].find("PFTau")!= std::string::npos ) {
+                        //std::cout << " ---  " << pathNamesLast[h] << std::endl;
+                        //std::cout << "\tTrigger object:  pt " << obj.pt() << ", eta " << obj.eta() << ", phi " << obj.phi() << std::endl;
+                        //if (!doTauTau) {
+                        //    float drMu = deltaR( bestMuon, obj );
+                        //    //std::cout << "\tbestMuon dR: " << drMu << std::endl;
+                        //    if (drMu < 0.5) ++mTrigMatch;
+                        //}
+                        ///float drTau = deltaR( *passingTausV.at(0), obj );
                         //std::cout << "\tpassingTausV.at(0) dR: " << drTau << std::endl;
-                        if (drTau2 < 0.5) {
-                            ++t2TrigMatch;
+                        if (drTau < 0.3) {
+                            ++tTrigMatch;
                             if ( pathNamesLast[h].find("PFTauHPS")!= std::string::npos )
-                                hltHPSPt2 = obj.pt();
-                            else hltConePt2 = obj.pt();
+                                hltHPSPt = obj.pt();
+                            else hltConePt = obj.pt();
+                            if (obj.hasFilterLabel("hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg")) tMatchTight35TightID =1;
+                            if (obj.hasFilterLabel("hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg")) tMatchTight40 = 1;
+                            if (obj.hasFilterLabel("hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg")) tMatchMedium40TightID = 1;
                         }
-                    }
-                } // has PFTau in passed trigger names
+                        if (doTauTau && passingTausV.size() > 1) {
+                            float drTau2 = deltaR( *passingTausV.at(1), obj );
+                            //std::cout << "\tpassingTausV.at(0) dR: " << drTau << std::endl;
+                            if (drTau2 < 0.3) {
+                                ++t2TrigMatch;
+                                if ( pathNamesLast[h].find("PFTauHPS")!= std::string::npos )
+                                    hltHPSPt2 = obj.pt();
+                                else hltConePt2 = obj.pt();
+                                if (obj.hasFilterLabel("hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg")) t2MatchTight35TightID =1;
+                                if (obj.hasFilterLabel("hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg")) t2MatchTight40 = 1;
+                                if (obj.hasFilterLabel("hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg")) t2MatchMedium40TightID = 1;
+                            }
+                        }
+                    } // has PFTau in passed trigger names
+                }
             }
         }
-    }
+    } // doTriggerMatching
 
 
     //std::cout << "10 - xxx" << std::endl;

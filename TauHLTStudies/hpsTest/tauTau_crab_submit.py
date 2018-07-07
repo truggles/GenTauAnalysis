@@ -76,13 +76,13 @@ if __name__ == '__main__':
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k in dataMap.keys() :
-        config.General.requestName = '%s_tauTau_10_1_7_94X_june30_v2' % k
+        config.General.requestName = '%s_tauTau_10_1_7_94X_july07_v1' % k
         config.Data.outputDatasetTag   = config.General.requestName
-        config.JobType.psetName        = 'zLOCAL_crab_prompt_hps_MC-miniAOD_cfg.py'
+        config.JobType.psetName        = 'crab_prompt_hps_MC-miniAOD_cfg.py'
         config.Data.inputDataset = dataMap[ k ][ 'child' ]
         config.JobType.maxMemoryMB     = 2500
         config.Data.splitting      = 'FileBased'
-        config.Data.unitsPerJob    = 20
+        config.Data.unitsPerJob    = 5
         print 'submitting config:'
         print config
         submit(config)

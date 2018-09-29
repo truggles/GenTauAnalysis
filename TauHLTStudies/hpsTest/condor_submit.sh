@@ -28,12 +28,12 @@
 
 #DATE=20180402_mar07_1003_eff
 #INPUT_FILES=qqH125_1003_march07.txt
-DATE=20180425_apr25_L2p5
+DATE=20180425_apr25_L2p5v2
 INPUT_FILES=qqH125_L2p5_april09_test.txt
 
 farmoutAnalysisJobs \
     --output-dir=. \
-    --input-files-per-job=15 \
+    --input-files-per-job=5 \
     --input-file-list=condorFileLists/${INPUT_FILES} \
     --site-requirements='OpSysAndVer == "SL6"' \
     hps_condor_${DATE} $CMSSW_BASE condor_hps_cfg.py

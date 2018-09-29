@@ -55,7 +55,7 @@ def plotEff( c, plotBase, name, h_denoms, h_passes ) :
         if 'nvtx' in name :
             mg.GetXaxis().SetLimits( 0, 80 )
         else :
-            mg.GetXaxis().SetLimits( 20, 100 )
+            mg.GetXaxis().SetLimits( 0, 200 )
     else :
         ROOT.gPad.SetLogx()
         mg.GetXaxis().SetMoreLogLabels()
@@ -81,7 +81,7 @@ iFile = ROOT.TFile('/data/truggles/'+name+'.root','r')
 print iFile
 iTree = iFile.Get( 'Ntuplizer/TagAndProbe' )
 
-plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'/'
+plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'_pt40/'
 if not os.path.exists( plotBase ) : os.makedirs( plotBase )
 
 c = ROOT.TCanvas( 'c1', 'c1', 600, 600 ) 
@@ -115,8 +115,8 @@ hNvtx = ROOT.TH1D('nvtx', 'nvtx;nvtx;Events', 40, 0, 80 )
 ###    42.5,45,50,60,80,100,140])
 
 if isData :
-    binning = array('d', [20,25,30,35,40,\
-        45,50,60,100])
+    binning = array('d', [0,20,25,30,35,40,\
+        45,50,60,80,100,200])
 else :
     binning = array('d', [20,25,30,35,40,\
         45,50,60,80,100,150,200,500])
@@ -210,17 +210,20 @@ for row in iTree :
         #*        1 *                                           HLT_IsoMu27_MediumChargedIsoPFTau20_Trk1_eta2p1_SingleL1_v *
         #*        2 *                                             HLT_IsoMu27_TightChargedIsoPFTau20_Trk1_eta2p1_SingleL_v *
         #*        3 *                                 HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v *
+        #*        4 *                         HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1_v * Use this one with hltPt > 40
+        #*        5 *                                  HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_eta2p1_Reg_CrossL1_v * and this one with hltPt > 40
+        #*        6 *                          HLT_IsoMu24_eta2p1_TightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_CrossL1_v * and this one default hltPt is good
         #print bin(row.tauTriggerBits), bin((row.tauTriggerBits>>3)), (row.tauTriggerBits>>3)&1
 
         if (row.l1tPt > 32 and row.l1tIso > 0.5) :
             l1_pass.Fill( tPt, weight ) 
         if (row.l1tPt > 32 and row.l1tIso > 0.5 and row.hltL2CaloJetIsoPixPt > 0) :
             l2p5_pass.Fill( tPt, weight ) 
-        if (row.tauTriggerBits>>3)&1 :
+        if row.l1tPt > 32 and row.l1tIso > 0.5 and row.hltL2CaloJetIsoPixPt > 0 and ( ((row.tauTriggerBits>>4)&1 and row.hltPt > 40) or ((row.tauTriggerBits>>5)&1 and row.hltPt > 40) or (row.tauTriggerBits>>6)&1 ) :
             l3_pass.Fill( tPt, weight ) 
-        if (row.tauTriggerBits>>3)&1 :
+        if ( ((row.tauTriggerBits>>4)&1 and row.hltPt > 40) or ((row.tauTriggerBits>>5)&1 and row.hltPt > 40) or (row.tauTriggerBits>>6)&1 ) :
             all_pass.Fill( tPt, weight ) 
-        if (row.l1tPt > 32 and row.l1tIso > 0.5 and row.hltL2CaloJetIsoPixPt > 0 and (row.tauTriggerBits>>3)&1) :
+        if (row.l1tPt > 32 and row.l1tIso > 0.5 and row.hltL2CaloJetIsoPixPt > 0 and ( ((row.tauTriggerBits>>4)&1 and row.hltPt > 40) or ((row.tauTriggerBits>>5)&1 and row.hltPt > 40) or (row.tauTriggerBits>>6)&1 ) ) :
             indivCmb_pass.Fill( tPt, weight ) 
         ''' Nvtx Fill efficiencies '''
         if tPt > 40 :
@@ -238,11 +241,11 @@ for row in iTree :
                 l1_pass_nvtx.Fill( nvtx, weight ) 
             if (row.l1tPt > 32 and row.l1tIso > 0.5 and row.hltL2CaloJetIsoPixPt > 0) :
                 l2p5_pass_nvtx.Fill( nvtx, weight ) 
-            if (row.tauTriggerBits>>3)&1 :
+            if row.l1tPt > 32 and row.l1tIso > 0.5 and row.hltL2CaloJetIsoPixPt > 0 and ( ((row.tauTriggerBits>>4)&1 and row.hltPt > 40) or ((row.tauTriggerBits>>5)&1 and row.hltPt > 40) or (row.tauTriggerBits>>6)&1 ) :
                 l3_pass_nvtx.Fill( nvtx, weight ) 
-            if (row.tauTriggerBits>>3)&1 :
+            if ( ((row.tauTriggerBits>>4)&1 and row.hltPt > 40) or ((row.tauTriggerBits>>5)&1 and row.hltPt > 40) or (row.tauTriggerBits>>6)&1 ) :
                 all_pass_nvtx.Fill( nvtx, weight ) 
-            if (row.l1tPt > 32 and row.l1tIso > 0.5 and row.hltL2CaloJetIsoPixPt > 0 and (row.tauTriggerBits>>3)&1) :
+            if (row.l1tPt > 32 and row.l1tIso > 0.5 and row.hltL2CaloJetIsoPixPt > 0 and ( ((row.tauTriggerBits>>4)&1 and row.hltPt > 40) or ((row.tauTriggerBits>>5)&1 and row.hltPt > 40) or (row.tauTriggerBits>>6)&1 ) ) :
                 indivCmb_pass_nvtx.Fill( nvtx, weight ) 
 
 

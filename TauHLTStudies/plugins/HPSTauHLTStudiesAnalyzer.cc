@@ -169,7 +169,8 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
         l2p5TauOfflineIsoNew1, l2p5TauOfflineIsoNew2,
         defaultTauSize, defaultTauPt, defaultTauEta, defaultTauPhi,
         defaultTauDM, defaultTauDMFinding, defaultTauDR, defaultTauChrgIso,
-        defaultTau2Pt, defaultTau2Eta, defaultTau2Phi, defaultTau2DM;
+        defaultTau2Pt, defaultTau2Eta, defaultTau2Phi, defaultTau2DM,
+        hasL2p5IsoTaus, hasL2p5Tracks, hasPV;
       bool foundGenTau, foundGenMuon; 
       std::map<std::string, int*> triggers;
       std::map<std::string, int>::iterator triggerIterator;
@@ -522,6 +523,9 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("nBTagAll",&nBTagAll,"nBTagAll/F");
    tree->Branch("emptyVertices",&emptyVertices,"emptyVertices/F");
    tree->Branch("failNdof",&failNdof,"failNdof/F");
+   tree->Branch("hasL2p5IsoTaus",&hasL2p5IsoTaus,"hasL2p5IsoTaus/F");
+   tree->Branch("hasL2p5Tracks",&hasL2p5Tracks,"hasL2p5Tracks/F");
+   tree->Branch("hasPV",&hasPV,"hasPV/F");
 
    tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1",                   &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1,                  "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1/I");
    tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1",                   &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1,                  "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1/I");
@@ -643,6 +647,9 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
   run = iEvent.eventAuxiliary().run();
   if (verbose) printf("Run: %.0f    Evt: %.0f   Lumi: %.0f\n", run, event, lumi);
 
+  hasL2p5IsoTaus = -1;
+  hasL2p5Tracks = -1;
+  hasPV = -1;
 
   if (!isRAW) {
     emptyVertices = 0;
@@ -1161,7 +1168,7 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
 
     // L2.5 Tau Studies
     edm::Handle<std::vector<reco::CaloJet>> l2p5Taus;
-    try {iEvent.getByToken(l2p5TauJetToken_, l2p5Taus);} catch (...) {;}
+    try {iEvent.getByToken(l2p5TauJetToken_, l2p5Taus); hasL2p5IsoTaus = 0;} catch (...) {;}
     edm::Handle<reco::JetTagCollection> l2p5TausIso;
     try {iEvent.getByToken(l2p5TauJetIsoToken_, l2p5TausIso);} catch (...) {;}
     edm::Handle<reco::JetTagCollection> l2p5TausIsoOffline;
@@ -1171,9 +1178,9 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     edm::Handle<reco::JetTagCollection> l2p5TausIsoOfflineNew2;
     try {iEvent.getByToken(l2p5TauJetIsoOfflineNew2Token_, l2p5TausIsoOfflineNew2);} catch (...) {;}
     edm::Handle<std::vector<reco::Vertex>> l2p5Vertices;
-    try {iEvent.getByToken(l2p5VerticesToken_, l2p5Vertices);} catch (...) {;}
+    try {iEvent.getByToken(l2p5VerticesToken_, l2p5Vertices); hasPV = 0;} catch (...) {;}
     edm::Handle<std::vector<reco::Track>> l2p5Tracks;
-    try {iEvent.getByToken(l2p5TracksToken_, l2p5Tracks);} catch (...) {;}
+    try {iEvent.getByToken(l2p5TracksToken_, l2p5Tracks); hasL2p5Tracks = 0;} catch (...) {;}
     edm::Handle<reco::BeamSpot> hltBeamSpot;
     try {iEvent.getByToken(hltBeamSpotToken_, hltBeamSpot);} catch (...) {;}
 
@@ -1218,6 +1225,11 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     l2p5TauOfflineIso2 = -1.f;
     l2p5TauOfflineIsoNew1 = -1.f;
     l2p5TauOfflineIsoNew2 = -1.f;
+
+    if (l2p5Taus.isValid()) hasL2p5IsoTaus = 1;
+    if (l2p5Tracks.isValid()) hasL2p5Tracks = 1;
+    if (pv) hasPV = 1;
+
     if (l2p5Taus.isValid() && l2p5Tracks.isValid() && hltBeamSpot.isValid() && pv && l2p5Taus->size()>0) {
 
         l2p5TauSize = l2p5Taus->size();

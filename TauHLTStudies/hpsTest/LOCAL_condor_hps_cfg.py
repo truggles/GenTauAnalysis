@@ -29,7 +29,7 @@ process.source = cms.Source("PoolSource",
         #'file:/hdfs/store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_L2p5_1003_may02_v1/180502_130922/0000/output_18.root',
         #'file:/hdfs/store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_L2p5_1003_may02_v1/180502_130922/0000/output_22.root',
         #'file:/hdfs/store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_L2p5_1003_may02_v1/180502_130922/0000/output_24.root',
-        #'file:/hdfs/store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_L2p5_1003_may02_v1/180502_130922/0000/output_3.root',
+        'file:/hdfs/store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_L2p5_1003_may02_v1/180502_130922/0000/output_3.root',
         #'file:/hdfs/store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_L2p5_1003_may02_v1/180502_130922/0000/output_4.root',
         #'file:/hdfs/store/user/truggles/VBFHToTauTau_M125_13TeV_powheg_pythia8/qqH125_L2p5_1003_may02_v1/180502_130922/0000/output_8.root',
         #'file:/hdfs/store/user/truggles/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/ttbar_L2p5Taus_1003_may16_v1/180516_193511/0000/output_1.root',
@@ -42,7 +42,7 @@ process.source = cms.Source("PoolSource",
         #'file:/hdfs/store/user/truggles/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/ttbar_L2p5Taus_1003_may16_v1/180516_193511/0000/output_8.root',
         #'file:/hdfs/store/user/truggles/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/ttbar_L2p5Taus_1003_may16_v1/180516_193511/0000/output_9.root', 
         #'file:/hdfs/store/user/truggles/SingleMuon/DataSingleMuonF_june12_hps_V7_v1/180612_154337/0000/output_3.root',
-        'file:/hdfs/store/user/truggles/SingleMuon/DataSingleMuonF_june12_hps_V7_v1/180612_154337/0000/output_8.root',
+        #'file:/hdfs/store/user/truggles/SingleMuon/DataSingleMuonF_june12_hps_V7_v1/180612_154337/0000/output_8.root',
     )
 )
 
@@ -115,10 +115,10 @@ for idmod in my_id_modules:
 
 
 # Try to redo L2p5 iso calculation offline
-process.load("THRAnalysis.TauHLTStudies.hltL2TauPixelIsoTagProducer_cfi")
-process.load("THRAnalysis.TauHLTStudies.newHltL2TauPixelIsoTagProducer_cfi")
-process.new2HltL2TauPixelIsoTagProducer = process.newHltL2TauPixelIsoTagProducer.clone()
-process.new2HltL2TauPixelIsoTagProducer.TrackPVMaxDZ = cms.double( 0.005 )
+#XXX process.load("THRAnalysis.TauHLTStudies.hltL2TauPixelIsoTagProducer_cfi")
+#XXX process.load("THRAnalysis.TauHLTStudies.newHltL2TauPixelIsoTagProducer_cfi")
+#XXX process.new2HltL2TauPixelIsoTagProducer = process.newHltL2TauPixelIsoTagProducer.clone()
+#XXX process.new2HltL2TauPixelIsoTagProducer.TrackPVMaxDZ = cms.double( 0.005 )
 
 
 process.load("THRAnalysis.TauHLTStudies.hps_CfiFile_cfi")
@@ -140,9 +140,9 @@ process.p = cms.Path(
             #process.tauGenJetsSelectorAllHadrons*
             #process.tauGenJetsSelectorElectrons*
             #process.tauGenJetsSelectorMuons*
-            process.hltL2TauPixelIsoTagProducer*
-            process.newHltL2TauPixelIsoTagProducer*
-            process.new2HltL2TauPixelIsoTagProducer*
+            #XXX process.hltL2TauPixelIsoTagProducer*
+            #XXX process.newHltL2TauPixelIsoTagProducer*
+            #XXX process.new2HltL2TauPixelIsoTagProducer*
             process.hpsTauHLTStudies)
 
 #print process.dumpPython()

@@ -31,10 +31,22 @@ config.User.voGroup            = 'uscms'
 
 dataMap = OrderedDict()
 ### FOR EFFICIENCY & OTHER MC STUDIES ###
-dataMap['ttbar'] = {
-        'child' : '/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v2/MINIAODSIM',
-        'grandparent' : '/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v2/GEN-SIM-RAW',
-    }
+#dataMap['ttbar'] = {
+#        'child' : '/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v2/MINIAODSIM',
+#        'grandparent' : '/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v2/GEN-SIM-RAW',
+#    }
+#dataMap['QCD-30-50'] = {
+#        'child' : '/QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v2/MINIAODSIM',
+#        'grandparent' : '/QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v2/GEN-SIM-RAW',
+#    }
+####dataMap['QCD-50-80'] = {
+####        'child' : '/QCD_Pt_50to80_TuneCUETP8M1_13TeV_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
+####        'grandparent' : '/QCD_Pt_50to80_TuneCUETP8M1_13TeV_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
+####    }
+#dataMap['QCD-80-120'] = {
+#        'child' : '/QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
+#        'grandparent' : '/QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
+#    }
 #dataMap['qqH125'] = {
 #        'child' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
 #        'grandparent' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
@@ -55,10 +67,10 @@ dataMap['ttbar'] = {
 #        'child' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/MINIAODSIM',
 #        'grandparent' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/GEN-SIM-RAW',
 #    }
-#dataMap['DataSingleMuonF'] = {
-#        'child' : '/SingleMuon/Run2017F-PromptReco-v1/MINIAOD',
-#        'grandparent' : '/SingleMuon/Run2017F-v1/RAW',
-#    }
+dataMap['DataSingleMuonF'] = {
+        'child' : '/SingleMuon/Run2017F-PromptReco-v1/MINIAOD',
+        'grandparent' : '/SingleMuon/Run2017F-v1/RAW',
+    }
 #dataMap['DataTauF'] = {
 #        'child' : '/Tau/Run2017F-PromptReco-v1/MINIAOD',
 #        'grandparent' : '/Tau/Run2017F-v1/RAW',
@@ -136,7 +148,7 @@ if __name__ == '__main__':
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k in dataMap.keys() :
-        config.General.requestName = '%s_L2p5Taus_1003_may16_v2' % k
+        config.General.requestName = '%s_L2p5Taus_1003_june13_v1' % k
         config.Data.outputDatasetTag   = config.General.requestName
         if not 'hltPhysics' in k and not 'Data' in k :
             #config.JobType.psetName        = 'hps_hlt_MC_FINAL.py'
@@ -144,13 +156,13 @@ if __name__ == '__main__':
             config.Data.inputDataset = dataMap[ k ][ 'child' ]
             config.Data.secondaryInputDataset = dataMap[ k ][ 'grandparent' ]
             # ZPrime Test
-            config.JobType.maxMemoryMB     = 2500
+            config.JobType.maxMemoryMB     = 3500
             config.Data.splitting          = 'EventAwareLumiBased'
             config.Data.unitsPerJob        = 2000 # events / job when using EventAwareLumiBased
-            config.Data.unitsPerJob        = 500 # for ttbar
+            #config.Data.unitsPerJob        = 500 # for ttbar
             config.Data.totalUnits         = 1000000 # for ttbar
             #config.Data.unitsPerJob        = 500 # for tests
-            #config.Data.totalUnits         = 10000 # for tests
+            #config.Data.totalUnits         = 20000 # for tests
         elif 'hltPhysics' in k :
             config.Data.inputDataset = dataMap[ k ][ 'grandparent' ]
             config.JobType.maxMemoryMB = 2500
@@ -173,9 +185,10 @@ if __name__ == '__main__':
             config.Data.inputDataset = dataMap[ k ][ 'child' ]
             config.Data.secondaryInputDataset = dataMap[ k ][ 'grandparent' ]
             config.JobType.maxMemoryMB = 3500
-            config.JobType.psetName    = 'hps_hlt_10x_DATA.py'
+            #config.JobType.psetName    = 'hps_hlt_10x_DATA.py'
+            config.JobType.psetName    = 'hps_hlt_10x_L2p5_DATA.py'
             config.Data.lumiMask       = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/PromptReco/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
-            #config.Data.totalUnits         = 1000000 # 1 mil was far too low for efficiency
+            #config.Data.totalUnits         = 100000 # 1 mil was far too low for efficiency
             config.Data.totalUnits         = 25000000 # For small tests # events when using EventAwareLumiBased
         print 'submitting config:'
         print config

@@ -10,7 +10,7 @@ def resComp( c, name, h1, h2 ) :
     c.Clear()
     h1.SetLineColor( ROOT.kBlue )
     h1.SetLineWidth( 2 )
-    if 'Gen' in h1.GetXaxis().GetTitle() :
+    if '30to40' in name :
         h1.SetTitle( 'Tau p_{T} Resolution: Gen p_{T} [30,40]' )
     else :
         h1.SetTitle( 'Tau p_{T} Resolution' )
@@ -22,6 +22,7 @@ def resComp( c, name, h1, h2 ) :
         h2.Scale( 1. / h2.Integral() )
     h1.Draw()
     h1.SetMaximum( max(h1.GetMaximum(), h2.GetMaximum()) * 1.2 )
+    h1.GetYaxis().SetTitleOffset( h1.GetYaxis().GetTitleOffset() * 0.7 )
     h2.Draw('SAMES')
     ROOT.gPad.Update()
     s1 = h1.FindObject("stats")
@@ -43,6 +44,7 @@ def resComp( c, name, h1, h2 ) :
 
     h1.GetYaxis().SetTitleOffset( h1.GetYaxis().GetTitleOffset() * 1.5 )
     c.SaveAs( plotBase+name+'.png' )
+    c.SaveAs( plotBase+name+'.pdf' )
     c.Clear()
 
 
@@ -182,11 +184,14 @@ name = 'eff_feb18_singleMuon'
 #name = 'eff_DYToLL_mar03'
 name = 'eff_april02'
 name = 'eff_feb27x'
+name = 'qqH_june04'
+name = 'qqH125_May15'
+#name = 'singleMuon_june10'
 
 isData = False
 #isData = True
 
-iFile = ROOT.TFile(name+'.root','r')
+iFile = ROOT.TFile('/data/truggles/'+name+'.root','r')
 print iFile
 iTree = iFile.Get( 'hpsTauHLTStudies/tagAndProbe/Ntuple' )
 
@@ -195,7 +200,7 @@ trigger2 = 'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1'
 #trigger1 = 'HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr'
 #trigger2 = 'HLT_IsoMu24_eta2p1_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr'
 
-plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'/'
+plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'_xxx/'
 #plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'_GenJet/'
 #plotBase='/afs/cern.ch/user/t/truggles/www/hps_at_hlt/plotting/'+name+'_GenEorMu/'
 if not os.path.exists( plotBase ) : os.makedirs( plotBase )
@@ -358,6 +363,7 @@ for row in iTree :
 
     # Tag
     if isData :
+        if row.RunNumber < 317509 : continue
         if row.HLT_IsoMu27 < 0.5 : continue
         if row.muonPt < 24 : continue
         if row.transMass > 40 : continue
@@ -365,7 +371,7 @@ for row in iTree :
         if row.m_vis > 100 : continue
         if row.tMVAIsoLoose < 0.5 : continue
     else :
-        if row.HLT_IsoMu20 < 0.5 : continue
+        #if row.HLT_IsoMu24 < 0.5 and row.HLT_IsoMu27 < 0.5 : continue
         #if row.muonPt < 25 : continue
         if row.t1_gen_match != 5 : continue
         #if row.t1_gen_match > 4 : continue
@@ -376,7 +382,7 @@ for row in iTree :
     #if row.mTrigMatch < 0.5 : continue
     if row.passingMuons != 1 : continue
     if row.nVetoMuons != 1 : continue
-    if row.passingElectrons != 0 : continue
+    #if row.passingElectrons != 0 : continue
     if row.nBTag != 0 : continue
     if row.passingTaus != 1 : continue
 
@@ -542,11 +548,11 @@ for row in iTree :
 
 
 
-resComp( c, 'resolutionPt', ptRes1, ptRes2 )
-resComp( c, 'resolutionPtOnVsOff', ptRes7, ptRes8 )
-resComp( c, 'resolutionPtGen', ptRes3, ptRes4 )
-resComp( c, 'resolutionPtGenPt30to40', ptRes5, ptRes6 )
-resComp( c, 'resolutionDRGen', drRes1, drRes2 )
+resComp( c, 'resolutionOffline_PtRange30to40', ptRes1, ptRes2 )
+resComp( c, 'resolutionOffline', ptRes7, ptRes8 )
+resComp( c, 'resolutionGen', ptRes3, ptRes4 )
+resComp( c, 'resolutionGen_PtRange30to40', ptRes5, ptRes6 )
+#resComp( c, 'resolutionDRGen', drRes1, drRes2 )
 
 c.Clear()
 ptRes2DGenHPS.Draw('COLZ')

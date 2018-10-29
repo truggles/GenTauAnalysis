@@ -125,7 +125,7 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
       edm::EDGetTokenT<BXVector<l1t::Tau>> stage2TauToken_;
       edm::EDGetTokenT<std::vector<reco::GenParticle>> genToken_;
 
-      edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseIdMapTag_;
+      //edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseIdMapTag_;
 
 
       // l1 extras
@@ -164,6 +164,7 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
       bool foundGenTau, foundGenMuon; 
       std::map<std::string, int*> triggers;
       std::map<std::string, int>::iterator triggerIterator;
+      int HLT_IsoMu19_LooseChargedIsoPFTau20_Trk1_SingleL1;
       int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1;
       int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1;
       int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1;
@@ -220,6 +221,7 @@ class HPSTauHLTStudiesAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedRes
       int HLT_MediumChargedIsoPFTauHPS50_Trk30_eta2p1_1pr;
       int HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr;
       int HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1;
+      int HLT_MediumChargedIsoPFTau140HighPtRelaxedIso_Trk50_eta2p1;
       int HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_1pr;
       int HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1;
       int HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
@@ -288,8 +290,8 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
     triggerToken_(consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerSrc"))),
     triggerObjectsToken_(consumes<pat::TriggerObjectStandAloneCollection>(iConfig.getParameter<edm::InputTag>("triggerObjectsSrc"))),
     stage2TauToken_(consumes<BXVector<l1t::Tau>>(iConfig.getParameter<edm::InputTag>("stage2TauSrc"))),
-    genToken_(consumes<std::vector<reco::GenParticle>>(iConfig.getParameter<edm::InputTag>("genSrc"))),
-    eleLooseIdMapTag_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap")))
+    genToken_(consumes<std::vector<reco::GenParticle>>(iConfig.getParameter<edm::InputTag>("genSrc")))
+    //eleLooseIdMapTag_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap")))
 {
    //now do what ever initialization is needed
 
@@ -307,6 +309,7 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    //usesResource("TFileService");
    edm::Service<TFileService> fs;
 
+   triggers["HLT_IsoMu19_LooseChargedIsoPFTau20_Trk1_SingleL1_v"]                   = &HLT_IsoMu19_LooseChargedIsoPFTau20_Trk1_SingleL1;
    triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_v"]                   = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1;
    triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1_v"]                = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1;
    triggers["HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1_v"]           = &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1;
@@ -366,6 +369,7 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    triggers["HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr_v"]              = &HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr;
    triggers["HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_1pr_v"]           = &HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_1pr;
    triggers["HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_v"]                  = &HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1;
+   triggers["HLT_MediumChargedIsoPFTau140HighPtRelaxedIso_Trk50_eta2p1_v"]                  = &HLT_MediumChargedIsoPFTau140HighPtRelaxedIso_Trk50_eta2p1;
    triggers["HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_v"]               = &HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1;
    triggers["HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET90_v"]                         = &HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET90;
    triggers["HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET100_v"]                        = &HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET100;
@@ -517,6 +521,7 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("emptyVertices",&emptyVertices,"emptyVertices/F");
    tree->Branch("failNdof",&failNdof,"failNdof/F");
 
+   tree->Branch("HLT_IsoMu19_LooseChargedIsoPFTau20_Trk1_SingleL1",                   &HLT_IsoMu19_LooseChargedIsoPFTau20_Trk1_SingleL1,                  "HLT_IsoMu19_LooseChargedIsoPFTau20_Trk1_SingleL1/I");
    tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1",                   &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1,                  "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1/I");
    tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1",                   &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1,                  "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1/I");
    tree->Branch("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1",           &HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1,          "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1/I");
@@ -576,6 +581,7 @@ HPSTauHLTStudiesAnalyzer::HPSTauHLTStudiesAnalyzer(const edm::ParameterSet& iCon
    tree->Branch("HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr",          &HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr,                          "HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr/I");
    tree->Branch("HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_1pr",          &HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_1pr,                          "HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1_1pr/I");
    tree->Branch("HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1",              &HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1,                          "HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1/I");
+   tree->Branch("HLT_MediumChargedIsoPFTau140HighPtRelaxedIso_Trk50_eta2p1",              &HLT_MediumChargedIsoPFTau140HighPtRelaxedIso_Trk50_eta2p1,                          "HLT_MediumChargedIsoPFTau140HighPtRelaxedIso_Trk50_eta2p1/I");
    tree->Branch("HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1",              &HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1,                          "HLT_MediumChargedIsoPFTauHPS180HighPtRelaxedIso_Trk50_eta2p1/I");
    tree->Branch("HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET90",              &HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET90,                          "HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET90/I");
    tree->Branch("HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET100",              &HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET100,                          "HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET100/I");
@@ -763,15 +769,16 @@ HPSTauHLTStudiesAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetu
     // Veto events with loose electrons
     Handle<edm::View<reco::GsfElectron> > electrons;
     iEvent.getByToken(electronToken_, electrons);
-    Handle<edm::ValueMap<bool> > loose_id_decisions;
-    iEvent.getByToken(eleLooseIdMapTag_, loose_id_decisions);
+    //Handle<edm::ValueMap<bool> > loose_id_decisions;
+    //iEvent.getByToken(eleLooseIdMapTag_, loose_id_decisions);
 
     passingElectrons = 0;
     pat::Electron bestElectron;
     for(unsigned int i = 0; i< electrons->size(); ++i){
      
         const auto ele = electrons->ptrAt(i);
-        int isLooseID = (*loose_id_decisions)[ele];
+        //int isLooseID = (*loose_id_decisions)[ele];
+        int isLooseID = 0;
         //if(ele->p4().Pt()>10 && fabs(ele->p4().Eta())<2.5) {
         if(isLooseID && ele->p4().Pt()>10 && fabs(ele->p4().Eta())<2.5) {
             ++passingElectrons;

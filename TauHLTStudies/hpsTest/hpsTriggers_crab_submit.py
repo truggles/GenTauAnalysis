@@ -26,15 +26,16 @@ config.Site.storageSite        = 'T2_US_Wisconsin'
 #config.Site.blacklist          = ['T2_BE_UCL',] # Needed for DYJets?
 config.Site.ignoreGlobalBlacklist = True # Needed to add this to process the VBF H125 sample & HLTPhysics & DYJets
 #config.Site.whitelist          = ['T2_US_Wisconsin',] # Needed to remove this to process the VBF H125 sample & HLTPhysics & DYJets
+#config.Site.whitelist          = ['T2_IT_Rome',] # Needed to remove this to process the VBF H125 sample & HLTPhysics & DYJets
 
 config.User.voGroup            = 'uscms'
 
 dataMap = OrderedDict()
 ### FOR EFFICIENCY & OTHER MC STUDIES ###
-#dataMap['qqH125'] = {
-#        'child' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
-#        'grandparent' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
-#    }
+dataMap['qqH125'] = {
+        'child' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/MINIAODSIM',
+        'grandparent' : '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG07_92X_upgrade2017_realistic_v10-v1/GEN-SIM-RAW',
+    }
 #dataMap['ggH125'] = {
 #        'child' : '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/MINIAODSIM',
 #        'grandparent' : '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_HIG06_92X_upgrade2017_realistic_v10-v2/GEN-SIM-RAW',
@@ -60,10 +61,10 @@ dataMap = OrderedDict()
 
 
 
-dataMap['DYJets'] = {
-        'child' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/MINIAODSIM',
-        'grandparent' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/GEN-SIM-RAW',
-    }
+#dataMap['DYJets'] = {
+#        'child' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/MINIAODSIM',
+#        'grandparent' : '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17DRStdmix-NZSFlatPU28to62_92X_upgrade2017_realistic_v10_ext1-v1/GEN-SIM-RAW',
+#    }
 #dataMap['DataSingleMuonBv1'] = {
 #        'child' : '/SingleMuon/Run2018B-PromptReco-v1/MINIAOD',
 #        'grandparent' : '/SingleMuon/Run2018B-v1/RAW',
@@ -109,19 +110,20 @@ if __name__ == '__main__':
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k in dataMap.keys() :
-        config.General.requestName = '%s_hps_10_1_7_june30_v4' % k
+        config.General.requestName = '%s_ultraLegacy_10_1_10_oct29_v5' % k
         config.Data.outputDatasetTag   = config.General.requestName
         if not 'hltPhysics' in k and not 'Data' in k :
-            config.JobType.psetName        = 'hlt_MC_10_1_7_6Paths.py'
+            config.JobType.psetName        = 'ultra_legacy_cfg_v2.py'
             config.Data.inputDataset = dataMap[ k ][ 'child' ]
             config.Data.secondaryInputDataset = dataMap[ k ][ 'grandparent' ]
             # ZPrime Test
             config.JobType.maxMemoryMB     = 2500
             config.Data.splitting          = 'EventAwareLumiBased'
-            config.Data.unitsPerJob        = 2000 # events / job when using EventAwareLumiBased
-            config.Data.unitsPerJob        = 4000 # events / job when using EventAwareLumiBased
-            config.Data.totalUnits         = 30000 # for tests
-            config.Data.totalUnits         = 4000000 # for tests
+            #config.Data.unitsPerJob        = 2000 # events / job when using EventAwareLumiBased
+            config.Data.unitsPerJob        = 100 # events / job when using EventAwareLumiBased
+            #config.Data.unitsPerJob        = 4000 # events / job when using EventAwareLumiBased
+            config.Data.totalUnits         = 10000 # for tests
+            #config.Data.totalUnits         = 4000000 # for tests
         elif 'hltPhysics' in k :
             config.Data.inputDataset = dataMap[ k ][ 'grandparent' ]
             config.JobType.maxMemoryMB = 2500

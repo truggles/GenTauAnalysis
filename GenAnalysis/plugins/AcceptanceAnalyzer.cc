@@ -40,6 +40,7 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 
+#include "SimDataFormats/HTXS/interface/HiggsTemplateCrossSections.h"
 
 
 //
@@ -71,6 +72,7 @@ class AcceptanceAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources
       edm::EDGetTokenT<std::vector<reco::GenJet>> genMuonicTausToken_;
       edm::EDGetTokenT<std::vector<PileupSummaryInfo>> puToken_;
       edm::EDGetTokenT<LHEEventProduct> lheToken_;
+      edm::EDGetTokenT<HTXS::HiggsClassification> htxsToken_;
       TTree *tree;
       float genMass, ETauPass, MuTauPass, EMuPass, TauTauPass, TauTau4030Pass, MuMuPass;
       float ETauD, MuTauD, EMuD, TauTauD, MuMuD;
@@ -96,7 +98,8 @@ AcceptanceAnalyzer::AcceptanceAnalyzer(const edm::ParameterSet& iConfig) :
     genElectronicTausToken_(consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>("electronSrc"))),
     genMuonicTausToken_(consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>("muonSrc"))),
     puToken_(consumes<std::vector<PileupSummaryInfo>>(iConfig.getParameter<edm::InputTag>("puSrc"))),
-    lheToken_(consumes<LHEEventProduct>(iConfig.getParameter<edm::InputTag>("lheSrc")))
+    lheToken_(consumes<LHEEventProduct>(iConfig.getParameter<edm::InputTag>("lheSrc"))),
+    htxsToken_(consumes<HTXS::HiggsClassification>(edm::InputTag("rivetProducerHTXS","HiggsClassification")))
 {
    //now do what ever initialization is needed
    //usesResource("TFileService");
@@ -187,6 +190,14 @@ AcceptanceAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     run = iEvent.eventAuxiliary().run();
     lumi = iEvent.eventAuxiliary().luminosityBlock();
     eventD = iEvent.eventAuxiliary().event();
+
+    edm::Handle<HTXS::HiggsClassification> htxs;
+    iEvent.getByToken(htxsToken_,htxs);
+    if (htxs.isValid())
+    {
+        std::cout << "Rivet info higgs pt " << htxs->higgs.pt() << std::endl;
+    }
+
 
     // Get the number of true events
     // This is used later for pile up reweighting
